@@ -18,6 +18,7 @@ from sqlalchemy.orm import contains_eager, joinedload, selectinload
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy, _QueryProperty
 from flask_oauthlib.client import OAuth
+from werkzeug import security
 import requests
 
 from dicebot import model as m
@@ -34,15 +35,15 @@ m.Base.query_class = db.Query
 m.Base.query = _QueryProperty(db)
 # Configure Google OAuth
 oauth = OAuth()
-google = oauth.remote_app(
-    'google',
-    app_key='GOOGLE',
-    request_token_params={'scope': 'email'},
-    base_url='https://www.googleapis.com/oauth2/v1/',
+discord = oauth.remote_app(
+    'discord',
+    app_key='DISCORD',
+    request_token_params={'scope': 'identify', 'state': lambda: security.gen_salt(10)},
+    base_url='https://discordapp.com/api/oauth2/',
     request_token_url=None,
     access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    access_token_url='https://discordapp.com/api/oauth2/token',
+    authorize_url='https://discordapp.com/api/oauth2/authorize',
 )
 
 

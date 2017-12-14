@@ -161,9 +161,17 @@ def index():
     '''
     Homepage for the bot
     '''
+    content = '<h1>Dice-bot</h1>'
+    user = False
+
+    if session.get('id'):
+        content += '<p>Id: {}</p>'.format(session['id'])
+        user = True
+
     return render_template(
         'base.html',
         title='Dice-Bot',
+        user=user,
         content='<h1>Dice-bot</h1>',
     )
 

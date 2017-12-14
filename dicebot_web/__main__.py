@@ -67,6 +67,8 @@ def create_app(database):
         config = {
             # key used to encrypt cookies
             'token': None,
+            'DISCORD_CONSUMER_KEY': None,
+            'DISCORD_CONSUMER_SECRET': None,
         }
         # get Config values from database
         for name in config:
@@ -79,7 +81,7 @@ def create_app(database):
                 db.session.commit()
 
         app.config.update(config)
-        app.config['SECRET_KEY'] = app.config['token']
+        app.secret_key = app.config['token']
 
 
 @app.context_processor

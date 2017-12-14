@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
 
-import sys
 import os
 import argparse
 
 from flask import (
     Flask,
-    abort,
+    flash,
     redirect,
     render_template,
     request,
     send_from_directory,
     session,
+    url_for,
 )
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import contains_eager, joinedload, selectinload
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy, _QueryProperty
 from flask_oauthlib.client import OAuth
 from werkzeug import security
-import requests
 
 from dicebot import model as m
 
@@ -33,9 +31,9 @@ db.Model = m.Base
 # Ugly code to make Base.query work
 m.Base.query_class = db.Query
 m.Base.query = _QueryProperty(db)
-# Configure Google OAuth
-oauth = OAuth()
-discord = oauth.remote_app(
+# Configure Discord OAuth
+oauth = OAuth(app)
+app.discord = oauth.remote_app(
     'discord',
     app_key='DISCORD',
     request_token_params={'scope': 'identify', 'state': lambda: security.gen_salt(10)},
@@ -92,11 +90,7 @@ def context():
     return dict(
         m=m,
         str=str,
-        int=get_int,
-        date=date,
         len=len,
-        markdown=markdown,
-        correct_time=correct_time,
     )
 
 
@@ -157,6 +151,7 @@ def favicon():
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon',
     )
+
 
 # ----#-   Pages
 

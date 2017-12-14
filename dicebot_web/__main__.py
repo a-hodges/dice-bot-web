@@ -156,6 +156,18 @@ def favicon():
 # ----#-   Pages
 
 
+@app.route('/')
+def index():
+    '''
+    Homepage for the bot
+    '''
+    return render_template(
+        'base.html',
+        title='Dice-Bot',
+        content='<h1>Dice-bot</h1>',
+    )
+
+
 # ----#-   Login/Logout
 
 

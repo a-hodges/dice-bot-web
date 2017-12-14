@@ -45,7 +45,7 @@ app.discord = oauth.remote_app(
 )
 
 
-def create_app(args):
+def create_app(database):
     '''
     Sets up app for use
     Adds database configuration and the secret key
@@ -54,7 +54,7 @@ def create_app(args):
     app.jinja_env.lstrip_blocks = True
 
     # setup Database
-    app.config['SQLALCHEMY_DATABASE_URI'] = args.database
+    app.config['SQLALCHEMY_DATABASE_URI'] = database
     db.create_all()
 
     # setup config values
@@ -266,7 +266,7 @@ def main():
     if args.port is None:
         args.port = port
 
-    create_app(args)
+    create_app(args.database)
 
     if args.reload:
         app.config['TEMPLATES_AUTO_RELOAD'] = True

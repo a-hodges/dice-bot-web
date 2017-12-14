@@ -103,16 +103,11 @@ def error(e, message):
     r"""
     Basic error template for all error pages
     """
-    try:
-        user = get_user()
-    except:
-        user = None
 
     html = render_template(
         'error.html',
         title=str(e),
         message=message,
-        user=user,
     )
     return html
 
@@ -149,30 +144,6 @@ def five_hundred(e):
     else:
         message = 'Whoops, looks like something went wrong!'
     return error('500: ' + type(e).__name__, message), 500
-
-
-def get_user():
-    r"""
-    Gets the user data from the current session
-    Returns the Tutor object of the current user
-    """
-    email = session.get('username')
-    user = None
-    if email:
-        if app.config['DEBUG']:
-            user = m.Tutors(email=email, is_active=True, is_superuser=True)
-        else:
-            try:
-                user = m.Tutors.query.filter_by(email=email).one()
-            except NoResultFound:
-                session.clear()
-                flash('&#10006; User does not exist: {}.'.format(email))
-
-        if user and not user.is_active:
-            session.clear()
-            flash('&#10006; User is not active: {}.'.format(email))
-            user = None
-    return user
 
 
 @app.route('/favicon.ico')
@@ -225,6 +196,7 @@ def main():
         debug=args.debug,
         use_reloader=args.reload,
     )
+
 
 if __name__ == '__main__':
     main()

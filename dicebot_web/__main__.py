@@ -156,6 +156,71 @@ def favicon():
 # ----#-   Pages
 
 
+# ----#-   Login/Logout
+
+
+@app.discord.tokengetter
+def get_token(token=None):
+    r"""
+    Returns a user's token from OAuth
+    """
+    return session.get('token')
+
+
+@app.route('/login/')
+def login():
+    r"""
+    Redirects the user to the Discord Single Sign On page
+    """
+    session.clear()
+    next = request.args.get('next') or request.referrer or None
+    html = app.discord.authorize(
+        callback=url_for('oauth_authorized', _external=True),
+        state=next,
+    )
+    return html
+
+
+@app.route('/oauth-authorized')
+def oauth_authorized():
+    r"""
+    Logs the user in using the OAuth API
+    """
+    next_url = request.args.get('state') or url_for('index')
+
+    resp = app.discord.authorized_response()
+    if resp is None:
+        return redirect(next_url)
+
+    session['token'] = (resp['access_token'], '')
+
+    https = app.discord.get(
+        '/users/@me',
+        token=session['token'][0],
+        data={'fields': 'id'},
+    )
+    print(https)
+
+    ...
+
+    return redirect(next_url)
+
+
+@app.route('/logout/')
+def logout():
+    r"""
+    Logs the user out and returns them to the homepage
+    """
+    session.clear()
+    flash(
+        '&#10004; Successfully logged out. ' +
+        'You will need to log out of Discord separately.')
+    return redirect(url_for('index'))
+
+
+# ----#-   Main
+
+
 def main():
     port = 80  # default port
     parser = argparse.ArgumentParser(

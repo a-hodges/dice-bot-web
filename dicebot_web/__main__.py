@@ -36,7 +36,7 @@ oauth = OAuth(app)
 app.discord = oauth.remote_app(
     'discord',
     app_key='DISCORD',
-    request_token_params={'scope': 'identify', 'state': lambda: security.gen_salt(10)},
+    request_token_params={'scope': 'identify'},
     base_url='https://discordapp.com/api/oauth2/',
     request_token_url=None,
     access_token_method='POST',

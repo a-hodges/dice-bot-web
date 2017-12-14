@@ -46,10 +46,10 @@ app.discord = oauth.remote_app(
 
 
 def create_app(args):
-    r"""
+    '''
     Sets up app for use
     Adds database configuration and the secret key
-    """
+    '''
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
 
@@ -84,9 +84,9 @@ def create_app(args):
 
 @app.context_processor
 def context():
-    r"""
+    '''
     Makes extra variables available to the template engine
-    """
+    '''
     return dict(
         m=m,
         str=str,
@@ -95,9 +95,9 @@ def context():
 
 
 def error(e, message):
-    r"""
+    '''
     Basic error template for all error pages
-    """
+    '''
 
     html = render_template(
         'error.html',
@@ -109,25 +109,25 @@ def error(e, message):
 
 @app.errorhandler(403)
 def four_oh_three(e):
-    r"""
+    '''
     403 (forbidden) error page
-    """
+    '''
     return error(e, "You don't have access to this page."), 403
 
 
 @app.errorhandler(404)
 def four_oh_four(e):
-    r"""
+    '''
     404 (page not found) error page
-    """
+    '''
     return error(e, "We couldn't find the page you were looking for."), 404
 
 
 @app.errorhandler(500)
 def five_hundred(e):
-    r"""
+    '''
     500 (internal server) error page
-    """
+    '''
     if isinstance(e, NoResultFound):
         message = 'Could not find the requested item in the database.'
     elif isinstance(e, MultipleResultsFound):
@@ -143,9 +143,9 @@ def five_hundred(e):
 
 @app.route('/favicon.ico')
 def favicon():
-    r"""
+    '''
     The favorites icon for the site
-    """
+    '''
     return send_from_directory(
         os.path.join(app.root_path, 'static', 'images'),
         'favicon.ico',
@@ -161,17 +161,17 @@ def favicon():
 
 @app.discord.tokengetter
 def get_token(token=None):
-    r"""
+    '''
     Returns a user's token from OAuth
-    """
+    '''
     return session.get('token')
 
 
 @app.route('/login/')
 def login():
-    r"""
+    '''
     Redirects the user to the Discord Single Sign On page
-    """
+    '''
     session.clear()
     next = request.args.get('next') or request.referrer or None
     html = app.discord.authorize(
@@ -183,9 +183,9 @@ def login():
 
 @app.route('/oauth-authorized')
 def oauth_authorized():
-    r"""
+    '''
     Logs the user in using the OAuth API
-    """
+    '''
     next_url = request.args.get('state') or url_for('index')
 
     resp = app.discord.authorized_response()
@@ -208,9 +208,9 @@ def oauth_authorized():
 
 @app.route('/logout/')
 def logout():
-    r"""
+    '''
     Logs the user out and returns them to the homepage
-    """
+    '''
     session.clear()
     flash(
         '&#10004; Successfully logged out. ' +

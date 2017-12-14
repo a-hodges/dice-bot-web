@@ -216,12 +216,12 @@ def oauth_authorized():
 
     session['token'] = (resp['access_token'], '')
 
-    https = app.discord.get(
-        '/users/@me',
+    resp = app.discord.get(
+        'users/@me',
         token=session['token'][0],
         data={'fields': 'id'},
     )
-    print(https)
+    print(resp.data)
 
     ...
 

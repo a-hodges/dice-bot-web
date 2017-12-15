@@ -7,6 +7,7 @@ from flask import (
     Flask,
     abort,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -55,6 +56,27 @@ def get_user():
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
     return user if 'id' in user else None, discord
+
+
+def get_character(user):
+    '''
+    Uses character data and request arguments to select a character
+
+    If successful returns a character and True
+    If unsuccessful returns an error and False
+    '''
+    user_id = request.args.get('user')
+    guild_id = request.args.get('server')
+
+    if not user_id or not guild_id or user.get('id') != user_id:
+        return abort(400), False
+
+    character = db.session.query(m.Character).filter_by(user=user_id, server=guild_id).one_or_none()
+
+    if not character:
+        return abort(400), False
+
+    return character, True
 
 
 # ----#-   Application
@@ -245,7 +267,14 @@ def constants():
     '''
     Returns the current character's constants in json form
     '''
-    ...
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+    character, successful = get_character(user)
+    if not successful:
+        return character
+    data = [item.dict() for item in character.constants]
+    return jsonify(data)
 
 
 @app.route('/rolls')
@@ -253,7 +282,14 @@ def rolls():
     '''
     Returns the current character's rolls in json form
     '''
-    ...
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+    character, successful = get_character(user)
+    if not successful:
+        return character
+    data = [item.dict() for item in character.rolls]
+    return jsonify(data)
 
 
 @app.route('/resources')
@@ -261,7 +297,14 @@ def resources():
     '''
     Returns the current character's resources in json form
     '''
-    ...
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+    character, successful = get_character(user)
+    if not successful:
+        return character
+    data = [item.dict() for item in character.resources]
+    return jsonify(data)
 
 
 @app.route('/spells')
@@ -269,7 +312,14 @@ def spells():
     '''
     Returns the current character's spells in json form
     '''
-    ...
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+    character, successful = get_character(user)
+    if not successful:
+        return character
+    data = [item.dict() for item in character.spells]
+    return jsonify(data)
 
 
 @app.route('/inventory')
@@ -277,7 +327,14 @@ def inventory():
     '''
     Returns the current character's inventory in json form
     '''
-    ...
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+    character, successful = get_character(user)
+    if not successful:
+        return character
+    data = [item.dict() for item in character.inventory]
+    return jsonify(data)
 
 
 # ----#-   Login/Logout

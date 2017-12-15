@@ -155,12 +155,12 @@ def index():
     user, discord = get_user()
 
     if user:
-        user['avatar'] = 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size=32'.format(user)
+        user['avatar'] = get_user_avatar(user)
         characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
         guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
         guilds = [guilds.get(str(character.server), {}) for character in characters]
         for guild in guilds:
-            guild['icon'] = 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size=32'.format(guild)
+            guild['icon'] = get_guild_icon(guild)
         characters = zip(characters, guilds)
     else:
         characters = None
@@ -174,6 +174,20 @@ def index():
 
 
 # ----#-   Login/Logout
+
+
+def get_user_avatar(user, size=32):
+    '''
+    Gets the url for the user's avatar
+    '''
+    return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
+
+
+def get_guild_icon(guild, size=32):
+    '''
+    Gets the url for the guild's icon
+    '''
+    return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
 
 
 def get_user():

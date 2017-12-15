@@ -23,11 +23,11 @@ const server_id = {{ guild.get('id') }}
 {% block content %}
 <div class="container">
     <h1>{{ character.name }}</h1>
-    <p>
+    <p><a class="navbar-brand" href="{{ url_for('index') }}">
         User:
         <img class="icon" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
         {{ user.get('username') }}
-    </p>
+    </a></p>
     <p>
         Server:
         <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">

@@ -1,4 +1,7 @@
-class Constants extends React.Component {
+class Component extends React.Component {
+    title = 'Item'
+    url = '/404'
+
     constructor(props) {
         super(props)
         this.error = this.error.bind(this);
@@ -11,7 +14,7 @@ class Constants extends React.Component {
 
     componentDidMount() {
         this.request = $.get({
-            url: '/constants',
+            url: this.url,
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -26,196 +29,55 @@ class Constants extends React.Component {
         this.request.abort()
     }
 
+    lineItem = (item) => <li key={item.name}>{item.name}</li>
+
     render() {
         let list = null
         if (this.state.data) {
-            list = this.state.data.map((item) => {
-                return <li key={item.name}>{item.name}: {item.value}</li>
-            })
+            list = this.state.data.map(this.lineItem)
         }
         return (
             <div>
-                <h2>Constants</h2>
+                <h2>{this.title}</h2>
                 <ul>{list}</ul>
             </div>
         )
     }
+}
+
+class Constants extends Component {
+    title = 'Constants'
+    url = '/constants'
+
+    lineItem = (item) => <li key={item.name}>{item.name}: {item.value}</li>
 }
 
 class Rolls extends React.Component {
-    constructor(props) {
-        super(props)
-        this.error = this.error.bind(this);
-        this.state = {data: []}
-    }
+    title = 'Rolls'
+    url = '/rolls'
 
-    error(message) {
-        this.props.onError(message)
-    }
-
-    componentDidMount() {
-        this.request = $.get({
-            url: '/rolls',
-            dataType: 'json',
-            data: {
-                user: this.props.user_id,
-                server: this.props.server_id,
-            },
-            error: () => this.error("Could not load data"),
-            success: (data) => this.setState((prevState, props) => ({data: data})),
-        })
-    }
-
-    componentWillUnmount() {
-        this.request.abort()
-    }
-
-    render() {
-        let list = null
-        if (this.state.data) {
-            list = this.state.data.map((item) => {
-                return <li key={item.name}>{item.name}: {item.expression}</li>
-            })
-        }
-        return (
-            <div>
-                <h2>Rolls</h2>
-                <ul>{list}</ul>
-            </div>
-        )
-    }
+    lineItem = (item) => <li key={item.name}>{item.name}: {item.expression}</li>
 }
 
 class Resources extends React.Component {
-    constructor(props) {
-        super(props)
-        this.error = this.error.bind(this);
-        this.state = {data: []}
-    }
+    title = 'Resources'
+    url = '/resources'
 
-    error(message) {
-        this.props.onError(message)
-    }
-
-    componentDidMount() {
-        this.request = $.get({
-            url: '/resources',
-            dataType: 'json',
-            data: {
-                user: this.props.user_id,
-                server: this.props.server_id,
-            },
-            error: () => this.error("Could not load data"),
-            success: (data) => this.setState((prevState, props) => ({data: data})),
-        })
-    }
-
-    componentWillUnmount() {
-        this.request.abort()
-    }
-
-    render() {
-        let list = null
-        if (this.state.data) {
-            list = this.state.data.map((item) => {
-                return <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>
-            })
-        }
-        return (
-            <div>
-                <h2>Resources</h2>
-                <ul>{list}</ul>
-            </div>
-        )
-    }
+    lineItem = (item) => <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>
 }
 
 class Spells extends React.Component {
-    constructor(props) {
-        super(props)
-        this.error = this.error.bind(this);
-        this.state = {data: []}
-    }
+    title = 'Spells'
+    url = '/spells'
 
-    error(message) {
-        this.props.onError(message)
-    }
-
-    componentDidMount() {
-        this.request = $.get({
-            url: '/spells',
-            dataType: 'json',
-            data: {
-                user: this.props.user_id,
-                server: this.props.server_id,
-            },
-            error: () => this.error("Could not load data"),
-            success: (data) => this.setState((prevState, props) => ({data: data})),
-        })
-    }
-
-    componentWillUnmount() {
-        this.request.abort()
-    }
-
-    render() {
-        let list = null
-        if (this.state.data) {
-            list = this.state.data.map((item) => {
-                return <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>
-            })
-        }
-        return (
-            <div>
-                <h2>Spells</h2>
-                <ul>{list}</ul>
-            </div>
-        )
-    }
+    lineItem = (item) => <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>
 }
 
 class Inventory extends React.Component {
-    constructor(props) {
-        super(props)
-        this.error = this.error.bind(this);
-        this.state = {data: []}
-    }
+    title = 'Inventory'
+    url = '/inventory'
 
-    error(message) {
-        this.props.onError(message)
-    }
-
-    componentDidMount() {
-        this.request = $.get({
-            url: '/inventory',
-            dataType: 'json',
-            data: {
-                user: this.props.user_id,
-                server: this.props.server_id,
-            },
-            error: () => this.error("Could not load data"),
-            success: (data) => this.setState((prevState, props) => ({data: data})),
-        })
-    }
-
-    componentWillUnmount() {
-        this.request.abort()
-    }
-
-    render() {
-        let list = null
-        if (this.state.data) {
-            list = this.state.data.map((item) => {
-                return <li key={item.name}>{item.name}: {item.number} <br/> {item.description}</li>
-            })
-        }
-        return (
-            <div>
-                <h2>Inventory</h2>
-                <ul>{list}</ul>
-            </div>
-        )
-    }
+    lineItem = (item) => <li key={item.name}>{item.name}: {item.number} <br/> {item.description}</li>
 }
 
 class Character extends React.Component {

@@ -70,7 +70,7 @@ def create_app(database):
         # get Config values from database
         for name in config:
             try:
-                key = m.Config.query.filter_by(name=name).one()
+                key = db.session.query(m.Config).filter_by(name=name).one()
                 config[name] = key.value
             except NoResultFound:
                 key = m.Config(name=name, value=config[name])

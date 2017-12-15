@@ -1,7 +1,4 @@
 class Component extends React.Component {
-    title = 'Item'
-    url = '/404'
-
     constructor(props) {
         super(props)
         this.error = this.error.bind(this);
@@ -14,7 +11,7 @@ class Component extends React.Component {
 
     componentDidMount() {
         this.request = $.get({
-            url: this.url,
+            url: this.props.url,
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -29,16 +26,14 @@ class Component extends React.Component {
         this.request.abort()
     }
 
-    lineItem = (item) => <li key={item.name}>{item.name}</li>
-
     render() {
         let list = null
         if (this.state.data) {
-            list = this.state.data.map(this.lineItem)
+            list = this.state.data.map(this.props.lineItem)
         }
         return (
             <div>
-                <h2>{this.title}</h2>
+                <h2>{this.props.title}</h2>
                 <ul>{list}</ul>
             </div>
         )

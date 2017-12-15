@@ -160,6 +160,7 @@ def index():
         guilds = [guilds.get(str(character.server), {}) for character in characters]
         for guild in guilds:
             guild['icon'] = 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size=32'.format(guild)
+        characters = zip(characters, guilds)
     else:
         characters = None
 
@@ -167,7 +168,7 @@ def index():
         'index.html',
         title='Dice-Bot',
         user=user,
-        characters=zip(characters, guilds),
+        characters=characters,
     )
 
 

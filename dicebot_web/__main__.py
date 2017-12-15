@@ -156,13 +156,13 @@ def index():
 
     content = '<h1>Dice-bot</h1>'
     if user:
-        content += '<p>Id: {}</p>'.format(session['id'])
+        content += '<p>Id: {}</p>'.format(user.get('id'))
 
     return render_template(
         'base.html',
         title='Dice-Bot',
         user=user,
-        content='<h1>Dice-bot</h1>',
+        content=content,
     )
 
 
@@ -269,6 +269,9 @@ def main():
 
     if args.reload:
         app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+    if args.debug:
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
     app.run(
         host='0.0.0.0',

@@ -211,7 +211,6 @@ class Character extends React.Component {
     }
 
     error(message) {
-        console.log(message)
         this.setState((prevState, props) => ({error: message}))
     }
 

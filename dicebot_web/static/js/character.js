@@ -45,35 +45,35 @@ class Component extends React.Component {
     }
 }
 
-function Constants {
+function Constants() {
     return <Component
         title="Constants"
         url="/constants"
         lineItem={(item) => <li key={item.name}>{item.name}: {item.value}</li>} />
 }
 
-function Rolls {
+function Rolls() {
     return <Component
         title="Rolls"
         url="/rolls"
         lineItem={(item) => <li key={item.name}>{item.name}: {item.expression}</li>} />
 }
 
-function Resources {
+function Resources() {
     return <Component
         title="Resources"
         url="/resources"
         lineItem={(item) => <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>} />
 }
 
-function Spells {
+function Spells() {
     return <Component
         title="Spells"
         url="/spells"
         lineItem={(item) => <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>} />
 }
 
-function Inventory {
+function Inventory() {
     return <Component
         title="Inventory"
         url="/inventory"

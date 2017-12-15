@@ -151,18 +151,23 @@ def index():
     '''
     Homepage for the bot
     '''
-    user = get_user()
-    print(user)
+    user, discord = get_user()
 
-    content = '<h1>Dice-bot</h1>'
     if user:
-        content += '<p>Id: {}</p>'.format(user.get('id'))
+        user['avatar'] = 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size=32'.format(user)
+        characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
+        guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+        guilds = [guilds.get(str(character.server), {}) for character in characters]
+        for guild in guilds:
+            guild['icon'] = 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size=32'.format(guild)
+    else:
+        characters = None
 
     return render_template(
-        'base.html',
+        'index.html',
         title='Dice-Bot',
         user=user,
-        content=content,
+        characters=zip(characters, guilds),
     )
 
 
@@ -172,7 +177,7 @@ def index():
 def get_user():
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    return user if 'id' in user else None
+    return user if 'id' in user else None, discord
 
 
 def token_updater(token):
@@ -202,7 +207,7 @@ def login():
     '''
     Redirects the user to the Discord sign in page
     '''
-    scope = request.args.get('scope', 'identify')
+    scope = request.args.get('scope', 'identify guilds')
     discord = make_session(scope=scope.split(' '))
     authorization_url, state = discord.authorization_url(AUTHORIZATION_BASE_URL)
     session['oauth2_state'] = state

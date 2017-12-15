@@ -15,8 +15,8 @@ img {
 <script crossorigin="" src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 <script type="text/babel" src="{{ url_for('static', filename='js/character.js') }}"></script>
 <script>
-const user_id = {{ user.get('id') }}
-const server_id = {{ guild.get('id') }}
+const user_id = "{{ user.get('id') }}"
+const server_id = "{{ guild.get('id') }}"
 </script>
 {% endblock %}
 

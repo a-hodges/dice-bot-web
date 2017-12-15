@@ -10,9 +10,8 @@ class Constants extends React.Component {
     }
 
     componentDidMount() {
-        this.request = $.ajax({
+        this.request = $.get({
             url: '/constants',
-            method: 'get',
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -21,6 +20,10 @@ class Constants extends React.Component {
             error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
+    }
+
+    componentWillUnmount() {
+        this.request.abort()
     }
 
     render() {
@@ -51,9 +54,8 @@ class Rolls extends React.Component {
     }
 
     componentDidMount() {
-        $.ajax({
+        this.request = $.get({
             url: '/rolls',
-            method: 'get',
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -62,6 +64,10 @@ class Rolls extends React.Component {
             error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
+    }
+
+    componentWillUnmount() {
+        this.request.abort()
     }
 
     render() {
@@ -92,9 +98,8 @@ class Resources extends React.Component {
     }
 
     componentDidMount() {
-        $.ajax({
+        this.request = $.get({
             url: '/resources',
-            method: 'get',
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -103,6 +108,10 @@ class Resources extends React.Component {
             error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
+    }
+
+    componentWillUnmount() {
+        this.request.abort()
     }
 
     render() {
@@ -133,9 +142,8 @@ class Spells extends React.Component {
     }
 
     componentDidMount() {
-        $.ajax({
+        this.request = $.get({
             url: '/spells',
-            method: 'get',
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -144,6 +152,10 @@ class Spells extends React.Component {
             error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
+    }
+
+    componentWillUnmount() {
+        this.request.abort()
     }
 
     render() {
@@ -174,9 +186,8 @@ class Inventory extends React.Component {
     }
 
     componentDidMount() {
-        $.ajax({
+        this.request = $.get({
             url: '/inventory',
-            method: 'get',
             dataType: 'json',
             data: {
                 user: this.props.user_id,
@@ -185,6 +196,10 @@ class Inventory extends React.Component {
             error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
+    }
+
+    componentWillUnmount() {
+        this.request.abort()
     }
 
     render() {

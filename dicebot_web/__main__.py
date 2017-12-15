@@ -16,8 +16,7 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy, _QueryProperty
-from flask_oauthlib.client import OAuth
-from werkzeug import security
+from requests_oauthlib import OAuth2Session
 
 from dicebot import model as m
 
@@ -29,17 +28,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 db = SQLAlchemy(app)
 db.Model = m.Base
 # Configure Discord OAuth
-oauth = OAuth(app)
-app.discord = oauth.remote_app(
-    'discord',
-    app_key='DISCORD',
-    request_token_params={'scope': 'identify'},
-    base_url='https://discordapp.com/api/oauth2/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url='https://discordapp.com/api/oauth2/token',
-    authorize_url='https://discordapp.com/api/oauth2/authorize',
-)
+API_BASE_URL = 'https://discordapp.com/api'
+AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
+TOKEN_URL = API_BASE_URL + '/oauth2/token'
 
 
 def create_app(database):
@@ -64,8 +55,8 @@ def create_app(database):
         config = {
             # key used to encrypt cookies
             'token': None,
-            'DISCORD_CONSUMER_KEY': None,
-            'DISCORD_CONSUMER_SECRET': None,
+            'discord_client_id': None,
+            'discord_client_secret': None,
         }
         # get Config values from database
         for name in config:
@@ -160,12 +151,12 @@ def index():
     '''
     Homepage for the bot
     '''
-    content = '<h1>Dice-bot</h1>'
-    user = False
+    user = get_user()
+    print(user)
 
-    if session.get('id'):
+    content = '<h1>Dice-bot</h1>'
+    if user:
         content += '<p>Id: {}</p>'.format(session['id'])
-        user = True
 
     return render_template(
         'base.html',
@@ -178,51 +169,60 @@ def index():
 # ----#-   Login/Logout
 
 
-@app.discord.tokengetter
-def get_token(token=None):
-    '''
-    Returns a user's token from OAuth
-    '''
-    return session.get('token')
+def get_user():
+    discord = make_session(token=session.get('oauth2_token'))
+    user = discord.get(API_BASE_URL + '/users/@me').json()
+    return user if 'id' in user else None
+
+
+def token_updater(token):
+    session['oauth_token'] = token
+
+
+def make_session(token=None, state=None, scope=None):
+    client_id = app.config['discord_client_id']
+    client_secret = app.config['discord_client_secret']
+    return OAuth2Session(
+        client_id=client_id,
+        token=token,
+        state=state,
+        scope=scope,
+        redirect_uri=url_for('callback', _external=True),
+        auto_refresh_kwargs={
+            'client_id': client_id,
+            'client_secret': client_secret,
+        },
+        auto_refresh_url=TOKEN_URL,
+        token_updater=token_updater,
+    )
 
 
 @app.route('/login/')
 def login():
     '''
-    Redirects the user to the Discord Single Sign On page
+    Redirects the user to the Discord sign in page
     '''
-    session.clear()
-    next = request.args.get('next') or request.referrer or None
-    html = app.discord.authorize(
-        callback=url_for('oauth_authorized', _external=True),
-        state=next,
-    )
-    return html
+    scope = request.args.get('scope', 'identify')
+    discord = make_session(scope=scope.split(' '))
+    authorization_url, state = discord.authorization_url(AUTHORIZATION_BASE_URL)
+    session['oauth2_state'] = state
+    return redirect(authorization_url)
 
 
-@app.route('/oauth-authorized')
-def oauth_authorized():
+@app.route('/callback')
+def callback():
     '''
     Logs the user in using the OAuth API
     '''
-    next_url = request.args.get('state') or url_for('index')
-
-    resp = app.discord.authorized_response()
-    if resp is None:
-        return redirect(next_url)
-
-    session['token'] = (resp['access_token'], '')
-
-    resp = app.discord.get(
-        'users/@me',
-        token=session['token'][0],
-        data={'fields': 'id'},
-    )
-    print(resp.data)
-
-    ...
-
-    return redirect(next_url)
+    if request.values.get('error'):
+        return request.values['error']
+    discord = make_session(state=session.get('oauth2_state'))
+    token = discord.fetch_token(
+        TOKEN_URL,
+        client_secret=app.config['discord_client_secret'],
+        authorization_response=request.url)
+    session['oauth2_token'] = token
+    return redirect(url_for('index'))
 
 
 @app.route('/logout/')

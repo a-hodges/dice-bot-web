@@ -32,6 +32,17 @@
             </ul>
         </div>
     </nav>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container flashes">
+        {% for message in messages %}
+        <p class="alert {{ 'alert-success' if message.startswith('&#10004;') else 'alert-danger' if message.startswith('&#10006;') else 'alert-info' }}">{{ message|safe }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     {% block content %}{{ content|safe }}{% endblock %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

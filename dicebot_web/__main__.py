@@ -180,12 +180,12 @@ def character():
     '''
     user, discord = get_user()
 
-    character = request.args.get('character')
+    character = request.args.get('server')
 
     if not user or not character:
         return abort(403)
 
-    character = db.session.query(m.Character).filter_by(user=user.get('id'), id=character).one_or_none()
+    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=character).one_or_none()
 
     if not character:
         return abort(403)
@@ -198,6 +198,7 @@ def character():
     return render_template(
         'character.html',
         user=user,
+        title=character.name,
         character=character,
         guild=guild,
     )

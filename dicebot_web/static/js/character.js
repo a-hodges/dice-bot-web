@@ -45,39 +45,39 @@ class Component extends React.Component {
     }
 }
 
-class Constants extends Component {
-    title = 'Constants'
-    url = '/constants'
-
-    lineItem = (item) => <li key={item.name}>{item.name}: {item.value}</li>
+function Constants {
+    return <Component
+        title="Constants"
+        url="/constants"
+        lineItem={(item) => <li key={item.name}>{item.name}: {item.value}</li>} />
 }
 
-class Rolls extends React.Component {
-    title = 'Rolls'
-    url = '/rolls'
-
-    lineItem = (item) => <li key={item.name}>{item.name}: {item.expression}</li>
+function Rolls {
+    return <Component
+        title="Rolls"
+        url="/rolls"
+        lineItem={(item) => <li key={item.name}>{item.name}: {item.expression}</li>} />
 }
 
-class Resources extends React.Component {
-    title = 'Resources'
-    url = '/resources'
-
-    lineItem = (item) => <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>
+function Resources {
+    return <Component
+        title="Resources"
+        url="/resources"
+        lineItem={(item) => <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>} />
 }
 
-class Spells extends React.Component {
-    title = 'Spells'
-    url = '/spells'
-
-    lineItem = (item) => <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>
+function Spells {
+    return <Component
+        title="Spells"
+        url="/spells"
+        lineItem={(item) => <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>} />
 }
 
-class Inventory extends React.Component {
-    title = 'Inventory'
-    url = '/inventory'
-
-    lineItem = (item) => <li key={item.name}>{item.name}: {item.number} <br/> {item.description}</li>
+function Inventory {
+    return <Component
+        title="Inventory"
+        url="/inventory"
+        lineItem={(item) => <li key={item.name}>{item.name}: {item.number} <br/> {item.description}</li>} />
 }
 
 class Character extends React.Component {

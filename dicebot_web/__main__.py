@@ -16,7 +16,7 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from flask_sqlalchemy import SQLAlchemy, _QueryProperty
+from flask_sqlalchemy import SQLAlchemy
 from requests_oauthlib import OAuth2Session
 
 from dicebot import model as m

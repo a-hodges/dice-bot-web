@@ -124,6 +124,14 @@ def error(e, message):
     return html
 
 
+@app.errorhandler(400)
+def four_hundred(e):
+    '''
+    400 (bad request) error page
+    '''
+    return error(e, "Bad request."), 400
+
+
 @app.errorhandler(403)
 def four_oh_three(e):
     '''
@@ -206,15 +214,17 @@ def character():
     '''
     user, discord = get_user()
 
-    character = request.args.get('server')
+    server = request.args.get('server')
 
-    if not user or not character:
+    if not user:
         return abort(403)
+    if not server:
+        return abort(400)
 
-    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=character).one_or_none()
+    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=server).one_or_none()
 
     if not character:
-        return abort(403)
+        return abort(400)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}

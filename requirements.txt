@@ -1,8 +1,7 @@
 # install with: pip install -r requirements.txt
 flask ~= 0.12.2
-flask_oauthlib ~= 0.9.4
 flask_sqlalchemy ~= 2.3.1
 sqlalchemy ~= 1.1.14
 psycopg2 ~= 2.7.3
-requests ~= 2.18.4
+requests_oauthlib ~= 0.8.0
 git+git://github.com/b-hodges/dice-bot.git#egg=dice-bot

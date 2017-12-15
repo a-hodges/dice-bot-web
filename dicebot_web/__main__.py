@@ -2,6 +2,7 @@
 
 import os
 import argparse
+import enum
 
 from flask import (
     Flask,
@@ -77,6 +78,15 @@ def get_character(user):
         return abort(400), False
 
     return character, True
+
+
+def table2json(table):
+    data = [item.dict() for item in table]
+    for item in data:
+        for key, value in item.items():
+            if isinstance(value, enum.Enum):
+                item[key] = value.name
+    return data
 
 
 # ----#-   Application
@@ -273,7 +283,7 @@ def constants():
     character, successful = get_character(user)
     if not successful:
         return character
-    data = [item.dict() for item in character.constants]
+    data = table2json(character.constants)
     return jsonify(data)
 
 
@@ -288,7 +298,7 @@ def rolls():
     character, successful = get_character(user)
     if not successful:
         return character
-    data = [item.dict() for item in character.rolls]
+    data = table2json(character.rolls)
     return jsonify(data)
 
 
@@ -303,7 +313,7 @@ def resources():
     character, successful = get_character(user)
     if not successful:
         return character
-    data = [item.dict() for item in character.resources]
+    data = table2json(character.resources)
     return jsonify(data)
 
 
@@ -318,7 +328,7 @@ def spells():
     character, successful = get_character(user)
     if not successful:
         return character
-    data = [item.dict() for item in character.spells]
+    data = table2json(character.spells)
     return jsonify(data)
 
 
@@ -333,7 +343,7 @@ def inventory():
     character, successful = get_character(user)
     if not successful:
         return character
-    data = [item.dict() for item in character.inventory]
+    data = table2json(character.inventory)
     return jsonify(data)
 
 

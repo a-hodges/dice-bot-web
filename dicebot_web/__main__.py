@@ -28,9 +28,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 # Attach Database
 db = SQLAlchemy(app)
 db.Model = m.Base
-# Ugly code to make Base.query work
-m.Base.query_class = db.Query
-m.Base.query = _QueryProperty(db)
 # Configure Discord OAuth
 oauth = OAuth(app)
 app.discord = oauth.remote_app(

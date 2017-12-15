@@ -10,9 +10,9 @@
         {{ user['username'] }}
     </p>
     <h2>Characters:</h2>
-    <ul>
+    <ul class="list-group">
         {% for character, guild in characters %}
-        <li><img class="icon" src="{{ guild['icon'] }}" alt="{{ guild['name'] }} icon"> {{ guild['name'] }}: {{ character.name }}</li>
+        <li class="list-group-item"><img class="icon" src="{{ guild['icon'] }}" alt="{{ guild['name'] }} icon"> {{ guild['name'] }}: {{ character.name }}</li>
         {% endfor %}
     </ul>
     {% endif %}

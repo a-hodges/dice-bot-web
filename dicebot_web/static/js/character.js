@@ -1,11 +1,16 @@
 class Constants extends React.Component {
     constructor(props) {
         super(props)
+        this.error = this.error.bind(this);
         this.state = {data: []}
     }
 
+    error(message) {
+        this.props.onError(message)
+    }
+
     componentDidMount() {
-        $.ajax({
+        this.request = $.ajax({
             url: '/constants',
             method: 'get',
             dataType: 'json',
@@ -13,7 +18,7 @@ class Constants extends React.Component {
                 user: this.props.user_id,
                 server: this.props.server_id,
             },
-            error: () => this.setState((prevState, props) => ({data: []})),
+            error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
     }
@@ -37,7 +42,12 @@ class Constants extends React.Component {
 class Rolls extends React.Component {
     constructor(props) {
         super(props)
+        this.error = this.error.bind(this);
         this.state = {data: []}
+    }
+
+    error(message) {
+        this.props.onError(message)
     }
 
     componentDidMount() {
@@ -49,7 +59,7 @@ class Rolls extends React.Component {
                 user: this.props.user_id,
                 server: this.props.server_id,
             },
-            error: () => this.setState((prevState, props) => ({data: []})),
+            error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
     }
@@ -73,7 +83,12 @@ class Rolls extends React.Component {
 class Resources extends React.Component {
     constructor(props) {
         super(props)
+        this.error = this.error.bind(this);
         this.state = {data: []}
+    }
+
+    error(message) {
+        this.props.onError(message)
     }
 
     componentDidMount() {
@@ -85,7 +100,7 @@ class Resources extends React.Component {
                 user: this.props.user_id,
                 server: this.props.server_id,
             },
-            error: () => this.setState((prevState, props) => ({data: []})),
+            error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
     }
@@ -109,7 +124,12 @@ class Resources extends React.Component {
 class Spells extends React.Component {
     constructor(props) {
         super(props)
+        this.error = this.error.bind(this);
         this.state = {data: []}
+    }
+
+    error(message) {
+        this.props.onError(message)
     }
 
     componentDidMount() {
@@ -121,7 +141,7 @@ class Spells extends React.Component {
                 user: this.props.user_id,
                 server: this.props.server_id,
             },
-            error: () => this.setState((prevState, props) => ({data: []})),
+            error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
     }
@@ -145,7 +165,12 @@ class Spells extends React.Component {
 class Inventory extends React.Component {
     constructor(props) {
         super(props)
+        this.error = this.error.bind(this);
         this.state = {data: []}
+    }
+
+    error(message) {
+        this.props.onError(message)
     }
 
     componentDidMount() {
@@ -157,7 +182,7 @@ class Inventory extends React.Component {
                 user: this.props.user_id,
                 server: this.props.server_id,
             },
-            error: () => this.setState((prevState, props) => ({data: []})),
+            error: () => this.error("Could not load data"),
             success: (data) => this.setState((prevState, props) => ({data: data})),
         })
     }
@@ -179,16 +204,36 @@ class Inventory extends React.Component {
 }
 
 class Character extends React.Component {
+    constructor(props) {
+        super(props)
+        this.error = this.error.bind(this);
+        this.state = {error: ""}
+    }
+
+    error(message) {
+        console.log(message)
+        this.setState((prevState, props) => ({error: message}))
+    }
+
     render() {
-        return (
-            <div>
-                <Constants user_id={this.props.user_id} server_id={this.props.server_id} />
-                <Rolls user_id={this.props.user_id} server_id={this.props.server_id} />
-                <Resources user_id={this.props.user_id} server_id={this.props.server_id} />
-                <Spells user_id={this.props.user_id} server_id={this.props.server_id} />
-                <Inventory user_id={this.props.user_id} server_id={this.props.server_id} />
-            </div>
-        )
+        if (this.state.error === "") {
+            return (
+                <div>
+                    <Constants user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                    <Rolls user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                    <Resources user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                    <Spells user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                    <Inventory user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <p className="alert alert-danger">{this.state.error }</p>
+                </div>
+            )
+        }
     }
 }
 

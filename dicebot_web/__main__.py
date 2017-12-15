@@ -241,7 +241,7 @@ def constants():
 @app.route('/rolls')
 def rolls():
     '''
-    Returns the current character's constants in json form
+    Returns the current character's rolls in json form
     '''
     ...
 
@@ -249,7 +249,7 @@ def rolls():
 @app.route('/resources')
 def resources():
     '''
-    Returns the current character's constants in json form
+    Returns the current character's resources in json form
     '''
     ...
 
@@ -257,7 +257,7 @@ def resources():
 @app.route('/spells')
 def spells():
     '''
-    Returns the current character's constants in json form
+    Returns the current character's spells in json form
     '''
     ...
 
@@ -265,7 +265,7 @@ def spells():
 @app.route('/inventory')
 def inventory():
     '''
-    Returns the current character's constants in json form
+    Returns the current character's inventory in json form
     '''
     ...
 

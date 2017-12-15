@@ -204,6 +204,46 @@ def character():
     )
 
 
+@app.route('/constants')
+def constants():
+    '''
+    Returns the current character's constants in json form
+    '''
+    ...
+
+
+@app.route('/rolls')
+def rolls():
+    '''
+    Returns the current character's constants in json form
+    '''
+    ...
+
+
+@app.route('/resources')
+def resources():
+    '''
+    Returns the current character's constants in json form
+    '''
+    ...
+
+
+@app.route('/spells')
+def spells():
+    '''
+    Returns the current character's constants in json form
+    '''
+    ...
+
+
+@app.route('/inventory')
+def inventory():
+    '''
+    Returns the current character's constants in json form
+    '''
+    ...
+
+
 # ----#-   Login/Logout
 
 

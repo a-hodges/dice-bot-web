@@ -9,18 +9,30 @@ img {
 </style>
 {% endblock %}
 
+{% block js %}
+<script crossorigin="" src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin="" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script crossorigin="" src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+<script type="text/babel" src="{{ url_for('static', filename='js/character.js') }}"></script>
+<script>
+const user_id = {{ user.get('id') }}
+const server_id = {{ guild.get('id') }}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <h1>{{ character.name }}</h1>
     <p>
         User:
-        <img class="icon" src="{{ user['avatar'] }}" alt="{{ user['username'] }} icon">
-        {{ user['username'] }}
+        <img class="icon" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
+        {{ user.get('username') }}
     </p>
     <p>
         Server:
-        <img class="icon" src="{{ guild['icon'] }}" alt="{{ guild['name'] }} icon">
-        {{ guild['name'] }}
+        <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
+        {{ guild.get('name') }}
     </p>
+    <div id="root"></div>
 </div>
 {% endblock %}

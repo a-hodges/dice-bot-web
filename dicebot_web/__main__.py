@@ -173,6 +173,36 @@ def index():
     )
 
 
+@app.route('/character')
+def character():
+    '''
+    Character homepage, allows access to character attributes
+    '''
+    user, discord = get_user()
+
+    character = request.args.get('character')
+
+    if not user or not character:
+        return abort(403)
+
+    character = db.session.query(m.Character).filter_by(user=user.get('id'), id=character).one_or_none()
+
+    if not character:
+        return abort(403)
+
+    user['avatar'] = get_user_avatar(user)
+    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guild = guilds.get(str(character.server), {})
+    guild['icon'] = get_guild_icon(guild)
+
+    return render_template(
+        'character.html',
+        user=user,
+        character=character,
+        guild=guild,
+    )
+
+
 # ----#-   Login/Logout
 
 

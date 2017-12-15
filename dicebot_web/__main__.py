@@ -34,6 +34,32 @@ AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
 TOKEN_URL = API_BASE_URL + '/oauth2/token'
 
 
+# ----#-   Utilities
+
+
+def get_user_avatar(user, size=32):
+    '''
+    Gets the url for the user's avatar
+    '''
+    return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
+
+
+def get_guild_icon(guild, size=32):
+    '''
+    Gets the url for the guild's icon
+    '''
+    return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
+
+
+def get_user():
+    discord = make_session(token=session.get('oauth2_token'))
+    user = discord.get(API_BASE_URL + '/users/@me').json()
+    return user if 'id' in user else None, discord
+
+
+# ----#-   Application
+
+
 def create_app(database):
     '''
     Sets up app for use
@@ -245,26 +271,6 @@ def inventory():
 
 
 # ----#-   Login/Logout
-
-
-def get_user_avatar(user, size=32):
-    '''
-    Gets the url for the user's avatar
-    '''
-    return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
-
-
-def get_guild_icon(guild, size=32):
-    '''
-    Gets the url for the guild's icon
-    '''
-    return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
-
-
-def get_user():
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    return user if 'id' in user else None, discord
 
 
 def token_updater(token):

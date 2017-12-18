@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% set react = True %}
+
 {% block css %}
 <style>
 img {
@@ -10,9 +12,6 @@ img {
 {% endblock %}
 
 {% block js %}
-<script crossorigin="" src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin="" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script crossorigin="" src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 <script type="text/babel" src="{{ url_for('static', filename='js/character.js') }}"></script>
 <script>
 const user_id = "{{ user.get('id') }}"

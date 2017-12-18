@@ -309,12 +309,16 @@ def new_character():
     if not guild:
         return abort(400)
 
+    user['avatar'] = get_user_avatar(user)
+    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guild = guilds.get(guild, {})
+    guild['icon'] = get_guild_icon(guild)
+
     return render_template(
-        'base.html',
+        'new_character.html',
         title='New Character',
         user=user,
         guild=guild,
-        content='Server: {}'.format(guild),
     )
 
 

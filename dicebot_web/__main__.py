@@ -271,6 +271,56 @@ def character():
     )
 
 
+@app.route('/server_select')
+def new_char_server_select():
+    '''
+    Allows the user to select the server to add a new character to
+    '''
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+
+    user['avatar'] = get_user_avatar(user)
+    characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
+    characters = {str(character.server) for character in characters}
+    guilds = [guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()
+              if guild['id'] not in characters]
+    for guild in guilds:
+        guild['icon'] = get_guild_icon(guild)
+
+    return render_template(
+        'pickserver.html',
+        title='New Character',
+        user=user,
+        guilds=guilds,
+    )
+
+
+@app.route('/new_character')
+def new_character():
+    '''
+    Create a new character
+    '''
+    user, discord = get_user()
+    if not user:
+        return abort(403)
+
+    guild = request.args.get('server')
+    if not guild:
+        return abort(400)
+
+    return render_template(
+        'base.html',
+        title='New Character',
+        user=user,
+        guild=guild,
+        content='Server: {}'.format(guild),
+    )
+
+
+# ----#-   REST endpoints
+
+
 @app.route('/constants')
 def constants():
     '''

@@ -1,7 +1,7 @@
 class Component extends React.Component {
     constructor(props) {
         super(props)
-        this.error = this.error.bind(this);
+        this.error = this.error.bind(this)
         this.state = {data: []}
     }
 
@@ -83,7 +83,7 @@ function Inventory(props) {
 class Character extends React.Component {
     constructor(props) {
         super(props)
-        this.error = this.error.bind(this);
+        this.error = this.error.bind(this)
         this.state = {error: ""}
     }
 
@@ -106,7 +106,7 @@ class Character extends React.Component {
         else {
             return (
                 <div>
-                    <p className="alert alert-danger">{this.state.error }</p>
+                    <p className="alert alert-danger">{this.state.error}</p>
                 </div>
             )
         }
@@ -116,4 +116,4 @@ class Character extends React.Component {
 ReactDOM.render(
     <Character user_id={user_id} server_id={server_id} />,
     document.getElementById("root")
-);
+)

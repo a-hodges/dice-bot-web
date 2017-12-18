@@ -78,6 +78,7 @@ function Inventory(props) {
         url="/inventory"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.number} <br/> {item.description}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+}
 
 function Error(props) {
     return (

@@ -78,6 +78,13 @@ function Inventory(props) {
         url="/inventory"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.number} <br/> {item.description}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+
+function Error(props) {
+    return (
+        <div>
+            <p className="alert alert-danger">{props.message}</p>
+        </div>
+    )
 }
 
 class Character extends React.Component {
@@ -105,9 +112,7 @@ class Character extends React.Component {
         }
         else {
             return (
-                <div>
-                    <p className="alert alert-danger">{this.state.error}</p>
-                </div>
+                <Error message={this.state.error} />
             )
         }
     }

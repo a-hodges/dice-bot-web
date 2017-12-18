@@ -14,7 +14,6 @@ class Component extends React.Component {
             url: this.props.url,
             dataType: 'json',
             data: {
-                user: this.props.user_id,
                 server: this.props.server_id,
             },
             error: () => this.error("Could not load data"),
@@ -45,7 +44,7 @@ function Constants(props) {
         title="Constants"
         url="/constants"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.value}</li>}
-        user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Rolls(props) {
@@ -53,7 +52,7 @@ function Rolls(props) {
         title="Rolls"
         url="/rolls"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.expression}</li>}
-        user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Resources(props) {
@@ -61,7 +60,7 @@ function Resources(props) {
         title="Resources"
         url="/resources"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
-        user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Spells(props) {
@@ -69,7 +68,7 @@ function Spells(props) {
         title="Spells"
         url="/spells"
         lineItem={(item) => <li key={item.id}>{item.name} | level {item.level} <br/> {item.description}</li>}
-        user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Inventory(props) {
@@ -77,7 +76,7 @@ function Inventory(props) {
         title="Inventory"
         url="/inventory"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.number} <br/> {item.description}</li>}
-        user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Error(props) {
@@ -103,11 +102,11 @@ class Character extends React.Component {
         if (this.state.error === "") {
             return (
                 <div>
-                    <Constants user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
-                    <Rolls user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
-                    <Resources user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
-                    <Spells user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
-                    <Inventory user_id={this.props.user_id} server_id={this.props.server_id} onError={this.error} />
+                    <Constants server_id={this.props.server_id} onError={this.error} />
+                    <Rolls server_id={this.props.server_id} onError={this.error} />
+                    <Resources server_id={this.props.server_id} onError={this.error} />
+                    <Spells server_id={this.props.server_id} onError={this.error} />
+                    <Inventory server_id={this.props.server_id} onError={this.error} />
                 </div>
             )
         }
@@ -119,7 +118,8 @@ class Character extends React.Component {
     }
 }
 
+let urlparams = new URLSearchParams(window.location.search)
 ReactDOM.render(
-    <Character user_id={user_id} server_id={server_id} />,
+    <Character server_id={urlparams.get("server")} />,
     document.getElementById("root")
 )

@@ -66,13 +66,12 @@ def get_character(user):
     If successful returns a character and True
     If unsuccessful returns an error and False
     '''
-    user_id = request.args.get('user')
     guild_id = request.args.get('server')
 
-    if not user_id or not guild_id or user.get('id') != user_id:
+    if not guild_id:
         return abort(400), False
 
-    character = db.session.query(m.Character).filter_by(user=user_id, server=guild_id).one_or_none()
+    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=guild_id).one_or_none()
 
     if not character:
         return abort(400), False

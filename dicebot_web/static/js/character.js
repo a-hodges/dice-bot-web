@@ -44,7 +44,7 @@ function Constants(props) {
     return <Component
         title="Constants"
         url="/constants"
-        lineItem={(item) => <li key={item.name}>{item.name}: {item.value}</li>}
+        lineItem={(item) => <li key={item.id}>{item.name}: {item.value}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
 }
 
@@ -52,7 +52,7 @@ function Rolls(props) {
     return <Component
         title="Rolls"
         url="/rolls"
-        lineItem={(item) => <li key={item.name}>{item.name}: {item.expression}</li>}
+        lineItem={(item) => <li key={item.id}>{item.name}: {item.expression}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
 }
 
@@ -60,7 +60,7 @@ function Resources(props) {
     return <Component
         title="Resources"
         url="/resources"
-        lineItem={(item) => <li key={item.name}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
+        lineItem={(item) => <li key={item.id}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
 }
 
@@ -68,7 +68,7 @@ function Spells(props) {
     return <Component
         title="Spells"
         url="/spells"
-        lineItem={(item) => <li key={item.name}>{item.name} | level {item.level} <br/> {item.description}</li>}
+        lineItem={(item) => <li key={item.id}>{item.name} | level {item.level} <br/> {item.description}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
 }
 
@@ -76,7 +76,7 @@ function Inventory(props) {
     return <Component
         title="Inventory"
         url="/inventory"
-        lineItem={(item) => <li key={item.name}>{item.name}: {item.number} <br/> {item.description}</li>}
+        lineItem={(item) => <li key={item.id}>{item.name}: {item.number} <br/> {item.description}</li>}
         user_id={props.user_id} server_id={props.server_id} onError={props.onError} />
 }
 

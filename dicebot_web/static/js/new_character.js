@@ -7,10 +7,6 @@ class NewCharacter extends React.Component {
                     <label htmlFor="name">Name</label>
                     <input id="name" className="form-control" type="text" name="name" />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="hp">Name</label>
-                    <input id="hp" className="form-control" type="number" name="hp" value={0} />
-                </div>
                 <Stats />
                 <Proficiencies />
                 <div className="form-group">
@@ -23,12 +19,12 @@ class NewCharacter extends React.Component {
 
 class Stats extends React.Component {
     stats = {
-        "Strength Modifier": "str",
-        "Dexterity Modifier": "dex",
-        "Constitution Modifier": "con",
-        "Intelligence Modifier": "int",
-        "Wisdom Modifier": "wis",
-        "Charisma Modifier": "cha",
+        "Strength": "str-score",
+        "Dexterity": "dex-score",
+        "Constitution": "con-score",
+        "Intelligence": "int-score",
+        "Wisdom": "wis-score",
+        "Charisma": "cha-score",
         "Proficiency Bonus": "prof",
     }
 

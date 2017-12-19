@@ -12,6 +12,7 @@ class NewCharacter extends React.Component {
                     <input id="hp" className="form-control" type="number" name="hp" value={0} />
                 </div>
                 <Stats />
+                <Proficiencies />
                 <div className="form-group">
                     <button className="form-control" type="submit">Create</button>
                 </div>
@@ -52,6 +53,65 @@ class Stat extends React.Component {
                 <label htmlFor={name}>{this.props.name}</label>
                 <input id={name} className="form-control" type="number" name={name} value={0} />
             </div>
+        )
+    }
+}
+
+class Proficiencies extends React.Component {
+    skills = [
+        "Acrobatics",
+        "Animal Handling",
+        "Arcana",
+        "Athletics",
+        "Deception",
+        "History",
+        "Insight",
+        "Intimidation",
+        "Investigation",
+        "Medicine",
+        "Nature",
+        "Perception",
+        "Performance",
+        "Persuasion",
+        "Religion",
+        "Sleight of Hand",
+        "Stealth",
+        "Survival",
+    ]
+
+    render() {
+        let list = this.skills.map((item) =>
+            <Skill key={item} name={item} />
+        )
+        return (
+            <div className="form-group">
+                <h2>Proficiencies:</h2>
+                <ul className="list-group">{list}</ul>
+            </div>
+        )
+    }
+}
+
+class Skill extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {checked: "0"}
+    }
+
+    render() {
+        const name = this.props.name.toLowerCase().replace(' ', '-')
+        let active = (item) => item == this.state.checked
+        let list = ["0", "1/2", "1", "2"].map((item) =>
+            <label key={item} className={"btn btn-secondary" + (active(item) ? " active" : "")}>
+                <input className="sr-only" type="radio" name={name} value={item} defaultChecked={active(item)} />
+                {item}
+            </label>
+        )
+        return (
+            <li className="list-group-item">
+                <p>{this.props.name} proficiency</p>
+                <div className="btn-group btn-group-sm">{list}</div>
+            </li>
         )
     }
 }

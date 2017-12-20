@@ -17,7 +17,7 @@ class Component extends React.Component {
                 server: this.props.server_id,
             },
             error: () => this.error("Could not load data"),
-            success: (data) => this.setState((prevState, props) => ({data: data})),
+            success: (data) => this.setState({data: data}),
         })
     }
 

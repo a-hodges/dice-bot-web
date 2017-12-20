@@ -112,6 +112,62 @@ class Skill extends React.Component {
     }
 }
 
+class Resources extends React.Component {
+    constructor(props) {
+        super(props)
+        this.newItem = this.newItem.bind(this)
+        this.remove = this.remove.bind(this)
+        this.state = {resources: [{name: "hp", max: 0, rest: "long"}]}
+    }
+    
+    newItem() {
+        this.setState((prevState, props) => (
+            {resources: prevState.resources.concat([{
+                name: dialog(...),
+                max: 0,
+                rest: "other",
+            }])}
+        ))
+    }
+    
+    remove() {
+        ...
+    }
+    
+    render() {
+        let list = this.state.resources.map((item, index) =>
+            <Resource key={index} name={item.name} max={item.max} rest={item.rest} remove={this.remove} />
+        )
+        return (
+            <div className="form-group">
+                <h2>Limited use resources:</h2>
+                <ul className="list-group">
+                    {list}
+                    <li className="list-group-item"><a onClick={this.newItem}>+ Add</a></li>
+                </ul>
+            </div>
+        )
+    }
+}
+
+class Resource extends React.Component {
+    render() {
+        <li className="list-group-item">
+            {this.props.name}
+            <input type="hidden" name={this.props.name + "-name"} value={this.props.name} />
+            Max:
+            <input className="form-control" type="number" name={this.props.name + "-max"} value={this.props.max} />
+            Rest type:
+            <select name={this.props.name + "-rest"}>
+                <option value="short" defaultChecked={this.props.rest == "short"}>Short</option>
+                <option value="long" defaultChecked={this.props.rest == "long"}>Long</option>
+                <option value="other" defaultChecked={this.props.rest == "other"}>Other</option>
+            </select>
+            <button onClick={this.props.remove}>Remove</button>
+        </li>
+    }
+}
+
 function Error(props) {
     return (
         <div>

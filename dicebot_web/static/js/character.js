@@ -14,6 +14,7 @@ class Component extends React.Component {
             url: this.props.url,
             dataType: 'json',
             data: {
+                token: this.props.user_token,
                 server: this.props.server_id,
             },
             error: () => this.error("Could not load data"),
@@ -33,7 +34,10 @@ class Component extends React.Component {
         return (
             <div>
                 <h2>{this.props.title}</h2>
-                <ul>{list}</ul>
+                <ul>
+                    {list}
+                    <li><a>+ New</a></li>
+                </ul>
             </div>
         )
     }
@@ -44,7 +48,7 @@ function Constants(props) {
         title="Constants"
         url="/constants"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.value}</li>}
-        server_id={props.server_id} onError={props.onError} />
+        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
 }
 
 function Rolls(props) {
@@ -52,7 +56,7 @@ function Rolls(props) {
         title="Rolls"
         url="/rolls"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.expression}</li>}
-        server_id={props.server_id} onError={props.onError} />
+        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
 }
 
 function Resources(props) {
@@ -60,7 +64,7 @@ function Resources(props) {
         title="Resources"
         url="/resources"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
-        server_id={props.server_id} onError={props.onError} />
+        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
 }
 
 function Spells(props) {
@@ -68,7 +72,7 @@ function Spells(props) {
         title="Spells"
         url="/spells"
         lineItem={(item) => <li key={item.id}>{item.name} | level {item.level} <br/> {item.description}</li>}
-        server_id={props.server_id} onError={props.onError} />
+        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
 }
 
 function Inventory(props) {
@@ -76,7 +80,7 @@ function Inventory(props) {
         title="Inventory"
         url="/inventory"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.number} <br/> {item.description}</li>}
-        server_id={props.server_id} onError={props.onError} />
+        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
 }
 
 function Error(props) {
@@ -118,8 +122,7 @@ class Character extends React.Component {
     }
 }
 
-let urlparams = new URLSearchParams(window.location.search)
 ReactDOM.render(
-    <Character server_id={urlparams.get("server")} />,
+    <Character user_token={token} server_id={server} />,
     document.getElementById("root")
 )

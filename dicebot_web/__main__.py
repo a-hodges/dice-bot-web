@@ -53,8 +53,10 @@ def get_guild_icon(guild, size=32):
     return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
 
 
-def get_user():
-    discord = make_session(token=session.get('oauth2_token'))
+def get_user(token=None):
+    if token is None:
+        token = session.get('oauth2_token')
+    discord = make_session(token=token)
     user = discord.get(API_BASE_URL + '/users/@me').json()
     return user if 'id' in user else None, discord
 

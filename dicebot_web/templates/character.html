@@ -6,6 +6,8 @@
 <script type="text/babel" src="{{ url_for('static', filename='js/character.js') }}"></script>
 <script>
 const token = "{{ session.get('oauth2_token', '') }}"
+const urlparams = new URLSearchParams(window.location.search)
+const server = urlparams.get("server")
 </script>
 {% endblock %}
 

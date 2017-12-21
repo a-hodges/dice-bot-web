@@ -54,20 +54,22 @@ def get_guild_icon(guild, size=32):
 
 
 def get_user(token=None):
-    if token is None:
-        token = session.get('oauth2_token')
     discord = make_session(token=token)
     user = discord.get(API_BASE_URL + '/users/@me').json()
     return user if 'id' in user else None, discord
 
 
-def get_character(user):
+def get_character():
     '''
     Uses character data and request arguments to select a character
 
     If successful returns a character and True
     If unsuccessful returns an error and False
     '''
+    user, discord = get_user(request.args.get('token'))
+    if not user:
+        return abort(403), False
+    
     guild_id = request.args.get('server')
 
     if not guild_id:
@@ -219,7 +221,7 @@ def index():
     '''
     Homepage for the bot
     '''
-    user, discord = get_user()
+    user, discord = get_user(session.get('oauth2_token'))
 
     if user:
         user['avatar'] = get_user_avatar(user)
@@ -245,7 +247,7 @@ def character():
     '''
     Character homepage, allows access to character attributes
     '''
-    user, discord = get_user()
+    user, discord = get_user(session.get('oauth2_token'))
 
     server = request.args.get('server')
 
@@ -278,7 +280,7 @@ def new_char_server_select():
     '''
     Allows the user to select the server to add a new character to
     '''
-    user, discord = get_user()
+    user, discord = get_user(session.get('oauth2_token'))
     if not user:
         return abort(403)
 
@@ -303,7 +305,7 @@ def new_character():
     '''
     Create a new character
     '''
-    user, discord = get_user()
+    user, discord = get_user(session.get('oauth2_token'))
     if not user:
         return abort(403)
 
@@ -332,10 +334,7 @@ def constants():
     '''
     Returns the current character's constants in json form
     '''
-    user, discord = get_user()
-    if not user:
-        return abort(403)
-    character, successful = get_character(user)
+    character, successful = get_character()
     if not successful:
         return character
     data = table2json(character.constants)
@@ -347,10 +346,7 @@ def rolls():
     '''
     Returns the current character's rolls in json form
     '''
-    user, discord = get_user()
-    if not user:
-        return abort(403)
-    character, successful = get_character(user)
+    character, successful = get_character()
     if not successful:
         return character
     data = table2json(character.rolls)
@@ -362,10 +358,7 @@ def resources():
     '''
     Returns the current character's resources in json form
     '''
-    user, discord = get_user()
-    if not user:
-        return abort(403)
-    character, successful = get_character(user)
+    character, successful = get_character()
     if not successful:
         return character
     data = table2json(character.resources)
@@ -377,10 +370,7 @@ def spells():
     '''
     Returns the current character's spells in json form
     '''
-    user, discord = get_user()
-    if not user:
-        return abort(403)
-    character, successful = get_character(user)
+    character, successful = get_character()
     if not successful:
         return character
     data = table2json(character.spells)
@@ -392,10 +382,7 @@ def inventory():
     '''
     Returns the current character's inventory in json form
     '''
-    user, discord = get_user()
-    if not user:
-        return abort(403)
-    character, successful = get_character(user)
+    character, successful = get_character()
     if not successful:
         return character
     data = table2json(character.inventory)

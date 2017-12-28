@@ -215,11 +215,10 @@ function Spells(props) {
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
             <span>
-                {item.name}
-                | level
-                {item.level}
+                {item.name} | level:
+                <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
                 <br/>
-                {item.description}
+                <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
             </span>
         )}
     />

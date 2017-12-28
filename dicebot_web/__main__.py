@@ -90,7 +90,7 @@ def get_character():
 
 
 def entry2json(entry):
-    entry = entry.copy()
+    entry = entry.dict()
     for key, value in entry.items():
         if isinstance(value, enum.Enum):
             entry[key] = value.name
@@ -98,7 +98,7 @@ def entry2json(entry):
 
 
 def table2json(table):
-    data = [entry2json(item.dict()) for item in table]
+    data = [entry2json(item) for item in table]
     return data
 
 

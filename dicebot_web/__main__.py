@@ -375,6 +375,28 @@ def addConstant():
         return jsonify(entry2json(item))
 
 
+@app.route('/constants', methods=['PUT'])
+def updateConstant():
+    '''
+    Updates a constant, returning the updated item on success
+    '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
+    character, successful = get_character()
+    item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
+    for key in ['name', 'value']:
+        setattr(item, key, request.form.get(key, getattr(item, key)))
+
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    else:
+        return jsonify(entry2json(item))
+
+
 @app.route('/constants', methods=["DELETE"])
 def deleteConstant():
     '''

@@ -3,11 +3,17 @@ Array.prototype.deleteItem = function(item) {
     return this.slice(0,index).concat(this.slice(index+1))
 }
 
+Array.prototype.updateItem = function(oldItem, newItem) {
+    const index = this.indexOf(oldItem)
+    return this.slice(0,index).concat([newItem], this.slice(index+1))
+}
+
 class Group extends React.Component {
     constructor(props) {
         super(props)
         this.criticalError = this.criticalError.bind(this)
         this.addItem = this.addItem.bind(this)
+        this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
         this.state = {data: []}
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
@@ -38,6 +44,9 @@ class Group extends React.Component {
         if (this.addRequest !== undefined) {
             this.addRequest.abort()
         }
+        if (this.updateRequest !== undefined) {
+            this.updateRequest.abort()
+        }
         if (this.deleteRequest !== undefined) {
             this.deleteRequest.abort()
         }
@@ -67,6 +76,25 @@ class Group extends React.Component {
         })
     }
 
+    updateItem(item) {
+        const url = '/' + this.slug
+        this.updateRequest = $.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            data: Object.assign({server: this.props.server_id}, item),
+            error: (jqXHR) => {
+                if (jqXHR.status == 409) {
+                    alert("There is already an item in " + this.props.title + " with the given name")
+                }
+                else {
+                    this.criticalError("Failed to update item")
+                }
+            },
+            // success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.updateItem(item, newItem)})),
+        })
+    }
+
     deleteItem(item) {
         const url = '/' + this.slug
         this.deleteRequest = $.ajax({
@@ -86,7 +114,7 @@ class Group extends React.Component {
         let list = null
         if (this.state.data) {
             list = this.state.data.map((item) => (
-                <GroupItem key={item.id} deleteItem={this.deleteItem} lineItem={this.props.lineItem} item={item} />
+                <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} display={this.props.display} item={item} />
             ))
         }
         return (
@@ -104,17 +132,27 @@ class Group extends React.Component {
 class GroupItem extends React.Component {
     constructor(props) {
         super(props)
+        this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
+        this.state = props.item
+    }
+
+    updateItem(e) {
+        this.setState({[e.target.name]: e.target.value})
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        this.props.updateItem(this.state)
     }
 
     deleteItem(e) {
-        this.props.deleteItem(this.props.item)
+        this.props.deleteItem(this.state)
     }
 
     render() {
         return (
-            <li className="list-group-item d-flex justify-content-between align-items-center">
-                {this.props.lineItem(this.props.item)}
+            <li className="list-group-item d-flex justify-content-between align-items-center form-group">
+                {this.props.display(this.state, this.updateItem)}
                 <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
             </li>
         )
@@ -124,36 +162,45 @@ class GroupItem extends React.Component {
 function Constants(props) {
     return <Group
         title="Constants"
-        lineItem={(item) => <span>{item.name}: {item.value}</span>}
-        server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError}
+        display={(item, updateItem) => (
+            <span>
+                {item.name}: <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
+            </span>
+        )}
+    />
 }
 
 function Rolls(props) {
     return <Group
         title="Rolls"
-        lineItem={(item) => <span>{item.name}: {item.expression}</span>}
-        server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError}
+        display={(item) => <span>{item.name}: {item.expression}</span>}
+    />
 }
 
 function Resources(props) {
     return <Group
         title="Resources"
-        lineItem={(item) => <span>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</span>}
-        server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError}
+        display={(item) => <span>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</span>}
+    />
 }
 
 function Spells(props) {
     return <Group
         title="Spells"
-        lineItem={(item) => <span>{item.name} | level {item.level} <br/> {item.description}</span>}
-        server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError}
+        display={(item) => <span>{item.name} | level {item.level} <br/> {item.description}</span>}
+    />
 }
 
 function Inventory(props) {
     return <Group
         title="Inventory"
-        lineItem={(item) => <span>{item.name}: {item.number} <br/> {item.description}</span>}
-        server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError}
+        display={(item) => <span>{item.name}: {item.number} <br/> {item.description}</span>}
+    />
 }
 
 function Error(props) {

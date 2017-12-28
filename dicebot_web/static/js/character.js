@@ -122,7 +122,11 @@ class Character extends React.Component {
     }
 
     error(message) {
-        this.setState((prevState, props) => ({error: message}))
+        this.setState({error: message})
+    }
+
+    componentDidCatch(error, info) {
+        this.error("Unknown error")
     }
 
     render() {

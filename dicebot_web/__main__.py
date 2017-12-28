@@ -443,6 +443,28 @@ def addRoll():
         return jsonify(entry2json(item))
 
 
+@app.route('/rolls', methods=['PUT'])
+def updateRolls():
+    '''
+    Updates a roll, returning the updated item on success
+    '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
+    character, successful = get_character()
+    item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
+    for key in ['name', 'expression']:
+        setattr(item, key, request.form.get(key, getattr(item, key)))
+
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    else:
+        return jsonify(entry2json(item))
+
+
 @app.route('/rolls', methods=["DELETE"])
 def deleteRoll():
     '''
@@ -483,6 +505,28 @@ def addResource():
     )
     try:
         db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    else:
+        return jsonify(entry2json(item))
+
+
+@app.route('/resources', methods=['PUT'])
+def updateResources():
+    '''
+    Updates a resource, returning the updated item on success
+    '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
+    character, successful = get_character()
+    item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
+    for key in ['name', 'current', 'max', 'recover']:
+        setattr(item, key, request.form.get(key, getattr(item, key)))
+
+    try:
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
@@ -538,6 +582,28 @@ def addSpell():
         return jsonify(entry2json(item))
 
 
+@app.route('/spells', methods=['PUT'])
+def updateSpell():
+    '''
+    Updates a spell, returning the updated item on success
+    '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
+    character, successful = get_character()
+    item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
+    for key in ['name', 'level', 'description']:
+        setattr(item, key, request.form.get(key, getattr(item, key)))
+
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    else:
+        return jsonify(entry2json(item))
+
+
 @app.route('/spells', methods=["DELETE"])
 def deleteSpell():
     '''
@@ -577,6 +643,28 @@ def addItem():
     )
     try:
         db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    else:
+        return jsonify(entry2json(item))
+
+
+@app.route('/inventory', methods=['PUT'])
+def updateItem():
+    '''
+    Updates an item, returning the updated item on success
+    '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
+    character, successful = get_character()
+    item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
+    for key in ['name', 'number', 'description']:
+        setattr(item, key, request.form.get(key, getattr(item, key)))
+
+    try:
         db.session.commit()
     except IntegrityError:
         db.session.rollback()

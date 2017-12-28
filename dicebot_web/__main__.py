@@ -381,6 +381,23 @@ def rolls():
     return jsonify(data)
 
 
+@app.route('/rolls', methods=['PUT'])
+def addRoll():
+    '''
+    Adds a roll to the character and returns the new roll
+    '''
+    character, successful = get_character()
+    item = m.Roll(character_id=character.id, name=request.form.get('name', ''), expression='')
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(500)
+    else:
+        return jsonify(entry2json(item))
+
+
 @app.route('/resources')
 def resources():
     '''
@@ -389,6 +406,23 @@ def resources():
     character, successful = get_character()
     data = table2json(character.resources)
     return jsonify(data)
+
+
+@app.route('/resources', methods=['PUT'])
+def addResource():
+    '''
+    Adds a resource to the character and returns the new resource
+    '''
+    character, successful = get_character()
+    item = m.Resource(character_id=character.id, name=request.form.get('name', ''), current=0, max=0, recover='other')
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(500)
+    else:
+        return jsonify(entry2json(item))
 
 
 @app.route('/spells')
@@ -401,6 +435,23 @@ def spells():
     return jsonify(data)
 
 
+@app.route('/spells', methods=['PUT'])
+def addSpell():
+    '''
+    Adds a spell to the character and returns the new spell
+    '''
+    character, successful = get_character()
+    item = m.Spell(character_id=character.id, name=request.form.get('name', ''), level=0, description=None)
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(500)
+    else:
+        return jsonify(entry2json(item))
+
+
 @app.route('/inventory')
 def inventory():
     '''
@@ -409,6 +460,23 @@ def inventory():
     character, successful = get_character()
     data = table2json(character.inventory)
     return jsonify(data)
+
+
+@app.route('/inventory', methods=['PUT'])
+def addItem():
+    '''
+    Adds an item to the character and returns the new item
+    '''
+    character, successful = get_character()
+    item = m.Item(character_id=character.id, name=request.form.get('name', ''), number=0, description=None)
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(500)
+    else:
+        return jsonify(entry2json(item))
 
 
 # ----#-   Login/Logout

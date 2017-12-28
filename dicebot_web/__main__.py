@@ -72,11 +72,16 @@ def get_character():
     If successful returns a character
     If unsuccessful calls an abort function
     '''
+    if request.method in ['POST', 'PUT']:
+        args = request.form
+    else:
+        args = request.args
+
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
         abort(403)
 
-    guild_id = request.args.get('server')
+    guild_id = args.get('server')
 
     if not guild_id:
         abort(400)
@@ -347,6 +352,23 @@ def constants():
     character, successful = get_character()
     data = table2json(character.constants)
     return jsonify(data)
+
+
+@app.route('/constants', methods=['PUT'])
+def addConstant():
+    '''
+    Adds a constant to the character and returns the new constant
+    '''
+    character, successful = get_character()
+    item = m.Constant(character_id=character.id, name=request.form.get('name', ''), value=0)
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(500)
+    else:
+        return jsonify(entry2json(item))
 
 
 @app.route('/rolls')

@@ -2,6 +2,7 @@ class Component extends React.Component {
     constructor(props) {
         super(props)
         this.criticalError = this.criticalError.bind(this)
+        this.addItem = this.addItem.bind(this)
         this.state = {data: []}
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
@@ -27,6 +28,32 @@ class Component extends React.Component {
         this.request.abort()
     }
 
+    addItem() {
+        let name = prompt("Please enter the name of the new item:", "")
+        const url = '/' + this.slug
+        this.addRequest = $.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            data: {
+                server: this.props.server_id,
+                name: name,
+            },
+            error: (jqXHR) => {
+                if (jqXHR.status == 500) {
+                    alert("There is already an item in " + this.props.title + " with the given name")
+                }
+                else {
+                    this.criticalError("Failed to add item")
+                }
+            },
+            success: (newItem) => {
+                console.log(newItem)
+                this.setState((prevState, props) => ({data: prevState.data.concat([newItem])}))
+            },
+        })
+    }
+
     render() {
         let list = null
         if (this.state.data) {
@@ -37,7 +64,7 @@ class Component extends React.Component {
                 <h2>{this.props.title}</h2>
                 <ul className="list-group">
                     {list}
-                    <li className="list-group-item"><a>+ New</a></li>
+                    <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
                 </ul>
             </div>
         )

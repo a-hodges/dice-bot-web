@@ -418,6 +418,18 @@ def addRoll():
         return jsonify(entry2json(item))
 
 
+@app.route('/rolls/<int:id>', methods=["DELETE"])
+def deleteRoll(id):
+    '''
+    Deletes a roll from the character and returns success message
+    '''
+    character, successful = get_character()
+    item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'message': 'successful'})
+
+
 @app.route('/resources')
 def resources():
     '''
@@ -449,6 +461,18 @@ def addResource():
         abort(500)
     else:
         return jsonify(entry2json(item))
+
+
+@app.route('/resources/<int:id>', methods=["DELETE"])
+def deleteResource(id):
+    '''
+    Deletes a resource from the character and returns success message
+    '''
+    character, successful = get_character()
+    item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'message': 'successful'})
 
 
 @app.route('/spells')
@@ -483,6 +507,18 @@ def addSpell():
         return jsonify(entry2json(item))
 
 
+@app.route('/spells/<int:id>', methods=["DELETE"])
+def deleteSpell(id):
+    '''
+    Deletes a spell from the character and returns success message
+    '''
+    character, successful = get_character()
+    item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'message': 'successful'})
+
+
 @app.route('/inventory')
 def inventory():
     '''
@@ -513,6 +549,18 @@ def addItem():
         abort(500)
     else:
         return jsonify(entry2json(item))
+
+
+@app.route('/inventory/<int:id>', methods=["DELETE"])
+def deleteItem(id):
+    '''
+    Deletes an item from the character and returns success message
+    '''
+    character, successful = get_character()
+    item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'message': 'successful'})
 
 
 # ----#-   Login/Logout

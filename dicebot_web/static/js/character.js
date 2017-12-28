@@ -76,14 +76,7 @@ class Group extends React.Component {
                 server: this.props.server_id,
                 id: item.id,
             },
-            error: (jqXHR) => {
-                if (jqXHR.status == 500) {
-                    alert("Item could not be removed")
-                }
-                else {
-                    this.criticalError("Failed to remove item")
-                }
-            },
+            error: () => this.criticalError("Failed to remove item"),
             success: () => this.setState((prevState, props) => {
                 const index = prevState.data.indexOf(item)
                 return {data: deleteIndex(prevState.data, index)}

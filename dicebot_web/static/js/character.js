@@ -10,8 +10,9 @@ class Component extends React.Component {
     }
 
     componentDidMount() {
+        const url = '/' + this.props.title.replace(" ", "_").toLowerCase()
         this.request = $.get({
-            url: this.props.url,
+            url: url,
             dataType: 'json',
             data: {
                 server: this.props.server_id,
@@ -45,7 +46,6 @@ class Component extends React.Component {
 function Constants(props) {
     return <Component
         title="Constants"
-        url="/constants"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.value}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
@@ -53,7 +53,6 @@ function Constants(props) {
 function Rolls(props) {
     return <Component
         title="Rolls"
-        url="/rolls"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.expression}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
@@ -61,7 +60,6 @@ function Rolls(props) {
 function Resources(props) {
     return <Component
         title="Resources"
-        url="/resources"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
@@ -69,7 +67,6 @@ function Resources(props) {
 function Spells(props) {
     return <Component
         title="Spells"
-        url="/spells"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name} | level {item.level} <br/> {item.description}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
@@ -77,7 +74,6 @@ function Spells(props) {
 function Inventory(props) {
     return <Component
         title="Inventory"
-        url="/inventory"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.number} <br/> {item.description}</li>}
         server_id={props.server_id} onError={props.onError} />
 }

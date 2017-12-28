@@ -56,7 +56,7 @@ class Group extends React.Component {
                 name: name,
             },
             error: (jqXHR) => {
-                if (jqXHR.status == 500) {
+                if (jqXHR.status == 409) {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {

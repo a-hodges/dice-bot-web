@@ -1,6 +1,6 @@
-function deleteItem(arr, item) {
-    const index = arr.indexOf(item)
-    return arr.slice(0,index).concat(arr.slice(index+1))
+Array.prototype.deleteItem = function(item) {
+    const index = this.indexOf(item)
+    return this.slice(0,index).concat(this.slice(index+1))
 }
 
 class Group extends React.Component {
@@ -78,7 +78,7 @@ class Group extends React.Component {
                 id: item.id,
             },
             error: () => this.criticalError("Failed to remove item"),
-            success: () => this.setState((prevState, props) => ({data: deleteItem(prevState.data, item)})),
+            success: () => this.setState((prevState, props) => ({data: prevState.data.deleteItem(item)})),
         })
     }
 

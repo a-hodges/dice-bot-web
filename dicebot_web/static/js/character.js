@@ -44,6 +44,7 @@ class Group extends React.Component {
 
     addItem() {
         let name = prompt("Please enter the name of the new item:", "")
+        if (!name) {return}
         const url = '/' + this.slug
         this.addRequest = $.ajax({
             url: url,
@@ -66,13 +67,14 @@ class Group extends React.Component {
     }
 
     deleteItem(item) {
-        const url = '/' + this.slug + '/' + item.id
+        const url = '/' + this.slug
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
             dataType: 'json',
             data: {
                 server: this.props.server_id,
+                id: item.id,
             },
             error: (jqXHR) => {
                 if (jqXHR.status == 500) {

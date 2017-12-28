@@ -375,11 +375,14 @@ def addConstant():
         return jsonify(entry2json(item))
 
 
-@app.route('/constants/<int:id>', methods=["DELETE"])
-def deleteConstant(id):
+@app.route('/constants', methods=["DELETE"])
+def deleteConstant():
     '''
     Deletes a constant from the character and returns success message
     '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
     character, successful = get_character()
     item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
     db.session.delete(item)
@@ -418,11 +421,14 @@ def addRoll():
         return jsonify(entry2json(item))
 
 
-@app.route('/rolls/<int:id>', methods=["DELETE"])
-def deleteRoll(id):
+@app.route('/rolls', methods=["DELETE"])
+def deleteRoll():
     '''
     Deletes a roll from the character and returns success message
     '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
     character, successful = get_character()
     item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
     db.session.delete(item)
@@ -463,11 +469,14 @@ def addResource():
         return jsonify(entry2json(item))
 
 
-@app.route('/resources/<int:id>', methods=["DELETE"])
-def deleteResource(id):
+@app.route('/resources', methods=["DELETE"])
+def deleteResource():
     '''
     Deletes a resource from the character and returns success message
     '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
     character, successful = get_character()
     item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
     db.session.delete(item)
@@ -507,11 +516,14 @@ def addSpell():
         return jsonify(entry2json(item))
 
 
-@app.route('/spells/<int:id>', methods=["DELETE"])
-def deleteSpell(id):
+@app.route('/spells', methods=["DELETE"])
+def deleteSpell():
     '''
     Deletes a spell from the character and returns success message
     '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
     character, successful = get_character()
     item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
     db.session.delete(item)
@@ -551,11 +563,14 @@ def addItem():
         return jsonify(entry2json(item))
 
 
-@app.route('/inventory/<int:id>', methods=["DELETE"])
-def deleteItem(id):
+@app.route('/inventory', methods=["DELETE"])
+def deleteItem():
     '''
     Deletes an item from the character and returns success message
     '''
+    id = request.form.get('id')
+    if id is None:
+        abort(400)
     character, successful = get_character()
     item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
     db.session.delete(item)

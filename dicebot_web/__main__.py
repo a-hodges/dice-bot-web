@@ -72,7 +72,7 @@ def get_character():
     If successful returns a character and True
     If unsuccessful returns an error and False
     '''
-    user, discord = get_user(request.args.get('token'))
+    user, discord = get_user(session.get('oauth2_token'))
     if not user:
         return abort(403), False
 

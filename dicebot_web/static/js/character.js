@@ -3,6 +3,7 @@ class Component extends React.Component {
         super(props)
         this.error = this.error.bind(this)
         this.state = {data: []}
+        this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
 
     error(message) {
@@ -10,7 +11,7 @@ class Component extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/' + this.props.title.replace(" ", "_").toLowerCase()
+        const url = '/' + this.slug
         this.request = $.get({
             url: url,
             dataType: 'json',

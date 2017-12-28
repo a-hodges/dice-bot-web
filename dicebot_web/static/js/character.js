@@ -1,4 +1,4 @@
-class Component extends React.Component {
+class Group extends React.Component {
     constructor(props) {
         super(props)
         this.criticalError = this.criticalError.bind(this)
@@ -72,35 +72,35 @@ class Component extends React.Component {
 }
 
 function Constants(props) {
-    return <Component
+    return <Group
         title="Constants"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.value}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Rolls(props) {
-    return <Component
+    return <Group
         title="Rolls"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.expression}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Resources(props) {
-    return <Component
+    return <Group
         title="Resources"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Spells(props) {
-    return <Component
+    return <Group
         title="Spells"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name} | level {item.level} <br/> {item.description}</li>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Inventory(props) {
-    return <Component
+    return <Group
         title="Inventory"
         lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.number} <br/> {item.description}</li>}
         server_id={props.server_id} onError={props.onError} />

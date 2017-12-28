@@ -18,8 +18,9 @@ class Group extends React.Component {
 
     componentDidMount() {
         const url = '/' + this.slug
-        this.request = $.get({
+        this.request = $.ajax({
             url: url,
+            type: 'GET',
             dataType: 'json',
             data: {
                 server: this.props.server_id,
@@ -46,7 +47,7 @@ class Group extends React.Component {
         const url = '/' + this.slug
         this.addRequest = $.ajax({
             url: url,
-            type: 'PUT',
+            type: 'POST',
             dataType: 'json',
             data: {
                 server: this.props.server_id,

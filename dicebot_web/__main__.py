@@ -354,7 +354,7 @@ def constants():
     return jsonify(data)
 
 
-@app.route('/constants', methods=['PUT'])
+@app.route('/constants', methods=['POST'])
 def addConstant():
     '''
     Adds a constant to the character and returns the new constant
@@ -370,7 +370,7 @@ def addConstant():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(500)
+        abort(409)
     else:
         return jsonify(entry2json(item))
 
@@ -397,7 +397,7 @@ def rolls():
     return jsonify(data)
 
 
-@app.route('/rolls', methods=['PUT'])
+@app.route('/rolls', methods=['POST'])
 def addRoll():
     '''
     Adds a roll to the character and returns the new roll
@@ -413,7 +413,7 @@ def addRoll():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(500)
+        abort(409)
     else:
         return jsonify(entry2json(item))
 
@@ -440,7 +440,7 @@ def resources():
     return jsonify(data)
 
 
-@app.route('/resources', methods=['PUT'])
+@app.route('/resources', methods=['POST'])
 def addResource():
     '''
     Adds a resource to the character and returns the new resource
@@ -458,7 +458,7 @@ def addResource():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(500)
+        abort(409)
     else:
         return jsonify(entry2json(item))
 
@@ -485,7 +485,7 @@ def spells():
     return jsonify(data)
 
 
-@app.route('/spells', methods=['PUT'])
+@app.route('/spells', methods=['POST'])
 def addSpell():
     '''
     Adds a spell to the character and returns the new spell
@@ -502,7 +502,7 @@ def addSpell():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(500)
+        abort(409)
     else:
         return jsonify(entry2json(item))
 
@@ -529,7 +529,7 @@ def inventory():
     return jsonify(data)
 
 
-@app.route('/inventory', methods=['PUT'])
+@app.route('/inventory', methods=['POST'])
 def addItem():
     '''
     Adds an item to the character and returns the new item
@@ -546,7 +546,7 @@ def addItem():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(500)
+        abort(409)
     else:
         return jsonify(entry2json(item))
 

@@ -43,7 +43,10 @@ def get_user_avatar(user, size=32):
     '''
     Gets the url for the user's avatar
     '''
-    return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
+    if user['avatar'] is None:
+        return 'https://cdn.discordapp.com/embed/avatars/{0}.png?size={1}'.format(int(user['discriminator']) % 5, size)
+    else:
+        return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
 
 
 def get_guild_icon(guild, size=32):

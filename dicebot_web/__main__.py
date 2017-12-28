@@ -360,7 +360,11 @@ def addConstant():
     Adds a constant to the character and returns the new constant
     '''
     character, successful = get_character()
-    item = m.Constant(character_id=character.id, name=request.form.get('name', ''), value=0)
+    item = m.Constant(
+        character_id=character.id,
+        name=request.form.get('name', ''),
+        value=int(request.form.get('value', 0)),
+    )
     try:
         db.session.add(item)
         db.session.commit()
@@ -387,7 +391,11 @@ def addRoll():
     Adds a roll to the character and returns the new roll
     '''
     character, successful = get_character()
-    item = m.Roll(character_id=character.id, name=request.form.get('name', ''), expression='')
+    item = m.Roll(
+        character_id=character.id,
+        name=request.form.get('name', ''),
+        expression=request.form.get('expression', ''),
+    )
     try:
         db.session.add(item)
         db.session.commit()
@@ -414,7 +422,13 @@ def addResource():
     Adds a resource to the character and returns the new resource
     '''
     character, successful = get_character()
-    item = m.Resource(character_id=character.id, name=request.form.get('name', ''), current=0, max=0, recover='other')
+    item = m.Resource(
+        character_id=character.id,
+        name=request.form.get('name', ''),
+        current=int(request.form.get('current', 0)),
+        max=int(request.form.get('max', 0)),
+        recover=request.form.get('recover', 'other'),
+    )
     try:
         db.session.add(item)
         db.session.commit()
@@ -441,7 +455,12 @@ def addSpell():
     Adds a spell to the character and returns the new spell
     '''
     character, successful = get_character()
-    item = m.Spell(character_id=character.id, name=request.form.get('name', ''), level=0, description=None)
+    item = m.Spell(
+        character_id=character.id,
+        name=request.form.get('name', ''),
+        level=int(request.form.get('level', 0)),
+        description=request.form.get('description', ''),
+    )
     try:
         db.session.add(item)
         db.session.commit()
@@ -468,7 +487,12 @@ def addItem():
     Adds an item to the character and returns the new item
     '''
     character, successful = get_character()
-    item = m.Item(character_id=character.id, name=request.form.get('name', ''), number=0, description=None)
+    item = m.Item(
+        character_id=character.id,
+        name=request.form.get('name', ''),
+        number=int(request.form.get('number', 0)),
+        description=request.form.get('description', ''),
+    )
     try:
         db.session.add(item)
         db.session.commit()

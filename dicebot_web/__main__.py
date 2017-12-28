@@ -72,7 +72,7 @@ def get_character():
     If successful returns a character
     If unsuccessful calls an abort function
     '''
-    if request.method in ['POST', 'PUT']:
+    if request.method in ['POST', 'PUT', 'DELETE']:
         args = request.form
     else:
         args = request.args
@@ -373,6 +373,18 @@ def addConstant():
         abort(500)
     else:
         return jsonify(entry2json(item))
+
+
+@app.route('/constants/<int:id>', methods=["DELETE"])
+def deleteConstant(id):
+    '''
+    Deletes a constant from the character and returns success message
+    '''
+    character, successful = get_character()
+    item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'message': 'successful'})
 
 
 @app.route('/rolls')

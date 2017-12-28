@@ -1,8 +1,13 @@
+function deleteIndex(arr, index) {
+    return arr.slice(0,index).concat(arr.slice(index+1))
+}
+
 class Group extends React.Component {
     constructor(props) {
         super(props)
         this.criticalError = this.criticalError.bind(this)
         this.addItem = this.addItem.bind(this)
+        this.deleteItem = this.deleteItem.bind(this)
         this.state = {data: []}
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
@@ -25,7 +30,15 @@ class Group extends React.Component {
     }
 
     componentWillUnmount() {
-        this.request.abort()
+        if (this.request !== undefined) {
+            this.request.abort()
+        }
+        if (this.addRequest !== undefined) {
+            this.addRequest.abort()
+        }
+        if (this.deleteRequest !== undefined) {
+            this.deleteRequest.abort()
+        }
     }
 
     addItem() {
@@ -47,17 +60,38 @@ class Group extends React.Component {
                     this.criticalError("Failed to add item")
                 }
             },
-            success: (newItem) => {
-                console.log(newItem)
-                this.setState((prevState, props) => ({data: prevState.data.concat([newItem])}))
+            success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.concat([newItem])})),
+        })
+    }
+
+    deleteItem(item) {
+        const url = '/' + this.slug + '/' + item.id
+        this.deleteRequest = $.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            data: {
+                server: this.props.server_id,
             },
+            error: (jqXHR) => {
+                if (jqXHR.status == 500) {
+                    alert("Item could not be removed")
+                }
+                else {
+                    this.criticalError("Failed to remove item")
+                }
+            },
+            success: () => this.setState((prevState, props) => {
+                const index = prevState.data.indexOf(item)
+                return {data: deleteIndex(prevState.data, index)}
+            }),
         })
     }
 
     render() {
         let list = null
         if (this.state.data) {
-            list = this.state.data.map(this.props.lineItem)
+            list = this.state.data.map((item) => this.props.lineItem(item, this.updateItem, this.deleteItem))
         }
         return (
             <div>
@@ -74,8 +108,29 @@ class Group extends React.Component {
 function Constants(props) {
     return <Group
         title="Constants"
-        lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.value}</li>}
+        lineItem={(item, updateItem, deleteItem) => <Constant key={item.id} item={item} deleteItem={deleteItem} />}
         server_id={props.server_id} onError={props.onError} />
+}
+
+class Constant extends React.Component {
+    constructor(props) {
+        super(props)
+        this.deleteItem = this.deleteItem.bind(this)
+    }
+
+    deleteItem(e) {
+        e.preventDefault()
+        this.props.deleteItem(this.props.item)
+    }
+
+    render() {
+        return (
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+                {this.props.item.name}: {this.props.item.value}
+                <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
+            </li>
+        )
+    }
 }
 
 function Rolls(props) {

@@ -69,22 +69,22 @@ def get_character():
     '''
     Uses character data and request arguments to select a character
 
-    If successful returns a character and True
-    If unsuccessful returns an error and False
+    If successful returns a character
+    If unsuccessful calls an abort function
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
-        return abort(403), False
+        abort(403)
 
     guild_id = request.args.get('server')
 
     if not guild_id:
-        return abort(400), False
+        abort(400)
 
     character = db.session.query(m.Character).filter_by(user=user.get('id'), server=guild_id).one_or_none()
 
     if not character:
-        return abort(400), False
+        abort(400)
 
     return character, True
 
@@ -262,14 +262,14 @@ def character():
     server = request.args.get('server')
 
     if not user:
-        return abort(403)
+        abort(403)
     if not server:
-        return abort(400)
+        abort(400)
 
     character = db.session.query(m.Character).filter_by(user=user.get('id'), server=server).one_or_none()
 
     if not character:
-        return abort(400)
+        abort(400)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -292,7 +292,7 @@ def new_char_server_select():
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
-        return abort(403)
+        abort(403)
 
     user['avatar'] = get_user_avatar(user)
     characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
@@ -317,11 +317,11 @@ def new_character():
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
-        return abort(403)
+        abort(403)
 
     guild = request.args.get('server')
     if not guild:
-        return abort(400)
+        abort(400)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -345,8 +345,6 @@ def constants():
     Returns the current character's constants in json form
     '''
     character, successful = get_character()
-    if not successful:
-        return character
     data = table2json(character.constants)
     return jsonify(data)
 
@@ -357,8 +355,6 @@ def rolls():
     Returns the current character's rolls in json form
     '''
     character, successful = get_character()
-    if not successful:
-        return character
     data = table2json(character.rolls)
     return jsonify(data)
 
@@ -369,8 +365,6 @@ def resources():
     Returns the current character's resources in json form
     '''
     character, successful = get_character()
-    if not successful:
-        return character
     data = table2json(character.resources)
     return jsonify(data)
 
@@ -381,8 +375,6 @@ def spells():
     Returns the current character's spells in json form
     '''
     character, successful = get_character()
-    if not successful:
-        return character
     data = table2json(character.spells)
     return jsonify(data)
 
@@ -393,8 +385,6 @@ def inventory():
     Returns the current character's inventory in json form
     '''
     character, successful = get_character()
-    if not successful:
-        return character
     data = table2json(character.inventory)
     return jsonify(data)
 

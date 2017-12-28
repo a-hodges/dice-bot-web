@@ -154,7 +154,7 @@ class GroupItem extends React.Component {
 
     render() {
         return (
-            <li className="list-group-item d-flex justify-content-between align-items-center form-group">
+            <li className="list-group-item d-flex justify-content-between align-items-center">
                 {this.props.display(this.state, this.updateItem)}
                 <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
             </li>
@@ -167,10 +167,10 @@ function Constants(props) {
         title="Constants"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <span>
+            <div className="form-group">
                 {item.name}:
                 <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
-            </span>
+            </div>
         )}
     />
 }
@@ -180,10 +180,10 @@ function Rolls(props) {
         title="Rolls"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <span>
+            <div className="form-group">
                 {item.name}:
                 <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
-            </span>
+            </div>
         )}
     />
 }
@@ -193,7 +193,7 @@ function Resources(props) {
         title="Resources"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <span>
+            <div className="form-group">
                 {item.name}:
                 <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
                 of
@@ -204,7 +204,7 @@ function Resources(props) {
                     <option value="long">long rest</option>
                     <option value="other">other</option>
                 </select>
-            </span>
+            </div>
         )}
     />
 }
@@ -214,12 +214,12 @@ function Spells(props) {
         title="Spells"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <span>
+            <div className="form-group">
                 {item.name} | level:
                 <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
                 <br/>
                 <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
-            </span>
+            </div>
         )}
     />
 }
@@ -229,12 +229,12 @@ function Inventory(props) {
         title="Inventory"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <span>
+            <div className="form-group">
                 {item.name} | quantity:
                 <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
                 <br/>
                 <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
-            </span>
+            </div>
         )}
     />
 }

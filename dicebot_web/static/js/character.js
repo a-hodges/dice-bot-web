@@ -91,7 +91,9 @@ class Group extends React.Component {
     render() {
         let list = null
         if (this.state.data) {
-            list = this.state.data.map((item) => this.props.lineItem(item, this.updateItem, this.deleteItem))
+            list = this.state.data.map((item) => (
+                <GroupItem key={item.id} deleteItem={this.deleteItem} lineItem={this.props.lineItem} item={item} />
+            ))
         }
         return (
             <div>
@@ -105,59 +107,58 @@ class Group extends React.Component {
     }
 }
 
-function Constants(props) {
-    return <Group
-        title="Constants"
-        lineItem={(item, updateItem, deleteItem) => <Constant key={item.id} item={item} deleteItem={deleteItem} />}
-        server_id={props.server_id} onError={props.onError} />
-}
-
-class Constant extends React.Component {
+class GroupItem extends React.Component {
     constructor(props) {
         super(props)
         this.deleteItem = this.deleteItem.bind(this)
     }
 
     deleteItem(e) {
-        e.preventDefault()
         this.props.deleteItem(this.props.item)
     }
 
     render() {
         return (
             <li className="list-group-item d-flex justify-content-between align-items-center">
-                {this.props.item.name}: {this.props.item.value}
+                {this.props.lineItem(this.props.item)}
                 <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
             </li>
         )
     }
 }
 
+function Constants(props) {
+    return <Group
+        title="Constants"
+        lineItem={(item) => <span>{item.name}: {item.value}</span>}
+        server_id={props.server_id} onError={props.onError} />
+}
+
 function Rolls(props) {
     return <Group
         title="Rolls"
-        lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.expression}</li>}
+        lineItem={(item) => <span>{item.name}: {item.expression}</span>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Resources(props) {
     return <Group
         title="Resources"
-        lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</li>}
+        lineItem={(item) => <span>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</span>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Spells(props) {
     return <Group
         title="Spells"
-        lineItem={(item) => <li key={item.id} className="list-group-item">{item.name} | level {item.level} <br/> {item.description}</li>}
+        lineItem={(item) => <span>{item.name} | level {item.level} <br/> {item.description}</span>}
         server_id={props.server_id} onError={props.onError} />
 }
 
 function Inventory(props) {
     return <Group
         title="Inventory"
-        lineItem={(item) => <li key={item.id} className="list-group-item">{item.name}: {item.number} <br/> {item.description}</li>}
+        lineItem={(item) => <span>{item.name}: {item.number} <br/> {item.description}</span>}
         server_id={props.server_id} onError={props.onError} />
 }
 

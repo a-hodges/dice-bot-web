@@ -76,13 +76,15 @@ class Group extends React.Component {
         })
     }
 
-    updateItem(item) {
+    updateItem(item, updated) {
         const url = '/' + this.slug
+        const data = {server: this.props.server_id, id: item.id}
+        updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
             url: url,
-            type: 'PUT',
+            type: 'PATCH',
             dataType: 'json',
-            data: Object.assign({server: this.props.server_id}, item),
+            data: data,
             error: (jqXHR) => {
                 if (jqXHR.status == 409) {
                     alert("There is already an item in " + this.props.title + " with the given name")
@@ -142,7 +144,8 @@ class GroupItem extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        this.props.updateItem(this.state)
+        const changed = Object.keys(this.state).filter(key => this.state[key] !== prevState[key])
+        this.props.updateItem(this.state, changed)
     }
 
     deleteItem(e) {

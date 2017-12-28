@@ -72,7 +72,7 @@ def get_character():
     If successful returns a character
     If unsuccessful calls an abort function
     '''
-    if request.method in ['POST', 'PUT', 'DELETE']:
+    if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
         args = request.form
     else:
         args = request.args
@@ -375,7 +375,7 @@ def addConstant():
         return jsonify(entry2json(item))
 
 
-@app.route('/constants', methods=['PUT'])
+@app.route('/constants', methods=['PATCH'])
 def updateConstant():
     '''
     Updates a constant, returning the updated item on success
@@ -386,7 +386,8 @@ def updateConstant():
     character, successful = get_character()
     item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
     for key in ['name', 'value']:
-        setattr(item, key, request.form.get(key, getattr(item, key)))
+        if key in request.form:
+            setattr(item, key, request.form[key])
 
     try:
         db.session.commit()
@@ -443,7 +444,7 @@ def addRoll():
         return jsonify(entry2json(item))
 
 
-@app.route('/rolls', methods=['PUT'])
+@app.route('/rolls', methods=['PATCH'])
 def updateRolls():
     '''
     Updates a roll, returning the updated item on success
@@ -454,7 +455,8 @@ def updateRolls():
     character, successful = get_character()
     item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
     for key in ['name', 'expression']:
-        setattr(item, key, request.form.get(key, getattr(item, key)))
+        if key in request.form:
+            setattr(item, key, request.form[key])
 
     try:
         db.session.commit()
@@ -513,7 +515,7 @@ def addResource():
         return jsonify(entry2json(item))
 
 
-@app.route('/resources', methods=['PUT'])
+@app.route('/resources', methods=['PATCH'])
 def updateResources():
     '''
     Updates a resource, returning the updated item on success
@@ -524,7 +526,8 @@ def updateResources():
     character, successful = get_character()
     item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
     for key in ['name', 'current', 'max', 'recover']:
-        setattr(item, key, request.form.get(key, getattr(item, key)))
+        if key in request.form:
+            setattr(item, key, request.form[key])
 
     try:
         db.session.commit()
@@ -582,7 +585,7 @@ def addSpell():
         return jsonify(entry2json(item))
 
 
-@app.route('/spells', methods=['PUT'])
+@app.route('/spells', methods=['PATCH'])
 def updateSpell():
     '''
     Updates a spell, returning the updated item on success
@@ -593,7 +596,8 @@ def updateSpell():
     character, successful = get_character()
     item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
     for key in ['name', 'level', 'description']:
-        setattr(item, key, request.form.get(key, getattr(item, key)))
+        if key in request.form:
+            setattr(item, key, request.form[key])
 
     try:
         db.session.commit()
@@ -651,7 +655,7 @@ def addItem():
         return jsonify(entry2json(item))
 
 
-@app.route('/inventory', methods=['PUT'])
+@app.route('/inventory', methods=['PATCH'])
 def updateItem():
     '''
     Updates an item, returning the updated item on success
@@ -662,7 +666,8 @@ def updateItem():
     character, successful = get_character()
     item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
     for key in ['name', 'number', 'description']:
-        setattr(item, key, request.form.get(key, getattr(item, key)))
+        if key in request.form:
+            setattr(item, key, request.form[key])
 
     try:
         db.session.commit()

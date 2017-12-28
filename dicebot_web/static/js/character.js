@@ -179,7 +179,7 @@ function Rolls(props) {
         display={(item, updateItem) => (
             <span>
                 {item.name}:
-                {item.expression}
+                <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
             </span>
         )}
     />

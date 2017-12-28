@@ -176,7 +176,7 @@ function Rolls(props) {
     return <Group
         title="Rolls"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => (
+        display={(item, updateItem) => (
             <span>
                 {item.name}:
                 {item.expression}
@@ -189,7 +189,7 @@ function Resources(props) {
     return <Group
         title="Resources"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => (
+        display={(item, updateItem) => (
             <span>
                 {item.name}:
                 {item.current}
@@ -205,7 +205,7 @@ function Spells(props) {
     return <Group
         title="Spells"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => (
+        display={(item, updateItem) => (
             <span>
                 {item.name}
                 | level
@@ -221,7 +221,7 @@ function Inventory(props) {
     return <Group
         title="Inventory"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => (
+        display={(item, updateItem) => (
             <span>
                 {item.name}:
                 {item.number}

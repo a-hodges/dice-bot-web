@@ -165,7 +165,8 @@ function Constants(props) {
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
             <span>
-                {item.name}: <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
+                {item.name}:
+                <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
             </span>
         )}
     />
@@ -175,7 +176,12 @@ function Rolls(props) {
     return <Group
         title="Rolls"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.expression}</span>}
+        display={(item) => (
+            <span>
+                {item.name}:
+                {item.expression}
+            </span>
+        )}
     />
 }
 
@@ -183,7 +189,15 @@ function Resources(props) {
     return <Group
         title="Resources"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.current}/{item.max} {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}</span>}
+        display={(item) => (
+            <span>
+                {item.name}:
+                {item.current}
+                /
+                {item.max}
+                {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}
+            </span>
+        )}
     />
 }
 
@@ -191,7 +205,15 @@ function Spells(props) {
     return <Group
         title="Spells"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => <span>{item.name} | level {item.level} <br/> {item.description}</span>}
+        display={(item) => (
+            <span>
+                {item.name}
+                | level
+                {item.level}
+                <br/>
+                {item.description}
+            </span>
+        )}
     />
 }
 
@@ -199,7 +221,14 @@ function Inventory(props) {
     return <Group
         title="Inventory"
         server_id={props.server_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.number} <br/> {item.description}</span>}
+        display={(item) => (
+            <span>
+                {item.name}:
+                {item.number}
+                <br/>
+                {item.description}
+            </span>
+        )}
     />
 }
 

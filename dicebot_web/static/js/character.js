@@ -1,4 +1,5 @@
-function deleteIndex(arr, index) {
+function deleteItem(arr, item) {
+    const index = arr.indexOf(item)
     return arr.slice(0,index).concat(arr.slice(index+1))
 }
 
@@ -77,10 +78,7 @@ class Group extends React.Component {
                 id: item.id,
             },
             error: () => this.criticalError("Failed to remove item"),
-            success: () => this.setState((prevState, props) => {
-                const index = prevState.data.indexOf(item)
-                return {data: deleteIndex(prevState.data, index)}
-            }),
+            success: () => this.setState((prevState, props) => ({data: deleteItem(prevState.data, item)})),
         })
     }
 

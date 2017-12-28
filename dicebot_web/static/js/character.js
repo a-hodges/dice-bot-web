@@ -230,10 +230,10 @@ function Inventory(props) {
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
             <span>
-                {item.name}:
-                {item.number}
+                {item.name} | quantity:
+                <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
                 <br/>
-                {item.description}
+                <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
             </span>
         )}
     />

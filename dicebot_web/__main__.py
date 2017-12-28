@@ -50,7 +50,10 @@ def get_guild_icon(guild, size=32):
     '''
     Gets the url for the guild's icon
     '''
-    return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
+    if guild['icon'] is None:
+        return 'https://cdn.discordapp.com/embed/avatars/0.png?size={1}'.format(guild, size)
+    else:
+        return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
 
 
 def get_user(token=None):
@@ -69,7 +72,7 @@ def get_character():
     user, discord = get_user(request.args.get('token'))
     if not user:
         return abort(403), False
-    
+
     guild_id = request.args.get('server')
 
     if not guild_id:

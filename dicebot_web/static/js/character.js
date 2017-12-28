@@ -1,12 +1,12 @@
 class Component extends React.Component {
     constructor(props) {
         super(props)
-        this.error = this.error.bind(this)
+        this.criticalError = this.criticalError.bind(this)
         this.state = {data: []}
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
 
-    error(message) {
+    criticalError(message) {
         this.props.onError(message)
     }
 
@@ -18,7 +18,7 @@ class Component extends React.Component {
             data: {
                 server: this.props.server_id,
             },
-            error: () => this.error("Could not load data"),
+            error: () => this.criticalError("Could not load data"),
             success: (data) => this.setState({data: data}),
         })
     }

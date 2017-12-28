@@ -47,7 +47,7 @@ function Constants(props) {
         title="Constants"
         url="/constants"
         lineItem={(item) => <li key={item.id}>{item.name}: {item.value}</li>}
-        user_token={props.user_token} server_id={props.server_id} onError={props.onError} />
+        server_id={props.server_id} onError={props.onError} />
 }
 
 function Rolls(props) {

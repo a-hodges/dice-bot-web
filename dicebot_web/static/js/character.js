@@ -192,10 +192,15 @@ function Resources(props) {
         display={(item, updateItem) => (
             <span>
                 {item.name}:
-                {item.current}
-                /
-                {item.max}
-                {(item.recover != 'other') ? 'per ' + item.recover + ' rest' : null}
+                <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
+                of
+                <input className="form-control" type="number" name="max" value={item.max} onChange={updateItem} />
+                per
+                <select className="form-control" name="recover" value={item.recover} onChange={updateItem}>
+                    <option value="short">short rest</option>
+                    <option value="long">long rest</option>
+                    <option value="other">other</option>
+                </select>
             </span>
         )}
     />

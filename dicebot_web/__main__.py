@@ -89,12 +89,16 @@ def get_character():
     return character, True
 
 
+def entry2json(entry):
+    entry = entry.copy()
+    for key, value in entry.items():
+        if isinstance(value, enum.Enum):
+            entry[key] = value.name
+    return entry
+
+
 def table2json(table):
-    data = [item.dict() for item in table]
-    for item in data:
-        for key, value in item.items():
-            if isinstance(value, enum.Enum):
-                item[key] = value.name
+    data = [entry2json(item.dict()) for item in table]
     return data
 
 

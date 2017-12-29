@@ -539,13 +539,13 @@ def logout():
 
 
 def main():
-    port = 80  # default port
+    port = int(os.environ.get('PORT', 80))  # default port
     parser = argparse.ArgumentParser(
         description='Tutoring Portal Server',
         epilog='The server runs locally on port %d if PORT is not specified.'
         % port)
     parser.add_argument(
-        'database', nargs='?', default='sqlite:///:memory:',
+        'database', nargs='?', default=os.environ.get('DB', 'sqlite:///:memory:'),
         help='The database url to be accessed')
     parser.add_argument(
         '-p, --port', dest='port', type=int,
@@ -568,8 +568,7 @@ def main():
     if args.reload:
         app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-    if args.debug:
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'  # possibly insecure
 
     app.run(
         host='0.0.0.0',

@@ -39,6 +39,39 @@ AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
 TOKEN_URL = API_BASE_URL + '/oauth2/token'
 
 
+application.jinja_env.trim_blocks = True
+application.jinja_env.lstrip_blocks = True
+
+# setup Database
+db.create_all()
+
+# setup config values
+with application.app_context():
+    # these settings are stored in the configuration table
+    # values here are defaults (and should all be strings or null)
+    # defaults will autopopulate the database when first initialized
+    # when run subsequently, they will be populated from the database
+    # only populated on startup, changes not applied until restart
+    config = {
+        # key used to encrypt cookies
+        'token': None,
+        'discord_client_id': None,
+        'discord_client_secret': None,
+    }
+    # get Config values from database
+    for name in config:
+        try:
+            key = db.session.query(m.Config).filter_by(name=name).one()
+            config[name] = key.value
+        except NoResultFound:
+            key = m.Config(name=name, value=config[name])
+            db.session.add(key)
+            db.session.commit()
+
+    application.config.update(config)
+    application.secret_key = application.config['token']
+
+
 # ----#-   Utilities
 
 
@@ -111,44 +144,6 @@ def table2json(table):
 
 
 # ----#-   Application
-
-
-def create_app():
-    '''
-    Sets up app for use
-    Adds database configuration and the secret key
-    '''
-    application.jinja_env.trim_blocks = True
-    application.jinja_env.lstrip_blocks = True
-
-    # setup Database
-    db.create_all()
-
-    # setup config values
-    with application.app_context():
-        # these settings are stored in the configuration table
-        # values here are defaults (and should all be strings or null)
-        # defaults will autopopulate the database when first initialized
-        # when run subsequently, they will be populated from the database
-        # only populated on startup, changes not applied until restart
-        config = {
-            # key used to encrypt cookies
-            'token': None,
-            'discord_client_id': None,
-            'discord_client_secret': None,
-        }
-        # get Config values from database
-        for name in config:
-            try:
-                key = db.session.query(m.Config).filter_by(name=name).one()
-                config[name] = key.value
-            except NoResultFound:
-                key = m.Config(name=name, value=config[name])
-                db.session.add(key)
-                db.session.commit()
-
-        application.config.update(config)
-        application.secret_key = application.config['token']
 
 
 @application.context_processor
@@ -532,9 +527,6 @@ def logout():
 
 
 # ----#-   Main
-
-
-create_app()
 
 
 if __name__ == '__main__':

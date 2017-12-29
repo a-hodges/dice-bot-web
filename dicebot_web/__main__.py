@@ -8,7 +8,6 @@ from flask import (
     Flask,
     abort,
     flash,
-    jsonify,
     redirect,
     render_template,
     request,
@@ -415,6 +414,7 @@ class Constant (Object):
         'value': int,
     }
 
+
 api.add_resource(Constant, '/constants')
 
 
@@ -425,6 +425,7 @@ class Roll (Object):
         'name': str,
         'expression': str,
     }
+
 
 api.add_resource(Roll, '/rolls')
 
@@ -439,6 +440,7 @@ class Resource (Object):
         'recover': m.Rest,
     }
 
+
 api.add_resource(Resource, '/resources')
 
 
@@ -451,6 +453,7 @@ class Spell (Object):
         'description': str,
     }
 
+
 api.add_resource(Spell, '/spells')
 
 
@@ -462,6 +465,7 @@ class Item (Object):
         'number': int,
         'description': str,
     }
+
 
 api.add_resource(Item, '/inventory')
 

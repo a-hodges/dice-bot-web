@@ -28,8 +28,7 @@ from dicebot import model as m
 app = Flask(__name__)
 api = Api(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB', 'sqlite:///:memory:')
-port = int(os.environ('PORT', 80))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 # Attach Database
 db = SQLAlchemy(app)
 db.Model = m.Base
@@ -113,7 +112,7 @@ def table2json(table):
 # ----#-   Application
 
 
-def create_app():
+def create_app(database):
     '''
     Sets up app for use
     Adds database configuration and the secret key
@@ -122,6 +121,7 @@ def create_app():
     app.jinja_env.lstrip_blocks = True
 
     # setup Database
+    app.config['SQLALCHEMY_DATABASE_URI'] = database
     db.create_all()
 
     # setup config values
@@ -535,10 +535,17 @@ def logout():
 
 
 def main():
+    port = 80  # default port
     parser = argparse.ArgumentParser(
         description='Tutoring Portal Server',
         epilog='The server runs locally on port %d if PORT is not specified.'
         % port)
+    parser.add_argument(
+        'database', nargs='?', default='sqlite:///:memory:',
+        help='The database url to be accessed')
+    parser.add_argument(
+        '-p, --port', dest='port', type=int,
+        help='The port where the server will run')
     parser.add_argument(
         '--debug', dest='debug', action='store_true',
         help='run the server in debug mode')
@@ -549,7 +556,10 @@ def main():
     if args.reload:
         args.debug = True
 
-    create_app()
+    if args.port is None:
+        args.port = port
+
+    create_app(args.database)
 
     if args.reload:
         app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -559,7 +569,7 @@ def main():
 
     app.run(
         host='0.0.0.0',
-        port=port,
+        port=args.port,
         debug=args.debug,
         use_reloader=args.reload,
     )

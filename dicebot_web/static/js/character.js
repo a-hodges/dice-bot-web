@@ -167,8 +167,10 @@ function Constants(props) {
         title="Constants"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <div className="form-group">
-                {item.name}:
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">{item.name}:</span>
+                </div>
                 <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
             </div>
         )}
@@ -180,8 +182,10 @@ function Rolls(props) {
         title="Rolls"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <div className="form-group">
-                {item.name}:
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">{item.name}:</span>
+                </div>
                 <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
             </div>
         )}
@@ -193,12 +197,14 @@ function Resources(props) {
         title="Resources"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <div className="form-group">
-                {item.name}:
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">{item.name}:</span>
+                </div>
                 <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
-                of
+                <span className="input-group-text">/</span>
                 <input className="form-control" type="number" name="max" value={item.max} onChange={updateItem} />
-                per
+                <span className="input-group-text">per</span>
                 <select className="form-control" name="recover" value={item.recover} onChange={updateItem}>
                     <option value="short">short rest</option>
                     <option value="long">long rest</option>
@@ -214,10 +220,13 @@ function Spells(props) {
         title="Spells"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <div className="form-group">
-                {item.name} | level:
-                <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
-                <br/>
+            <div className="w-100">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">{item.name} | level:</span>
+                    </div>
+                    <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
+                </div>
                 <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
             </div>
         )}
@@ -229,10 +238,13 @@ function Inventory(props) {
         title="Inventory"
         server_id={props.server_id} onError={props.onError}
         display={(item, updateItem) => (
-            <div className="form-group">
-                {item.name} | quantity:
-                <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
-                <br/>
+            <div className="w-100">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">{item.name} | quantity:</span>
+                    </div>
+                    <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
+                </div>
                 <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
             </div>
         )}

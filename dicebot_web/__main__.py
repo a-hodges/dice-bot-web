@@ -19,12 +19,14 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Resource, Api
 from requests_oauthlib import OAuth2Session
 
 from dicebot import model as m
 
 # Create App
 app = Flask(__name__)
+api = Api(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 # Attach Database
@@ -344,353 +346,124 @@ def new_character():
 # ----#-   REST endpoints
 
 
-@app.route('/constants')
-def constants():
-    '''
-    Returns the current character's constants in json form
-    '''
-    character, successful = get_character()
-    data = table2json(character.constants)
-    return jsonify(data)
+class Object (Resource):
+    def get(self):
+        character, successful = get_character()
+        data = db.session.query(self.type)\
+            .filter_by(character_id=character.id)\
+            .order_by(self.order).all()
+        return table2json(data)
 
+    def post(self):
+        character, successful = get_character()
+        item = self.type(character_id=character.id)
+        for field, cast in self.fields.items():
+            if cast == int:
+                data = request.form.get(field, 0)
+            elif isinstance(cast, enum.EnumMeta):
+                data = cast[request.form.get(field, 'other')]
+            else:
+                data = request.form.get(field, '')
+            setattr(item, field, cast(data))
 
-@app.route('/constants', methods=['POST'])
-def addConstant():
-    '''
-    Adds a constant to the character and returns the new constant
-    '''
-    character, successful = get_character()
-    item = m.Constant(
-        character_id=character.id,
-        name=request.form.get('name', ''),
-        value=int(request.form.get('value', 0)),
-    )
-    try:
-        db.session.add(item)
+        try:
+            db.session.add(item)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+        else:
+            return entry2json(item)
+
+    def patch(self):
+        id = request.form.get('id')
+        if id is None:
+            abort(400)
+        character, successful = get_character()
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
+        for field, cast in self.fields.items():
+            if field in request.form:
+                if isinstance(cast, enum.EnumMeta):
+                    setattr(item, field, cast[request.form[field]])
+                else:
+                    setattr(item, field, cast(request.form[field]))
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+        else:
+            return entry2json(item)
+
+    def delete(self):
+        id = request.form.get('id')
+        if id is None:
+            abort(400)
+        character, successful = get_character()
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
+        db.session.delete(item)
         db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
+        return {'message': 'successful'}
 
 
-@app.route('/constants', methods=['PATCH'])
-def updateConstant():
-    '''
-    Updates a constant, returning the updated item on success
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
-    for key in ['name', 'value']:
-        if key in request.form:
-            setattr(item, key, request.form[key])
+class Constant (Object):
+    type = m.Constant
+    order = 'name'
+    fields = {
+        'name': str,
+        'value': int,
+    }
 
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
+api.add_resource(Constant, '/constants')
 
 
-@app.route('/constants', methods=["DELETE"])
-def deleteConstant():
-    '''
-    Deletes a constant from the character and returns success message
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Constant).filter_by(character_id=character.id, id=id).one()
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'message': 'successful'})
+class Roll (Object):
+    type = m.Roll
+    order = 'name'
+    fields = {
+        'name': str,
+        'expression': str,
+    }
+
+api.add_resource(Roll, '/rolls')
 
 
-@app.route('/rolls')
-def rolls():
-    '''
-    Returns the current character's rolls in json form
-    '''
-    character, successful = get_character()
-    data = table2json(character.rolls)
-    return jsonify(data)
+class Resource (Object):
+    type = m.Resource
+    order = 'name'
+    fields = {
+        'name': str,
+        'current': int,
+        'max': int,
+        'recover': m.Rest,
+    }
+
+api.add_resource(Resource, '/resources')
 
 
-@app.route('/rolls', methods=['POST'])
-def addRoll():
-    '''
-    Adds a roll to the character and returns the new roll
-    '''
-    character, successful = get_character()
-    item = m.Roll(
-        character_id=character.id,
-        name=request.form.get('name', ''),
-        expression=request.form.get('expression', ''),
-    )
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
+class Spell (Object):
+    type = m.Spell
+    order = 'name,level'
+    fields = {
+        'name': str,
+        'level': int,
+        'description': str,
+    }
+
+api.add_resource(Spell, '/spells')
 
 
-@app.route('/rolls', methods=['PATCH'])
-def updateRolls():
-    '''
-    Updates a roll, returning the updated item on success
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
-    for key in ['name', 'expression']:
-        if key in request.form:
-            setattr(item, key, request.form[key])
+class Item (Object):
+    type = m.Item
+    order = 'name'
+    fields = {
+        'name': str,
+        'number': int,
+        'description': str,
+    }
 
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/rolls', methods=["DELETE"])
-def deleteRoll():
-    '''
-    Deletes a roll from the character and returns success message
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Roll).filter_by(character_id=character.id, id=id).one()
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'message': 'successful'})
-
-
-@app.route('/resources')
-def resources():
-    '''
-    Returns the current character's resources in json form
-    '''
-    character, successful = get_character()
-    data = table2json(character.resources)
-    return jsonify(data)
-
-
-@app.route('/resources', methods=['POST'])
-def addResource():
-    '''
-    Adds a resource to the character and returns the new resource
-    '''
-    character, successful = get_character()
-    item = m.Resource(
-        character_id=character.id,
-        name=request.form.get('name', ''),
-        current=int(request.form.get('current', 0)),
-        max=int(request.form.get('max', 0)),
-        recover=request.form.get('recover', 'other'),
-    )
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/resources', methods=['PATCH'])
-def updateResources():
-    '''
-    Updates a resource, returning the updated item on success
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
-    for key in ['name', 'current', 'max', 'recover']:
-        if key in request.form:
-            setattr(item, key, request.form[key])
-
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/resources', methods=["DELETE"])
-def deleteResource():
-    '''
-    Deletes a resource from the character and returns success message
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Resource).filter_by(character_id=character.id, id=id).one()
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'message': 'successful'})
-
-
-@app.route('/spells')
-def spells():
-    '''
-    Returns the current character's spells in json form
-    '''
-    character, successful = get_character()
-    data = table2json(character.spells)
-    return jsonify(data)
-
-
-@app.route('/spells', methods=['POST'])
-def addSpell():
-    '''
-    Adds a spell to the character and returns the new spell
-    '''
-    character, successful = get_character()
-    item = m.Spell(
-        character_id=character.id,
-        name=request.form.get('name', ''),
-        level=int(request.form.get('level', 0)),
-        description=request.form.get('description', ''),
-    )
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/spells', methods=['PATCH'])
-def updateSpell():
-    '''
-    Updates a spell, returning the updated item on success
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
-    for key in ['name', 'level', 'description']:
-        if key in request.form:
-            setattr(item, key, request.form[key])
-
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/spells', methods=["DELETE"])
-def deleteSpell():
-    '''
-    Deletes a spell from the character and returns success message
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Spell).filter_by(character_id=character.id, id=id).one()
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'message': 'successful'})
-
-
-@app.route('/inventory')
-def inventory():
-    '''
-    Returns the current character's inventory in json form
-    '''
-    character, successful = get_character()
-    data = table2json(character.inventory)
-    return jsonify(data)
-
-
-@app.route('/inventory', methods=['POST'])
-def addItem():
-    '''
-    Adds an item to the character and returns the new item
-    '''
-    character, successful = get_character()
-    item = m.Item(
-        character_id=character.id,
-        name=request.form.get('name', ''),
-        number=int(request.form.get('number', 0)),
-        description=request.form.get('description', ''),
-    )
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/inventory', methods=['PATCH'])
-def updateItem():
-    '''
-    Updates an item, returning the updated item on success
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
-    for key in ['name', 'number', 'description']:
-        if key in request.form:
-            setattr(item, key, request.form[key])
-
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        abort(409)
-    else:
-        return jsonify(entry2json(item))
-
-
-@app.route('/inventory', methods=["DELETE"])
-def deleteItem():
-    '''
-    Deletes an item from the character and returns success message
-    '''
-    id = request.form.get('id')
-    if id is None:
-        abort(400)
-    character, successful = get_character()
-    item = db.session.query(m.Item).filter_by(character_id=character.id, id=id).one()
-    db.session.delete(item)
-    db.session.commit()
-    return jsonify({'message': 'successful'})
+api.add_resource(Item, '/inventory')
 
 
 # ----#-   Login/Logout

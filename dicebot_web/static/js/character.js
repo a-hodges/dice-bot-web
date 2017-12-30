@@ -8,6 +8,18 @@ Array.prototype.updateItem = function(oldItem, newItem) {
     return this.slice(0,index).concat([newItem], this.slice(index+1))
 }
 
+function Error(props) {
+    return (
+        <p className="alert alert-danger">{props.children}</p>
+    )
+}
+
+function Warning(props) {
+    return (
+        <p className="alert alert-warning">{props.children}</p>
+    )
+}
+
 class Group extends React.Component {
     constructor(props) {
         super(props)
@@ -15,7 +27,7 @@ class Group extends React.Component {
         this.addItem = this.addItem.bind(this)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
-        this.state = {data: []}
+        this.state = {data: undefined}
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
 
@@ -113,19 +125,25 @@ class Group extends React.Component {
     }
 
     render() {
-        let list = null
-        if (this.state.data) {
-            list = this.state.data.map((item) => (
+        let body
+        if (this.state.data !== undefined) {
+            let list = this.state.data.map((item) => (
                 <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} display={this.props.display} item={item} />
             ))
-        }
-        return (
-            <div>
-                <h2>{this.props.title}</h2>
+            body = (
                 <ul className="list-group">
                     {list}
                     <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
                 </ul>
+            )
+        }
+        else {
+            body = <Warning>Loading...</Warning>
+        }
+        return (
+            <div>
+                <h2>{this.props.title}</h2>
+                {body}
             </div>
         )
     }
@@ -223,7 +241,8 @@ function Spells(props) {
             <div className="w-100">
                 <div className="input-group">
                     <div className="input-group-prepend">
-                        <span className="input-group-text">{item.name} | level:</span>
+                        <span className="input-group-text">{item.name}</span>
+                        <span className="input-group-text">level:</span>
                     </div>
                     <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
                 </div>
@@ -241,7 +260,8 @@ function Inventory(props) {
             <div className="w-100">
                 <div className="input-group">
                     <div className="input-group-prepend">
-                        <span className="input-group-text">{item.name} | quantity:</span>
+                        <span className="input-group-text">{item.name}</span>
+                        <span className="input-group-text">quantity:</span>
                     </div>
                     <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
                 </div>
@@ -249,14 +269,6 @@ function Inventory(props) {
             </div>
         )}
     />
-}
-
-function Error(props) {
-    return (
-        <div>
-            <p className="alert alert-danger">{props.message}</p>
-        </div>
-    )
 }
 
 class Character extends React.Component {
@@ -288,7 +300,7 @@ class Character extends React.Component {
         }
         else {
             return (
-                <Error message={this.state.error} />
+                <Error>{this.state.error}</Error>
             )
         }
     }

@@ -24,12 +24,12 @@ from requests_oauthlib import OAuth2Session
 from dicebot import model as m
 
 # Create App
-app = Flask(__name__)
-api = Api(app)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+application = Flask(__name__)
+api = Api(application)
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 # Attach Database
-db = SQLAlchemy(app)
+db = SQLAlchemy(application)
 db.Model = m.Base
 # Configure Discord OAuth
 API_BASE_URL = 'https://discordapp.com/api'
@@ -116,15 +116,15 @@ def create_app(database):
     Sets up app for use
     Adds database configuration and the secret key
     '''
-    app.jinja_env.trim_blocks = True
-    app.jinja_env.lstrip_blocks = True
+    application.jinja_env.trim_blocks = True
+    application.jinja_env.lstrip_blocks = True
 
     # setup Database
-    app.config['SQLALCHEMY_DATABASE_URI'] = database
+    application.config['SQLALCHEMY_DATABASE_URI'] = database
     db.create_all()
 
     # setup config values
-    with app.app_context():
+    with application.app_context():
         # these settings are stored in the configuration table
         # values here are defaults (and should all be strings or null)
         # defaults will autopopulate the database when first initialized
@@ -146,11 +146,11 @@ def create_app(database):
                 db.session.add(key)
                 db.session.commit()
 
-        app.config.update(config)
-        app.secret_key = app.config['token']
+        application.config.update(config)
+        application.secret_key = application.config['token']
 
 
-@app.context_processor
+@application.context_processor
 def context():
     '''
     Makes extra variables available to the template engine
@@ -175,7 +175,7 @@ def error(e, message):
     return html
 
 
-@app.errorhandler(400)
+@application.errorhandler(400)
 def four_hundred(e):
     '''
     400 (bad request) error page
@@ -183,7 +183,7 @@ def four_hundred(e):
     return error(e, "Bad request."), 400
 
 
-@app.errorhandler(403)
+@application.errorhandler(403)
 def four_oh_three(e):
     '''
     403 (forbidden) error page
@@ -191,7 +191,7 @@ def four_oh_three(e):
     return error(e, "You don't have access to this page."), 403
 
 
-@app.errorhandler(404)
+@application.errorhandler(404)
 def four_oh_four(e):
     '''
     404 (page not found) error page
@@ -199,7 +199,7 @@ def four_oh_four(e):
     return error(e, "We couldn't find the page you were looking for."), 404
 
 
-@app.errorhandler(500)
+@application.errorhandler(500)
 def five_hundred(e):
     '''
     500 (internal server) error page
@@ -217,13 +217,13 @@ def five_hundred(e):
     return error('500: ' + type(e).__name__, message), 500
 
 
-@app.route('/favicon.ico')
+@application.route('/favicon.ico')
 def favicon():
     '''
     The favorites icon for the site
     '''
     return send_from_directory(
-        os.path.join(app.root_path, 'static', 'images'),
+        os.path.join(application.root_path, 'static', 'images'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon',
     )
@@ -232,7 +232,7 @@ def favicon():
 # ----#-   Pages
 
 
-@app.route('/')
+@application.route('/')
 def index():
     '''
     Homepage for the bot
@@ -258,7 +258,7 @@ def index():
     )
 
 
-@app.route('/character')
+@application.route('/character')
 def character():
     '''
     Character homepage, allows access to character attributes
@@ -291,7 +291,7 @@ def character():
     )
 
 
-@app.route('/server_select')
+@application.route('/server_select')
 def new_char_server_select():
     '''
     Allows the user to select the server to add a new character to
@@ -316,7 +316,7 @@ def new_char_server_select():
     )
 
 
-@app.route('/new_character')
+@application.route('/new_character')
 def new_character():
     '''
     Create a new character
@@ -478,8 +478,8 @@ def token_updater(token):
 
 
 def make_session(token=None, state=None, scope=None):
-    client_id = app.config['discord_client_id']
-    client_secret = app.config['discord_client_secret']
+    client_id = application.config['discord_client_id']
+    client_secret = application.config['discord_client_secret']
     return OAuth2Session(
         client_id=client_id,
         token=token,
@@ -495,7 +495,7 @@ def make_session(token=None, state=None, scope=None):
     )
 
 
-@app.route('/login/')
+@application.route('/login/')
 def login():
     '''
     Redirects the user to the Discord sign in page
@@ -507,7 +507,7 @@ def login():
     return redirect(authorization_url)
 
 
-@app.route('/callback')
+@application.route('/callback')
 def callback():
     '''
     Logs the user in using the OAuth API
@@ -517,13 +517,13 @@ def callback():
     discord = make_session(state=session.get('oauth2_state'))
     token = discord.fetch_token(
         TOKEN_URL,
-        client_secret=app.config['discord_client_secret'],
+        client_secret=application.config['discord_client_secret'],
         authorization_response=request.url)
     session['oauth2_token'] = token
     return redirect(url_for('index'))
 
 
-@app.route('/logout/')
+@application.route('/logout/')
 def logout():
     '''
     Logs the user out and returns them to the homepage
@@ -566,11 +566,11 @@ def main():
     create_app(args.database)
 
     if args.reload:
-        app.config['TEMPLATES_AUTO_RELOAD'] = True
+        application.config['TEMPLATES_AUTO_RELOAD'] = True
 
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'  # possibly insecure
 
-    app.run(
+    application.run(
         host='0.0.0.0',
         port=args.port,
         debug=args.debug,

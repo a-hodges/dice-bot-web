@@ -25,9 +25,11 @@ from dicebot import model as m
 
 # Create App
 application = Flask(__name__)
-api = Api(application)
+application.jinja_env.trim_blocks = True
+application.jinja_env.lstrip_blocks = True
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+application.config['SQLALCHEMY_DATABASE_URI'] = None
+api = Api(application)
 # Attach Database
 db = SQLAlchemy(application)
 db.Model = m.Base
@@ -35,6 +37,7 @@ db.Model = m.Base
 API_BASE_URL = 'https://discordapp.com/api'
 AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
 TOKEN_URL = API_BASE_URL + '/oauth2/token'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'  # possibly insecure
 
 
 # ----#-   Utilities
@@ -87,38 +90,36 @@ def create_app(database):
     Sets up app for use
     Adds database configuration and the secret key
     '''
-    application.jinja_env.trim_blocks = True
-    application.jinja_env.lstrip_blocks = True
+    if database is not None and database != application.config['SQLALCHEMY_DATABASE_URI']:
+        # setup Database
+        application.config['SQLALCHEMY_DATABASE_URI'] = database
+        db.create_all()
 
-    # setup Database
-    application.config['SQLALCHEMY_DATABASE_URI'] = database
-    db.create_all()
+        # setup config values
+        with application.app_context():
+            # these settings are stored in the configuration table
+            # values here are defaults (and should all be strings or null)
+            # defaults will autopopulate the database when first initialized
+            # when run subsequently, they will be populated from the database
+            # only populated on startup, changes not applied until restart
+            config = {
+                # key used to encrypt cookies
+                'token': None,
+                'discord_client_id': None,
+                'discord_client_secret': None,
+            }
+            # get Config values from database
+            for name in config:
+                try:
+                    key = db.session.query(m.Config).filter_by(name=name).one()
+                    config[name] = key.value
+                except NoResultFound:
+                    key = m.Config(name=name, value=config[name])
+                    db.session.add(key)
+                    db.session.commit()
 
-    # setup config values
-    with application.app_context():
-        # these settings are stored in the configuration table
-        # values here are defaults (and should all be strings or null)
-        # defaults will autopopulate the database when first initialized
-        # when run subsequently, they will be populated from the database
-        # only populated on startup, changes not applied until restart
-        config = {
-            # key used to encrypt cookies
-            'token': None,
-            'discord_client_id': None,
-            'discord_client_secret': None,
-        }
-        # get Config values from database
-        for name in config:
-            try:
-                key = db.session.query(m.Config).filter_by(name=name).one()
-                config[name] = key.value
-            except NoResultFound:
-                key = m.Config(name=name, value=config[name])
-                db.session.add(key)
-                db.session.commit()
-
-        application.config.update(config)
-        application.secret_key = application.config['token']
+            application.config.update(config)
+            application.secret_key = application.config['token']
 
 
 @application.context_processor
@@ -536,15 +537,16 @@ def logout():
 
 # ----#-   Main
 
+create_app(os.environ.get('DB', None))  # default database setup
 
-def main():
+if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))  # default port
     parser = argparse.ArgumentParser(
         description='Tutoring Portal Server',
         epilog='The server runs locally on port %d if PORT is not specified.'
         % port)
     parser.add_argument(
-        'database', nargs='?', default=os.environ.get('DB', 'sqlite:///:memory:'),
+        'database', nargs='?',
         help='The database url to be accessed')
     parser.add_argument(
         '-p, --port', dest='port', type=int,
@@ -567,15 +569,9 @@ def main():
     if args.reload:
         application.config['TEMPLATES_AUTO_RELOAD'] = True
 
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'  # possibly insecure
-
     application.run(
         host='0.0.0.0',
         port=args.port,
         debug=args.debug,
         use_reloader=args.reload,
     )
-
-
-if __name__ == '__main__':
-    main()

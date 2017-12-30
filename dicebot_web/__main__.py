@@ -131,6 +131,7 @@ def context():
         m=m,
         str=str,
         len=len,
+        AUTHORIZATION_BASE_URL=AUTHORIZATION_BASE_URL,
     )
 
 

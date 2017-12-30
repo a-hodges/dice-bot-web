@@ -66,35 +66,6 @@ def get_user(token=None):
     return user if 'id' in user else None, discord
 
 
-def get_character():
-    '''
-    Uses character data and request arguments to select a character
-
-    If successful returns a character
-    If unsuccessful calls an abort function
-    '''
-    if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
-        args = request.form
-    else:
-        args = request.args
-
-    user, discord = get_user(session.get('oauth2_token'))
-    if not user:
-        abort(403)
-
-    guild_id = args.get('server')
-
-    if not guild_id:
-        abort(400)
-
-    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=guild_id).one_or_none()
-
-    if not character:
-        abort(400)
-
-    return character, True
-
-
 def entry2json(entry):
     entry = entry.dict()
     for key, value in entry.items():
@@ -346,15 +317,43 @@ def new_character():
 
 
 class Object (Resource):
+    def get_character(self):
+        '''
+        Uses character data and request arguments to select a character
+
+        If successful returns a character
+        If unsuccessful calls an abort function
+        '''
+        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            args = request.form
+        else:
+            args = request.args
+
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user:
+            abort(403)
+
+        guild_id = args.get('server')
+
+        if not guild_id:
+            abort(400)
+
+        character = db.session.query(m.Character).filter_by(user=user.get('id'), server=guild_id).one_or_none()
+
+        if not character:
+            abort(400)
+
+        return character, True
+
     def get(self):
-        character, successful = get_character()
+        character, successful = self.get_character()
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)\
             .order_by(self.order).all()
         return table2json(data)
 
     def post(self):
-        character, successful = get_character()
+        character, successful = self.get_character()
         item = self.type(character_id=character.id)
         for field, cast in self.fields.items():
             if cast == int:
@@ -378,7 +377,7 @@ class Object (Resource):
         id = request.form.get('id')
         if id is None:
             abort(400)
-        character, successful = get_character()
+        character, successful = self.get_character()
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
         for field, cast in self.fields.items():
             if field in request.form:
@@ -399,7 +398,7 @@ class Object (Resource):
         id = request.form.get('id')
         if id is None:
             abort(400)
-        character, successful = get_character()
+        character, successful = self.get_character()
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
         db.session.delete(item)
         db.session.commit()

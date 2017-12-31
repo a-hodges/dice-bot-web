@@ -18,7 +18,7 @@
         </a></li>
         {% endfor %}
     </ul>
-    <h2>New Character:</h2>
+    <h2>Claim Character:</h2>
     <ul class="list-group">
         {% for guild in other_guilds %}
         <li class="list-group-item"><a href="{{ url_for('pick_character', server=guild['id']) }}">

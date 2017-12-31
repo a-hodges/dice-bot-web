@@ -3,6 +3,7 @@
 import os
 import argparse
 import enum
+from operator import itemgetter
 
 from flask import (
     Flask,
@@ -215,11 +216,13 @@ def index():
     if user:
         user['avatar'] = get_user_avatar(user)
         characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
-        guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
-        guilds = [guilds.get(str(character.server), {}) for character in characters]
+        characters = {str(c.server): c for c in characters}
+        guilds = discord.get(API_BASE_URL + '/users/@me/guilds').json()
+        guilds = sorted(guilds, key=itemgetter('name'))
+        print(guilds)
         for guild in guilds:
             guild['icon'] = get_guild_icon(guild)
-        characters = zip(characters, guilds)
+        characters = [(characters[guild['id']], guild) for guild in guilds if guild['id'] in characters]
     else:
         characters = None
 

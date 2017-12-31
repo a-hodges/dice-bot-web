@@ -5,6 +5,7 @@ import argparse
 import enum
 from operator import itemgetter
 
+import requests
 from flask import (
     Flask,
     abort,
@@ -218,6 +219,7 @@ def index():
         characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
         characters = {str(c.server): c for c in characters}
         guilds = discord.get(API_BASE_URL + '/users/@me/guilds').json()
+        guilds = filter(bot_in_guild, guilds)
         guilds = sorted(guilds, key=itemgetter('name'))
         for guild in guilds:
             guild['icon'] = get_guild_icon(guild)
@@ -576,6 +578,20 @@ def logout():
         '&#10004; Successfully logged out. ' +
         'You will need to log out of Discord separately.')
     return redirect(url_for('index'))
+
+
+def bot_in_guild(guild):
+    '''
+    Returns whether the bot is in the given guild
+    The guild should be a dict as returned by discord Guild resources
+    '''
+    guild = requests.get(
+        API_BASE_URL + '/guilds/{}'.format(guild.get('id')),
+        headers={
+            'Authorization': 'Bot ' + application.config['token'],
+        },
+    )
+    return bool(guild)
 
 
 # ----#-   Main

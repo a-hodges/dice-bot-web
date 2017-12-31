@@ -382,17 +382,17 @@ class Object (Resource):
         if not character:
             abort(400)
 
-        return character, True
+        return character
 
     def get(self):
-        character, successful = self.get_character()
+        character = self.get_character()
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)\
             .order_by(self.order).all()
         return table2json(data)
 
     def post(self):
-        character, successful = self.get_character()
+        character = self.get_character()
         item = self.type(character_id=character.id)
         for field, cast in self.fields.items():
             if cast == int:
@@ -416,8 +416,8 @@ class Object (Resource):
         id = request.form.get('id')
         if id is None:
             abort(400)
-        character, successful = self.get_character()
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
+        character = self.get_character()
         for field, cast in self.fields.items():
             if field in request.form:
                 if cast == int:
@@ -432,14 +432,13 @@ class Object (Resource):
         except IntegrityError:
             db.session.rollback()
             abort(409)
-        else:
-            return entry2json(item)
+        return entry2json(item)
 
     def delete(self):
         id = request.form.get('id')
         if id is None:
             abort(400)
-        character, successful = self.get_character()
+        character = self.get_character()
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
         db.session.delete(item)
         db.session.commit()

@@ -416,8 +416,11 @@ class Object (Resource):
         id = request.form.get('id')
         if id is None:
             abort(400)
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
         character = self.get_character()
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
+        if item is None:
+            abort(404)
+
         for field, cast in self.fields.items():
             if field in request.form:
                 if cast == int:

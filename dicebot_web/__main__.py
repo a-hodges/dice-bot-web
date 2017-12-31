@@ -221,6 +221,7 @@ def index():
         guilds = sorted(guilds, key=itemgetter('name'))
         for guild in guilds:
             guild['icon'] = get_guild_icon(guild)
+        other_guilds = [guild for guild in guilds if guild['id'] not in characters]
         characters = [(characters[guild['id']], guild) for guild in guilds if guild['id'] in characters]
     else:
         characters = None
@@ -230,6 +231,7 @@ def index():
         title='Dice-Bot',
         user=user,
         characters=characters,
+        other_guilds=other_guilds,
     )
 
 
@@ -283,6 +285,60 @@ def unclaim():
     character = db.session.query(m.Character).filter_by(user=user.get('id'), server=server).one_or_none()
     character.user = None
     db.session.commit()
+
+    return redirect(url_for('index'))
+
+
+@application.route('/pick_character')
+def pick_character():
+    '''
+    Pick a character from the server or create a new one
+    '''
+    user, discord = get_user(session.get('oauth2_token'))
+    if not user:
+        abort(403)
+
+    guild = request.args.get('server')
+    if not guild:
+        abort(400)
+
+    user['avatar'] = get_user_avatar(user)
+    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guild = guilds.get(guild, {})
+    guild['icon'] = get_guild_icon(guild)
+
+    characters = db.session.query(m.Character).filter_by(server=guild['id'], user=None).order_by(m.Character.name).all()
+
+    return render_template(
+        'pick_character.html',
+        user=user,
+        title=guild['name'],
+        guild=guild,
+        characters=characters,
+    )
+
+
+@application.route('/claim_character')
+def claim_character():
+    '''
+    Claim an existing character
+    '''
+    user, discord = get_user(session.get('oauth2_token'))
+    if not user:
+        abort(403)
+
+    server = request.args.get('server')
+    name = request.args.get('character')
+    if not server or not name:
+        abort(400)
+
+    character = db.session.query(m.Character).filter_by(name=name, server=server).one_or_none()
+
+    if character.user is not None:
+        abort(409)
+    else:
+        character.user = user['id']
+        db.session.commit()
 
     return redirect(url_for('index'))
 

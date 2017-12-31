@@ -225,6 +225,7 @@ def index():
         characters = [(characters[guild['id']], guild) for guild in guilds if guild['id'] in characters]
     else:
         characters = None
+        other_guilds = None
 
     return render_template(
         'index.html',

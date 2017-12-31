@@ -396,7 +396,7 @@ class Object (Resource):
         item = self.type(character_id=character.id)
         for field, cast in self.fields.items():
             if cast == int:
-                data = request.form.get(field, 0)
+                data = request.form.get(field) or 0
             elif isinstance(cast, enum.EnumMeta):
                 data = cast[request.form.get(field, 'other')]
             else:
@@ -420,7 +420,9 @@ class Object (Resource):
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
         for field, cast in self.fields.items():
             if field in request.form:
-                if isinstance(cast, enum.EnumMeta):
+                if cast == int:
+                    setattr(item, field, cast(request.form[field] or 0))
+                elif isinstance(cast, enum.EnumMeta):
                     setattr(item, field, cast[request.form[field]])
                 else:
                     setattr(item, field, cast(request.form[field]))

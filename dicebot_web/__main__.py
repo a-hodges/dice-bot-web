@@ -58,7 +58,7 @@ def get_guild_icon(guild, size=32):
     '''
     Gets the url for the guild's icon
     '''
-    if guild['icon'] is None:
+    if guild.get('icon') is None:
         return 'https://cdn.discordapp.com/embed/avatars/0.png?size={1}'.format(guild, size)
     else:
         return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)

@@ -442,9 +442,10 @@ class Object (Resource):
         if id is None:
             abort(400)
         character = self.get_character()
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one()
-        db.session.delete(item)
-        db.session.commit()
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
+        if item is not None:
+            db.session.delete(item)
+            db.session.commit()
         return {'message': 'successful'}
 
 

@@ -246,7 +246,7 @@ function Spells(props) {
                     </div>
                     <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
                 </div>
-                <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
+                <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
             </div>
         )}
     />
@@ -265,7 +265,7 @@ function Inventory(props) {
                     </div>
                     <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
                 </div>
-                <textarea className="form-control" name="description" value={item.description} onChange={updateItem} />
+                <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
             </div>
         )}
     />

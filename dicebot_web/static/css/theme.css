@@ -12,3 +12,7 @@ img.icon-lg {
     height: 128px;
     width: 128px;
 }
+
+.form-control {
+    min-width: 5rem;
+}

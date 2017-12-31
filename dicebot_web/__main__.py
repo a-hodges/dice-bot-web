@@ -334,7 +334,15 @@ def claim_character():
 
     character = db.session.query(m.Character).filter_by(name=name, server=server).one_or_none()
 
-    if character.user is not None:
+    if character is None:
+        character = m.Character(name=name, server=server, user=user['id'])
+        try:
+            db.session.add(character)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+    elif character.user is not None:
         abort(409)
     else:
         character.user = user['id']

@@ -98,7 +98,10 @@ class Group extends React.Component {
             dataType: 'json',
             data: data,
             error: (jqXHR) => {
-                if (jqXHR.status == 409) {
+                if (jqXHR.status == 404) {
+                    this.setState((prevState, props) => ({data: prevState.data.deleteItem(item)}))
+                }
+                else if (jqXHR.status == 409) {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {

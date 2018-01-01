@@ -491,7 +491,7 @@ api.add_resource(Resource, '/resources')
 
 class Spell (Object):
     type = m.Spell
-    order = 'name,level'
+    order = 'level,name'
     fields = {
         'name': str,
         'level': int,

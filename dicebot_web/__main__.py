@@ -3,6 +3,7 @@
 import os
 import argparse
 import enum
+import datetime
 from operator import itemgetter
 
 import requests
@@ -107,8 +108,11 @@ def create_app(database):
             config = {
                 # key used to encrypt cookies
                 'token': None,
+                # discord oauth2 id and secret
                 'discord_client_id': None,
                 'discord_client_secret': None,
+                # cookie lifetime in days
+                'PERMANENT_SESSION_LIFETIME': '1',
             }
             # get Config values from database
             for name in config:
@@ -119,9 +123,14 @@ def create_app(database):
                     key = m.Config(name=name, value=config[name])
                     db.session.add(key)
                     db.session.commit()
-
             application.config.update(config)
+            application.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(int(application.config['PERMANENT_SESSION_LIFETIME']))
             application.secret_key = application.config['token']
+
+
+@application.before_request
+def make_session_permanent():
+    session.permanent = True
 
 
 @application.context_processor

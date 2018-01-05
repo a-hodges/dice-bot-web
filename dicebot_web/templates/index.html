@@ -17,17 +17,20 @@
                 <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
                 {{ guild.get('name') }}: {{ character.name }}
             </a>
-            <a class="btn btn-info badge badge-info badge-pill" href="{{ url_for('list_characters', server=character.server) }}">other characters</a>
+            <a class="btn btn-info badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
         </li>
         {% endfor %}
     </ul>
     <h2>Claim Character:</h2>
     <ul class="list-group">
         {% for guild in other_guilds %}
-        <li class="list-group-item"><a href="{{ url_for('pick_character', server=guild['id']) }}">
-            <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
-            {{ guild.get('name') }}
-        </a></li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('pick_character', server=guild['id']) }}">
+                <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
+                {{ guild.get('name') }}
+            </a>
+            <a class="btn btn-info badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
+        </li>
         {% endfor %}
     </ul>
     {% endif %}

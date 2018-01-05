@@ -63,7 +63,7 @@ class Group extends React.Component {
     }
 
     addItem() {
-        let name = prompt("Please enter the name of the new item:", "")
+        const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
         const url = '/' + this.slug
         this.addRequest = $.ajax({
@@ -128,7 +128,7 @@ class Group extends React.Component {
     render() {
         let body
         if (this.state.data !== undefined) {
-            let list = this.state.data.map((item) => (
+            const list = this.state.data.map((item) => (
                 <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} display={this.props.display} item={item} />
             ))
             body = (
@@ -182,93 +182,98 @@ class GroupItem extends React.Component {
 }
 
 function Constants(props) {
+    const display = (item, updateItem) => (
+        <div className="input-group">
+            <div className="input-group-prepend">
+                <span className="input-group-text">{item.name}:</span>
+            </div>
+            <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
+        </div>
+    )
     return <Group
         title="Constants"
         character_id={props.character_id} onError={props.onError}
-        display={(item, updateItem) => (
-            <div className="input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text">{item.name}:</span>
-                </div>
-                <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
-            </div>
-        )}
+        display={display}
     />
 }
 
 function Rolls(props) {
+    const display = (item, updateItem) => (
+        <div className="input-group">
+            <div className="input-group-prepend">
+                <span className="input-group-text">{item.name}:</span>
+            </div>
+            <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
+        </div>
+    )
     return <Group
         title="Rolls"
         character_id={props.character_id} onError={props.onError}
-        display={(item, updateItem) => (
-            <div className="input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text">{item.name}:</span>
-                </div>
-                <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
-            </div>
-        )}
+        display={display}
     />
 }
 
 function Resources(props) {
+    const display = (item, updateItem) => (
+        <div className="input-group">
+            <div className="input-group-prepend">
+                <span className="input-group-text">{item.name}:</span>
+            </div>
+            <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
+            <span className="input-group-text">/</span>
+            <input className="form-control" type="number" name="max" value={item.max} onChange={updateItem} />
+            <span className="input-group-text">per</span>
+            <select className="form-control" name="recover" value={item.recover} onChange={updateItem}>
+                <option value="short">short rest</option>
+                <option value="long">long rest</option>
+                <option value="other">other</option>
+            </select>
+        </div>
+    )
     return <Group
         title="Resources"
         character_id={props.character_id} onError={props.onError}
-        display={(item, updateItem) => (
-            <div className="input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text">{item.name}:</span>
-                </div>
-                <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
-                <span className="input-group-text">/</span>
-                <input className="form-control" type="number" name="max" value={item.max} onChange={updateItem} />
-                <span className="input-group-text">per</span>
-                <select className="form-control" name="recover" value={item.recover} onChange={updateItem}>
-                    <option value="short">short rest</option>
-                    <option value="long">long rest</option>
-                    <option value="other">other</option>
-                </select>
-            </div>
-        )}
+        display={display}
     />
 }
 
 function Spells(props) {
+    const display = (item, updateItem) => (
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">{item.name}</span>
+                    <span className="input-group-text">level:</span>
+                </div>
+                <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
+            </div>
+            <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
+        </div>
+    )
     return <Group
         title="Spells"
         character_id={props.character_id} onError={props.onError}
-        display={(item, updateItem) => (
-            <div className="w-100">
-                <div className="input-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">{item.name}</span>
-                        <span className="input-group-text">level:</span>
-                    </div>
-                    <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
-                </div>
-                <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
-            </div>
-        )}
+        display={display}
     />
 }
 
 function Inventory(props) {
+    const display = (item, updateItem) => (
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">{item.name}</span>
+                    <span className="input-group-text">quantity:</span>
+                </div>
+                <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
+            </div>
+            <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
+        </div>
+    )
     return <Group
         title="Inventory"
         character_id={props.character_id} onError={props.onError}
-        display={(item, updateItem) => (
-            <div className="w-100">
-                <div className="input-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">{item.name}</span>
-                        <span className="input-group-text">quantity:</span>
-                    </div>
-                    <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
-                </div>
-                <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
-            </div>
-        )}
+        display={display}
     />
 }
 

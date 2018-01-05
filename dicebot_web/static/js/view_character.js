@@ -45,7 +45,7 @@ class Group extends React.Component {
     render() {
         let body
         if (this.state.data !== undefined) {
-            let list = this.state.data.map((item) => (
+            const list = this.state.data.map((item) => (
                 <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.display(item)}
                 </li>
@@ -69,26 +69,29 @@ class Group extends React.Component {
 }
 
 function Constants(props) {
+    const display = (item) => <span>{item.name}: {item.value}</span>
     return <Group
         title="Constants"
         character_id={props.character_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.value}</span>}
+        display={display}
     />
 }
 
 function Rolls(props) {
+    const display = (item) => <span>{item.name}: {item.expression}</span>
     return <Group
         title="Rolls"
         character_id={props.character_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.expression}</span>}
+        display={display}
     />
 }
 
 function Resources(props) {
+    const display = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
     return <Group
         title="Resources"
         character_id={props.character_id} onError={props.onError}
-        display={(item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>}
+        display={display}
     />
 }
 
@@ -102,28 +105,30 @@ function lines(str) {
 }
 
 function Spells(props) {
+    const display = (item) => (
+        <div>
+            <span>{item.name} | level: {item.level}</span>
+            {lines(item.description)}
+        </div>
+    )
     return <Group
         title="Spells"
         character_id={props.character_id} onError={props.onError}
-        display={(item) => (
-            <div>
-                <span>{item.name} | level: {item.level}</span>
-                {lines(item.description)}
-            </div>
-        )}
+        display={display}
     />
 }
 
 function Inventory(props) {
+    const display = (item) => (
+        <div>
+            <span>{item.name} | quantity: {item.number}</span>
+            {lines(item.description)}
+        </div>
+    )
     return <Group
         title="Inventory"
         character_id={props.character_id} onError={props.onError}
-        display={(item) => (
-            <div>
-                <span>{item.name} | quantity: {item.number}</span>
-                {lines(item.description)}
-            </div>
-        )}
+        display={display}
     />
 }
 

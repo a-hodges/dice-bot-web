@@ -3,24 +3,32 @@
 {% set react = True %}
 
 {% block js %}
+{% if readonly %}
+<script type="text/babel" src="{{ url_for('static', filename='js/view_character.js') }}"></script>
+{% else %}
 <script type="text/babel" src="{{ url_for('static', filename='js/character.js') }}"></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <h1>{{ character.name }}</h1>
+    {% if not readonly %}
     <p><a href="{{ url_for('index') }}">
         User:
         <img class="icon" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
         {{ user.get('username') }}
     </a></p>
-    <p>
+    {% endif %}
+    <p><a href="{{ url_for('list_characters', server=character.server) }}">
         Server:
         <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
         {{ guild.get('name') }}
-    </p>
+    </a></p>
     <div id="root"></div>
+    {% if not readonly %}
     <br>
     <div><a class="btn btn-danger" href="{{ url_for('unclaim', character=character.id) }}">Unclaim character</a></div>
+    {% endif %}
 </div>
 {% endblock %}

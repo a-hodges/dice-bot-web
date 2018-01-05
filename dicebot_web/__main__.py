@@ -254,7 +254,7 @@ def character():
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
-        abort(403)
+        user = {}
 
     character_id = request.args.get('character')
     if not character_id:
@@ -263,8 +263,7 @@ def character():
     character = db.session.query(m.Character).get(character_id)
     if not character:
         abort(404)
-    if str(character.user) != user['id']:
-        abort(403)
+    readonly = str(character.user) != user.get('id')
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -277,6 +276,36 @@ def character():
         title=character.name,
         character=character,
         guild=guild,
+        readonly=readonly,
+    )
+
+
+@application.route('/list_characters')
+def list_characters():
+    '''
+    Lists all of the characters in a server
+    '''
+    user, discord = get_user(session.get('oauth2_token'))
+
+    guild = request.args.get('server')
+    if not guild:
+        abort(400)
+
+    user['avatar'] = get_user_avatar(user)
+    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guild = guilds.get(guild, {})
+    guild['icon'] = get_guild_icon(guild, size=64)
+    if not guild:
+        abort(403)
+
+    characters = db.session.query(m.Character).filter_by(server=guild['id']).order_by(m.Character.name).all()
+
+    return render_template(
+        'list_characters.html',
+        user=user,
+        title=guild['name'],
+        guild=guild,
+        characters=characters,
     )
 
 
@@ -322,6 +351,8 @@ def pick_character():
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
     guild = guilds.get(guild, {})
     guild['icon'] = get_guild_icon(guild)
+    if not guild:
+        abort(403)
 
     characters = db.session.query(m.Character).filter_by(server=guild['id'], user=None).order_by(m.Character.name).all()
 

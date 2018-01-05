@@ -8,15 +8,6 @@ Array.prototype.updateItem = function(oldItem, newItem) {
     return this.slice(0,index).concat([newItem], this.slice(index+1))
 }
 
-function paragraphs(str) {
-    if (str) {
-        return <p>{str.split("\n").join(<br />)}</p>
-    }
-    else {
-        return ""
-    }
-}
-
 function Error(props) {
     return (
         <p className="alert alert-danger">{props.children}</p>
@@ -111,6 +102,15 @@ function Resources(props) {
     />
 }
 
+function lines(str) {
+    if (str) {
+        return str.split("\n").map((item, i) => <span key={i}><br /> {item}</span>)
+    }
+    else {
+        return ""
+    }
+}
+
 function Spells(props) {
     return <Group
         title="Spells"
@@ -118,7 +118,7 @@ function Spells(props) {
         display={(item) => (
             <div>
                 <span>{item.name} | level: {item.level}</span>
-                {paragraphs(item.description)}
+                {lines(item.description)}
             </div>
         )}
     />
@@ -131,7 +131,7 @@ function Inventory(props) {
         display={(item) => (
             <div>
                 <span>{item.name} | quantity: {item.number}</span>
-                {paragraphs(item.description)}
+                {lines(item.description)}
             </div>
         )}
     />

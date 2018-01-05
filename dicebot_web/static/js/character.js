@@ -98,7 +98,7 @@ class Group extends React.Component {
                     this.criticalError("Failed to update item")
                 }
             },
-            // success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.map((item) => (item.id == newItem.id) ? newItem : item)})),
+            success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.map((item) => (item.id == newItem.id) ? newItem : item)})),
         })
     }
 

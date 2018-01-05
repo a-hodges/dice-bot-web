@@ -151,12 +151,8 @@ class GroupItem extends React.Component {
     }
 
     updateItem(e) {
-        this.setState({[e.target.name]: e.target.value})
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        const changed = Object.keys(this.state).filter(key => this.state[key] !== prevState[key])
-        this.props.updateItem(this.state, ...changed)
+        const name = e.target.name
+        this.setState({[name]: e.target.value}, () => this.props.updateItem(this.state, name))
     }
 
     deleteItem(e) {

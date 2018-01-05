@@ -1,13 +1,3 @@
-Array.prototype.deleteItem = function(item) {
-    const index = this.indexOf(item)
-    return this.slice(0,index).concat(this.slice(index+1))
-}
-
-Array.prototype.updateItem = function(oldItem, newItem) {
-    const index = this.indexOf(oldItem)
-    return this.slice(0,index).concat([newItem], this.slice(index+1))
-}
-
 function Error(props) {
     return (
         <p className="alert alert-danger">{props.children}</p>

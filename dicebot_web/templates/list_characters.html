@@ -1,17 +1,10 @@
 {% extends "base.html" %}
+{% from "base.html" import show_user, show_guild %}
 
 {% block content %}
 <div class="container">
-    <h1>
-        Server:
-        <img class="icon-md" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
-        {{ guild.get('name') }}
-    </h1>
-    <p><a href="{{ url_for('index') }}">
-        User:
-        <img class="icon" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
-        {{ user.get('username') }}
-    </a></p>
+    {{ show_guild(guild, size='md', link=False) }}
+    {{ show_user(user) }}
     <h2>Select a character:</h2>
     <ul class="list-group">
         {% for character in characters %}

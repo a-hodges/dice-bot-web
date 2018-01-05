@@ -1,14 +1,11 @@
 {% extends "base.html" %}
+{% from "base.html" import show_user, show_guild %}
 
 {% block content %}
 <div class="container">
     <h1>Dice-bot</h1>
     {% if user %}
-    <p>
-        User:
-        <img class="icon" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
-        {{ user.get('username') }}
-    </p>
+    {{ show_user(user) }}
     <h2>Characters:</h2>
     <ul class="list-group">
         {% for character, guild in characters %}

@@ -256,12 +256,11 @@ def character():
     if not user:
         abort(403)
 
-    character = request.args.get('character')
-    if not character:
+    character_id = request.args.get('character')
+    if not character_id:
         abort(400)
 
-    character = db.session.query(m.Character).get(character)
-
+    character = db.session.query(m.Character).get(character_id)
     if not character:
         abort(404)
     if str(character.user) != user['id']:
@@ -287,15 +286,19 @@ def unclaim():
     Removes a claim on a specific character
     '''
     user, discord = get_user(session.get('oauth2_token'))
-
-    server = request.args.get('server')
-
     if not user:
         abort(403)
-    if not server:
+
+    character_id = request.args.get('character')
+    if not character_id:
         abort(400)
 
-    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=server).one_or_none()
+    character = db.session.query(m.Character).get(character_id)
+    if not character:
+        abort(404)
+    if str(character.user) != user['id']:
+        abort(403)
+
     character.user = None
     db.session.commit()
 

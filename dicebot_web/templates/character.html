@@ -21,6 +21,6 @@
     </p>
     <div id="root"></div>
     <br>
-    <div><a class="btn btn-danger" href="{{ url_for('unclaim', server=character.server) }}">Unclaim character</a></div>
+    <div><a class="btn btn-danger" href="{{ url_for('unclaim', character=character.id) }}">Unclaim character</a></div>
 </div>
 {% endblock %}

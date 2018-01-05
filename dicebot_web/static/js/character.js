@@ -147,22 +147,23 @@ class GroupItem extends React.Component {
         super(props)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
-        this.state = props.item
     }
 
     updateItem(e) {
         const name = e.target.name
-        this.setState({[name]: e.target.value}, () => this.props.updateItem(this.state, name))
+        if (this.props.item[name] != e.target.value) {
+            this.props.updateItem(Object.assign(this.props.item, {[name]: e.target.value}), name)
+        }
     }
 
     deleteItem(e) {
-        this.props.deleteItem(this.state.id)
+        this.props.deleteItem(this.props.item.id)
     }
 
     render() {
         return (
             <li className="list-group-item d-flex justify-content-between align-items-center">
-                {this.props.display(this.state, this.updateItem)}
+                {this.props.display(this.props.item, this.updateItem)}
                 <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
             </li>
         )
@@ -175,7 +176,7 @@ function Constants(props) {
             <div className="input-group-prepend">
                 <span className="input-group-text">{item.name}:</span>
             </div>
-            <input className="form-control" type="number" name="value" value={item.value} onChange={updateItem} />
+            <input className="form-control" type="number" name="value" defaultValue={item.value} onBlur={updateItem} />
         </div>
     )
     return <Group
@@ -191,7 +192,7 @@ function Rolls(props) {
             <div className="input-group-prepend">
                 <span className="input-group-text">{item.name}:</span>
             </div>
-            <input className="form-control" type="text" name="expression" value={item.expression} onChange={updateItem} />
+            <input className="form-control" type="text" name="expression" defaultValue={item.expression} onBlur={updateItem} />
         </div>
     )
     return <Group
@@ -207,11 +208,11 @@ function Resources(props) {
             <div className="input-group-prepend">
                 <span className="input-group-text">{item.name}:</span>
             </div>
-            <input className="form-control" type="number" name="current" value={item.current} onChange={updateItem} />
+            <input className="form-control" type="number" name="current" defaultValue={item.current} onBlur={updateItem} />
             <span className="input-group-text">/</span>
-            <input className="form-control" type="number" name="max" value={item.max} onChange={updateItem} />
+            <input className="form-control" type="number" name="max" defaultValue={item.max} onBlur={updateItem} />
             <span className="input-group-text">per</span>
-            <select className="form-control" name="recover" value={item.recover} onChange={updateItem}>
+            <select className="form-control" name="recover" defaultValue={item.recover} onBlur={updateItem}>
                 <option value="short">short rest</option>
                 <option value="long">long rest</option>
                 <option value="other">other</option>
@@ -233,9 +234,9 @@ function Spells(props) {
                     <span className="input-group-text">{item.name}</span>
                     <span className="input-group-text">level:</span>
                 </div>
-                <input className="form-control" type="number" name="level" value={item.level} onChange={updateItem} />
+                <input className="form-control" type="number" name="level" defaultValue={item.level} onBlur={updateItem} />
             </div>
-            <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
+            <textarea className="form-control" name="description" defaultValue={item.description || ''} onBlur={updateItem} />
         </div>
     )
     return <Group
@@ -253,9 +254,9 @@ function Inventory(props) {
                     <span className="input-group-text">{item.name}</span>
                     <span className="input-group-text">quantity:</span>
                 </div>
-                <input className="form-control" type="number" name="number" value={item.number} onChange={updateItem} />
+                <input className="form-control" type="number" name="number" defaultValue={item.number} onBlur={updateItem} />
             </div>
-            <textarea className="form-control" name="description" value={item.description || ''} onChange={updateItem} />
+            <textarea className="form-control" name="description" defaultValue={item.description || ''} onBlur={updateItem} />
         </div>
     )
     return <Group

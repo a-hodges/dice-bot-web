@@ -110,7 +110,7 @@ class Group extends React.Component {
         })
     }
 
-    deleteItem(item) {
+    deleteItem(id) {
         const url = '/' + this.slug
         this.deleteRequest = $.ajax({
             url: url,
@@ -118,10 +118,10 @@ class Group extends React.Component {
             dataType: 'json',
             data: {
                 character: this.props.character_id,
-                id: item.id,
+                id: id,
             },
             error: () => this.criticalError("Failed to remove item"),
-            success: () => this.setState((prevState, props) => ({data: prevState.data.deleteItem(item)})),
+            success: () => this.setState((prevState, props) => ({data: prevState.data.filter((item) => item.id != id)})),
         })
     }
 
@@ -168,7 +168,7 @@ class GroupItem extends React.Component {
     }
 
     deleteItem(e) {
-        this.props.deleteItem(this.state)
+        this.props.deleteItem(this.state.id)
     }
 
     render() {

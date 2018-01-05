@@ -1,11 +1,3 @@
-Array.prototype.deleteItem = function(item) {
-    return this.filter((i) => i != item)
-}
-
-Array.prototype.updateItem = function(oldItem, newItem) {
-    return this.map((i) => (i == oldItem) ? newItem : i)
-}
-
 function Error(props) {
     return (
         <p className="alert alert-danger">{props.children}</p>
@@ -97,7 +89,7 @@ class Group extends React.Component {
             data: data,
             error: (jqXHR) => {
                 if (jqXHR.status == 404) {
-                    this.setState((prevState, props) => ({data: prevState.data.deleteItem(item)}))
+                    this.setState((prevState, props) => ({data: prevState.data.filter((i) => i.id != item.id)}))
                 }
                 else if (jqXHR.status == 409) {
                     alert("There is already an item in " + this.props.title + " with the given name")

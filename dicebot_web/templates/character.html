@@ -19,9 +19,5 @@
     {% endif %}
     {{ show_guild(guild) }}
     <div id="root"></div>
-    {% if not readonly %}
-    <br>
-    <div><a class="btn btn-danger" href="{{ url_for('unclaim', character=character.id) }}">Unclaim character</a></div>
-    {% endif %}
 </div>
 {% endblock %}

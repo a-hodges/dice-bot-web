@@ -298,6 +298,8 @@ class Character extends React.Component {
                     <Resources character_id={this.props.character_id} onError={this.error} />
                     <Spells character_id={this.props.character_id} onError={this.error} />
                     <Inventory character_id={this.props.character_id} onError={this.error} />
+                    <br />
+                    <div><a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a></div>
                 </div>
             )
         }

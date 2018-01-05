@@ -86,7 +86,7 @@ class Group extends React.Component {
         })
     }
 
-    updateItem(item, updated) {
+    updateItem(item, ...updated) {
         const url = '/' + this.slug
         const data = {character: this.props.character_id, id: item.id}
         updated.map(key => data[key] = item[key])
@@ -164,7 +164,7 @@ class GroupItem extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         const changed = Object.keys(this.state).filter(key => this.state[key] !== prevState[key])
-        this.props.updateItem(this.state, changed)
+        this.props.updateItem(this.state, ...changed)
     }
 
     deleteItem(e) {

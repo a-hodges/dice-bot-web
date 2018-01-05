@@ -212,7 +212,7 @@ function Resources(props) {
             <span className="input-group-text">/</span>
             <input className="form-control" type="number" name="max" defaultValue={item.max} onBlur={updateItem} />
             <span className="input-group-text">per</span>
-            <select className="form-control" name="recover" defaultValue={item.recover} onBlur={updateItem}>
+            <select className="form-control" name="recover" defaultValue={item.recover} onChange={updateItem}>
                 <option value="short">short rest</option>
                 <option value="long">long rest</option>
                 <option value="other">other</option>

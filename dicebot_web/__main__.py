@@ -401,8 +401,12 @@ class Object (Resource):
     def get(self):
         character = self.get_character(secure=False)
         data = db.session.query(self.type)\
-            .filter_by(character_id=character.id)\
-            .order_by(self.order).all()
+            .filter_by(character_id=character.id)
+        if isinstance(self.order, tuple):
+            data = data.order_by(*self.order)
+        else:
+            data = data.order_by(self.order)
+        data = data.all()
         return table2json(data)
 
     def post(self):
@@ -503,7 +507,7 @@ api.add_resource(Resource, '/resources')
 
 class Spell (Object):
     type = m.Spell
-    order = 'level,name'
+    order = ('level', 'name')  # 'level,name'
     fields = {
         'name': str,
         'level': int,

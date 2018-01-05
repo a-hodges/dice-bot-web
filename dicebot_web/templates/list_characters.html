@@ -5,7 +5,7 @@
 <div class="container">
     {{ show_guild(guild, size='md', link=False) }}
     {{ show_user(user) }}
-    <h2>Select a character:</h2>
+    <h2>View character:</h2>
     <ul class="list-group">
         {% for character in characters %}
         <li class="list-group-item"><a href="{{ url_for('character', character=character.id) }}">

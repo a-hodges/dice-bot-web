@@ -253,18 +253,19 @@ def character():
     Character homepage, allows access to character attributes
     '''
     user, discord = get_user(session.get('oauth2_token'))
-
-    server = request.args.get('server')
-
     if not user:
         abort(403)
-    if not server:
-        abort(400)
 
-    character = db.session.query(m.Character).filter_by(user=user.get('id'), server=server).one_or_none()
-
+    character = request.args.get('character')
     if not character:
         abort(400)
+
+    character = db.session.query(m.Character).get(character)
+
+    if not character:
+        abort(404)
+    if str(character.user) != user['id']:
+        abort(403)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -367,7 +368,7 @@ def claim_character():
 
 
 class Object (Resource):
-    def get_character(self):
+    def get_character(self, secure=True):
         '''
         Uses character data and request arguments to select a character
 
@@ -379,24 +380,23 @@ class Object (Resource):
         else:
             args = request.args
 
-        user, discord = get_user(session.get('oauth2_token'))
-        if not user:
-            abort(403)
-
-        guild_id = args.get('server')
-
-        if not guild_id:
+        character_id = args.get('character')
+        if not character_id:
             abort(400)
 
-        character = db.session.query(m.Character).filter_by(user=user.get('id'), server=guild_id).one_or_none()
-
+        character = db.session.query(m.Character).get(character_id)
         if not character:
-            abort(400)
+            abort(404)
+
+        if secure:
+            user, discord = get_user(session.get('oauth2_token'))
+            if str(character.user) != user['id']:
+                abort(403)
 
         return character
 
     def get(self):
-        character = self.get_character()
+        character = self.get_character(secure=False)
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)\
             .order_by(self.order).all()

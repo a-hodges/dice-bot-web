@@ -42,7 +42,7 @@ class Group extends React.Component {
             type: 'GET',
             dataType: 'json',
             data: {
-                server: this.props.server_id,
+                character: this.props.character_id,
             },
             error: () => this.criticalError("Could not load data"),
             success: (data) => this.setState({data: data}),
@@ -73,7 +73,7 @@ class Group extends React.Component {
             type: 'POST',
             dataType: 'json',
             data: {
-                server: this.props.server_id,
+                character: this.props.character_id,
                 name: name,
             },
             error: (jqXHR) => {
@@ -90,7 +90,7 @@ class Group extends React.Component {
 
     updateItem(item, updated) {
         const url = '/' + this.slug
-        const data = {server: this.props.server_id, id: item.id}
+        const data = {character: this.props.character_id, id: item.id}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
             url: url,
@@ -119,7 +119,7 @@ class Group extends React.Component {
             type: 'DELETE',
             dataType: 'json',
             data: {
-                server: this.props.server_id,
+                character: this.props.character_id,
                 id: item.id,
             },
             error: () => this.criticalError("Failed to remove item"),
@@ -186,7 +186,7 @@ class GroupItem extends React.Component {
 function Constants(props) {
     return <Group
         title="Constants"
-        server_id={props.server_id} onError={props.onError}
+        character_id={props.character_id} onError={props.onError}
         display={(item, updateItem) => (
             <div className="input-group">
                 <div className="input-group-prepend">
@@ -201,7 +201,7 @@ function Constants(props) {
 function Rolls(props) {
     return <Group
         title="Rolls"
-        server_id={props.server_id} onError={props.onError}
+        character_id={props.character_id} onError={props.onError}
         display={(item, updateItem) => (
             <div className="input-group">
                 <div className="input-group-prepend">
@@ -216,7 +216,7 @@ function Rolls(props) {
 function Resources(props) {
     return <Group
         title="Resources"
-        server_id={props.server_id} onError={props.onError}
+        character_id={props.character_id} onError={props.onError}
         display={(item, updateItem) => (
             <div className="input-group">
                 <div className="input-group-prepend">
@@ -239,7 +239,7 @@ function Resources(props) {
 function Spells(props) {
     return <Group
         title="Spells"
-        server_id={props.server_id} onError={props.onError}
+        character_id={props.character_id} onError={props.onError}
         display={(item, updateItem) => (
             <div className="w-100">
                 <div className="input-group">
@@ -258,7 +258,7 @@ function Spells(props) {
 function Inventory(props) {
     return <Group
         title="Inventory"
-        server_id={props.server_id} onError={props.onError}
+        character_id={props.character_id} onError={props.onError}
         display={(item, updateItem) => (
             <div className="w-100">
                 <div className="input-group">
@@ -293,11 +293,11 @@ class Character extends React.Component {
         if (this.state.error === "") {
             return (
                 <div>
-                    <Constants server_id={this.props.server_id} onError={this.error} />
-                    <Rolls server_id={this.props.server_id} onError={this.error} />
-                    <Resources server_id={this.props.server_id} onError={this.error} />
-                    <Spells server_id={this.props.server_id} onError={this.error} />
-                    <Inventory server_id={this.props.server_id} onError={this.error} />
+                    <Constants character_id={this.props.character_id} onError={this.error} />
+                    <Rolls character_id={this.props.character_id} onError={this.error} />
+                    <Resources character_id={this.props.character_id} onError={this.error} />
+                    <Spells character_id={this.props.character_id} onError={this.error} />
+                    <Inventory character_id={this.props.character_id} onError={this.error} />
                 </div>
             )
         }
@@ -310,8 +310,8 @@ class Character extends React.Component {
 }
 
 const urlparams = new URLSearchParams(window.location.search)
-const server = urlparams.get("server")
+const character = urlparams.get("character")
 ReactDOM.render(
-    <Character server_id={server} />,
+    <Character character_id={character} />,
     document.getElementById("root")
 )

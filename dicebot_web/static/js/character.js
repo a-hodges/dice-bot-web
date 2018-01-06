@@ -1,15 +1,3 @@
-function Error(props) {
-    return (
-        <p className="alert alert-danger">{props.children}</p>
-    )
-}
-
-function Warning(props) {
-    return (
-        <p className="alert alert-warning">{props.children}</p>
-    )
-}
-
 class Group extends React.Component {
     constructor(props) {
         super(props)
@@ -333,7 +321,6 @@ class Character extends React.Component {
     }
 }
 
-const urlparams = new URLSearchParams(window.location.search)
 const character = urlparams.get("character")
 ReactDOM.render(
     <Character character_id={character} />,

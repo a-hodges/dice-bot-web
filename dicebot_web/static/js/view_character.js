@@ -1,15 +1,3 @@
-function Error(props) {
-    return (
-        <p className="alert alert-danger">{props.children}</p>
-    )
-}
-
-function Warning(props) {
-    return (
-        <p className="alert alert-warning">{props.children}</p>
-    )
-}
-
 class Group extends React.Component {
     constructor(props) {
         super(props)
@@ -95,15 +83,6 @@ function Resources(props) {
     />
 }
 
-function lines(str) {
-    if (str) {
-        return str.split("\n").map((item, i) => <span key={i}><br /> {item}</span>)
-    }
-    else {
-        return ""
-    }
-}
-
 function Spells(props) {
     const display = (item) => (
         <div>
@@ -167,7 +146,6 @@ class Character extends React.Component {
     }
 }
 
-const urlparams = new URLSearchParams(window.location.search)
 const character = urlparams.get("character")
 ReactDOM.render(
     <Character character_id={character} />,

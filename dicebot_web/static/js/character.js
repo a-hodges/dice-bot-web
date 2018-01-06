@@ -209,8 +209,8 @@ function Constants(props) {
     const readDisplay = (item) => <span>{item.name}: {item.value}</span>
     return <Group
         title="Constants"
-        character_id={props.character_id} onError={props.onError}
         editDisplay={display} readDisplay={readDisplay}
+        {...props}
     />
 }
 
@@ -234,8 +234,8 @@ function Rolls(props) {
     const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
     return <Group
         title="Rolls"
-        character_id={props.character_id} onError={props.onError}
         editDisplay={display} readDisplay={readDisplay}
+        {...props}
     />
 }
 
@@ -267,8 +267,8 @@ function Resources(props) {
     const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
     return <Group
         title="Resources"
-        character_id={props.character_id} onError={props.onError}
         editDisplay={display} readDisplay={readDisplay}
+        {...props}
     />
 }
 
@@ -296,8 +296,8 @@ function Spells(props) {
     )
     return <Group
         title="Spells"
-        character_id={props.character_id} onError={props.onError}
         editDisplay={display} readDisplay={readDisplay}
+        {...props}
     />
 }
 
@@ -325,8 +325,8 @@ function Inventory(props) {
     )
     return <Group
         title="Inventory"
-        character_id={props.character_id} onError={props.onError}
         editDisplay={display} readDisplay={readDisplay}
+        {...props}
     />
 }
 

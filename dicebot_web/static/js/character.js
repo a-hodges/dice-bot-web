@@ -111,10 +111,11 @@ class Group extends React.Component {
             const list = this.state.data.map((item) => (
                 <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} editDisplay={this.props.editDisplay} readDisplay={this.props.readDisplay} readOnly={this.props.readOnly} item={item} />
             ))
+            const addItem = (this.props.readOnly) ? "" : <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
             body = (
                 <ul className="list-group">
                     {list}
-                    <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
+                    {addItem}
                 </ul>
             )
         }

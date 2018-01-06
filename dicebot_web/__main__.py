@@ -11,6 +11,7 @@ from flask import (
     Flask,
     abort,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -399,6 +400,21 @@ def claim_character():
 
 
 # ----#-   REST endpoints
+
+
+@application.route('/owns_character', methods=['GET'])
+def owns_character():
+    user, discord = get_user(session.get('oauth2_token'))
+
+    character_id = request.args.get('character')
+    if not character_id:
+        abort(400)
+
+    character = db.session.query(m.Character).get(character_id)
+    if not character:
+        abort(404)
+
+    return jsonify({"readOnly": str(character.user) != user['id']})
 
 
 class Object (Resource):

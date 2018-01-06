@@ -125,7 +125,8 @@ def create_app(database):
                     db.session.add(key)
                     db.session.commit()
             application.config.update(config)
-            application.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(int(application.config['PERMANENT_SESSION_LIFETIME']))
+            application.config['PERMANENT_SESSION_LIFETIME'] = \
+                datetime.timedelta(int(application.config['PERMANENT_SESSION_LIFETIME']))
             application.secret_key = application.config['token']
 
 

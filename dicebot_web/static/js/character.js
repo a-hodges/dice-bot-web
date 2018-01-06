@@ -349,11 +349,11 @@ class Character extends React.Component {
         if (this.state.error === "") {
             return (
                 <div>
-                    <Constants character_id={this.props.character_id} onError={this.error} />
-                    <Rolls character_id={this.props.character_id} onError={this.error} />
-                    <Resources character_id={this.props.character_id} onError={this.error} />
-                    <Spells character_id={this.props.character_id} onError={this.error} />
-                    <Inventory character_id={this.props.character_id} onError={this.error} />
+                    <Constants onError={this.error} {...this.props} />
+                    <Rolls onError={this.error} {...this.props} />
+                    <Resources onError={this.error} {...this.props} />
+                    <Spells onError={this.error} {...this.props} />
+                    <Inventory onError={this.error} {...this.props} />
                     <br />
                     <div><a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a></div>
                 </div>

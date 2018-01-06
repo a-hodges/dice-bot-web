@@ -22,7 +22,7 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from requests_oauthlib import OAuth2Session
 
 from dicebot import model as m
@@ -418,22 +418,13 @@ def owns_character():
 
 
 class SQLResource (Resource):
-    def get_character(self, secure=True):
+    def get_character(self, character_id, secure=True):
         '''
-        Uses character data and request arguments to select a character
+        Uses character_id to select a character
 
         If successful returns a character
         If unsuccessful calls an abort function
         '''
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
-            args = request.form
-        else:
-            args = request.args
-
-        character_id = args.get('character')
-        if not character_id:
-            abort(400)
-
         character = db.session.query(m.Character).get(character_id)
         if not character:
             abort(404)
@@ -446,7 +437,10 @@ class SQLResource (Resource):
         return character
 
     def get(self):
-        character = self.get_character(secure=False)
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, help='ID for the character')
+        args = parser.parse_args()
+        character = self.get_character(args['character'], secure=False)
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)
         if isinstance(self.order, str):
@@ -457,7 +451,10 @@ class SQLResource (Resource):
         return table2json(data)
 
     def post(self):
-        character = self.get_character()
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, help='ID for the character')
+        args = parser.parse_args()
+        character = self.get_character(args['character'], secure=False)
         item = self.type(character_id=character.id)
         for field, cast in self.fields.items():
             if cast == int:
@@ -478,11 +475,12 @@ class SQLResource (Resource):
             return entry2json(item)
 
     def patch(self):
-        id = request.form.get('id')
-        if id is None:
-            abort(400)
-        character = self.get_character()
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, help='ID for the character')
+        parser.add_argument('id', type=int, help='ID for the resource')
+        args = parser.parse_args()
+        character = self.get_character(args['character'], secure=False)
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
         if item is None:
             abort(404)
 
@@ -503,10 +501,11 @@ class SQLResource (Resource):
         return entry2json(item)
 
     def delete(self):
-        id = request.form.get('id')
-        if id is None:
-            abort(400)
-        character = self.get_character()
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, help='ID for the character')
+        parser.add_argument('id', type=int, help='ID for the resource')
+        args = parser.parse_args()
+        character = self.get_character(args['character'], secure=False)
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
         if item is not None:
             db.session.delete(item)

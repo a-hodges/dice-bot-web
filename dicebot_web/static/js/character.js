@@ -109,7 +109,7 @@ class Group extends React.Component {
         let body
         if (this.state.data !== undefined) {
             const list = this.state.data.map((item) => (
-                <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} display={this.props.display} item={item} />
+                <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} editDisplay={this.props.editDisplay} readDisplay={this.props.readDisplay} item={item} />
             ))
             body = (
                 <ul className="list-group">
@@ -133,15 +133,32 @@ class Group extends React.Component {
 class GroupItem extends React.Component {
     constructor(props) {
         super(props)
+        this.setRef = this.setRef.bind(this)
+        this.editItem = this.editItem.bind(this)
+        this.cancel = this.cancel.bind(this)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
+        this.state = {edit: false, refs: []}
+    }
+
+    setRef(target) {
+        this.state.refs.push(target)
+    }
+
+    editItem(e) {
+        this.setState({edit: true, refs: []})
+    }
+
+    cancel() {
+        this.setState({edit: false, refs: []})
     }
 
     updateItem(e) {
-        const name = e.target.name
-        if (this.props.item[name] != e.target.value) {
-            this.props.updateItem(Object.assign(this.props.item, {[name]: e.target.value}), name)
-        }
+        const keys = this.state.refs.map((item) => item.name)
+        const data = {}
+        this.state.refs.forEach((item) => data[item.name] = item.value)
+        this.props.updateItem(Object.assign(this.props.item, data), ...keys)
+        this.cancel()
     }
 
     deleteItem(e) {
@@ -149,81 +166,97 @@ class GroupItem extends React.Component {
     }
 
     render() {
-        return (
-            <li className="list-group-item d-flex justify-content-between align-items-center">
-                {this.props.display(this.props.item, this.updateItem)}
-                <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>Delete</button>
-            </li>
-        )
+        if (this.state.edit) {
+            return (
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                    {this.props.editDisplay(this.props.item, this.setRef)}
+                    <div className="d-flex flex-column">
+                        <button className="btn btn-primary badge badge-primary badge-pill" onClick={this.updateItem}>save</button>
+                        <button className="btn btn-warning badge badge-warning badge-pill" onClick={this.cancel}>cancel</button>
+                        <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>delete</button>
+                    </div>
+                </li>
+            )
+        }
+        else {
+            return (
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                    {this.props.readDisplay(this.props.item)}
+                    <button className="btn btn-info badge badge-info badge-pill" onClick={this.editItem}>edit</button>
+                </li>
+            )
+        }
     }
 }
 
 function Constants(props) {
-    const display = (item, updateItem) => (
+    const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
-                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
             </div>
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">value:</span>
                 </div>
-                <input className="form-control" type="number" name="value" defaultValue={item.value} onBlur={updateItem} />
+                <input className="form-control" type="number" name="value" defaultValue={item.value} ref={setRef} />
             </div>
         </div>
     )
+    const readDisplay = (item) => <span>{item.name}: {item.value}</span>
     return <Group
         title="Constants"
         character_id={props.character_id} onError={props.onError}
-        display={display}
+        editDisplay={display} readDisplay={readDisplay}
     />
 }
 
 function Rolls(props) {
-    const display = (item, updateItem) => (
+    const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
-                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
             </div>
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">expression:</span>
                 </div>
-                <input className="form-control" type="text" name="expression" defaultValue={item.expression} onBlur={updateItem} />
+                <input className="form-control" type="text" name="expression" defaultValue={item.expression} ref={setRef} />
             </div>
         </div>
     )
+    const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
     return <Group
         title="Rolls"
         character_id={props.character_id} onError={props.onError}
-        display={display}
+        editDisplay={display} readDisplay={readDisplay}
     />
 }
 
 function Resources(props) {
-    const display = (item, updateItem) => (
+    const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
-                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
             </div>
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">uses:</span>
                 </div>
-                <input className="form-control" type="number" name="current" defaultValue={item.current} onBlur={updateItem} />
+                <input className="form-control" type="number" name="current" defaultValue={item.current} ref={setRef} />
                 <span className="input-group-text">/</span>
-                <input className="form-control" type="number" name="max" defaultValue={item.max} onBlur={updateItem} />
+                <input className="form-control" type="number" name="max" defaultValue={item.max} ref={setRef} />
                 <span className="input-group-text">per</span>
-                <select className="form-control" name="recover" defaultValue={item.recover} onChange={updateItem}>
+                <select className="form-control" name="recover" defaultValue={item.recover} ref={setRef}>
                     <option value="short">short rest</option>
                     <option value="long">long rest</option>
                     <option value="other">other</option>
@@ -231,56 +264,69 @@ function Resources(props) {
             </div>
         </div>
     )
+    const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
     return <Group
         title="Resources"
         character_id={props.character_id} onError={props.onError}
-        display={display}
+        editDisplay={display} readDisplay={readDisplay}
     />
 }
 
 function Spells(props) {
-    const display = (item, updateItem) => (
+    const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
-                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
                 <div className="input-group-prepend">
                     <span className="input-group-text">level:</span>
                 </div>
-                <input className="form-control" type="number" name="level" defaultValue={item.level} onBlur={updateItem} />
+                <input className="form-control" type="number" name="level" defaultValue={item.level} ref={setRef} />
             </div>
-            <textarea className="form-control" name="description" defaultValue={item.description || ''} onBlur={updateItem} />
+            <textarea className="form-control" name="description" defaultValue={item.description || ''} ref={setRef} />
+        </div>
+    )
+    const readDisplay = (item) => (
+        <div>
+            <span>{item.name} | level: {item.level}</span>
+            {lines(item.description)}
         </div>
     )
     return <Group
         title="Spells"
         character_id={props.character_id} onError={props.onError}
-        display={display}
+        editDisplay={display} readDisplay={readDisplay}
     />
 }
 
 function Inventory(props) {
-    const display = (item, updateItem) => (
+    const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
-                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
                 <div className="input-group-prepend">
                     <span className="input-group-text">quantity:</span>
                 </div>
-                <input className="form-control" type="number" name="number" defaultValue={item.number} onBlur={updateItem} />
+                <input className="form-control" type="number" name="number" defaultValue={item.number} ref={setRef} />
             </div>
-            <textarea className="form-control" name="description" defaultValue={item.description || ''} onBlur={updateItem} />
+            <textarea className="form-control" name="description" defaultValue={item.description || ''} ref={setRef} />
+        </div>
+    )
+    const readDisplay = (item) => (
+        <div>
+            <span>{item.name} | quantity: {item.number}</span>
+            {lines(item.description)}
         </div>
     )
     return <Group
         title="Inventory"
         character_id={props.character_id} onError={props.onError}
-        display={display}
+        editDisplay={display} readDisplay={readDisplay}
     />
 }
 

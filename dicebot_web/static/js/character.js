@@ -172,11 +172,19 @@ class GroupItem extends React.Component {
 
 function Constants(props) {
     const display = (item, updateItem) => (
-        <div className="input-group">
-            <div className="input-group-prepend">
-                <span className="input-group-text">{item.name}:</span>
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
             </div>
-            <input className="form-control" type="number" name="value" defaultValue={item.value} onBlur={updateItem} />
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">value:</span>
+                </div>
+                <input className="form-control" type="number" name="value" defaultValue={item.value} onBlur={updateItem} />
+            </div>
         </div>
     )
     return <Group
@@ -188,11 +196,19 @@ function Constants(props) {
 
 function Rolls(props) {
     const display = (item, updateItem) => (
-        <div className="input-group">
-            <div className="input-group-prepend">
-                <span className="input-group-text">{item.name}:</span>
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
             </div>
-            <input className="form-control" type="text" name="expression" defaultValue={item.expression} onBlur={updateItem} />
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">expression:</span>
+                </div>
+                <input className="form-control" type="text" name="expression" defaultValue={item.expression} onBlur={updateItem} />
+            </div>
         </div>
     )
     return <Group
@@ -204,19 +220,27 @@ function Rolls(props) {
 
 function Resources(props) {
     const display = (item, updateItem) => (
-        <div className="input-group">
-            <div className="input-group-prepend">
-                <span className="input-group-text">{item.name}:</span>
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
             </div>
-            <input className="form-control" type="number" name="current" defaultValue={item.current} onBlur={updateItem} />
-            <span className="input-group-text">/</span>
-            <input className="form-control" type="number" name="max" defaultValue={item.max} onBlur={updateItem} />
-            <span className="input-group-text">per</span>
-            <select className="form-control" name="recover" defaultValue={item.recover} onChange={updateItem}>
-                <option value="short">short rest</option>
-                <option value="long">long rest</option>
-                <option value="other">other</option>
-            </select>
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">uses:</span>
+                </div>
+                <input className="form-control" type="number" name="current" defaultValue={item.current} onBlur={updateItem} />
+                <span className="input-group-text">/</span>
+                <input className="form-control" type="number" name="max" defaultValue={item.max} onBlur={updateItem} />
+                <span className="input-group-text">per</span>
+                <select className="form-control" name="recover" defaultValue={item.recover} onChange={updateItem}>
+                    <option value="short">short rest</option>
+                    <option value="long">long rest</option>
+                    <option value="other">other</option>
+                </select>
+            </div>
         </div>
     )
     return <Group
@@ -231,7 +255,10 @@ function Spells(props) {
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
-                    <span className="input-group-text">{item.name}</span>
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <div className="input-group-prepend">
                     <span className="input-group-text">level:</span>
                 </div>
                 <input className="form-control" type="number" name="level" defaultValue={item.level} onBlur={updateItem} />
@@ -251,7 +278,10 @@ function Inventory(props) {
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
-                    <span className="input-group-text">{item.name}</span>
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} onBlur={updateItem} />
+                <div className="input-group-prepend">
                     <span className="input-group-text">quantity:</span>
                 </div>
                 <input className="form-control" type="number" name="number" defaultValue={item.number} onBlur={updateItem} />

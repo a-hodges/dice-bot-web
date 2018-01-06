@@ -418,8 +418,8 @@ def owns_character():
     return jsonify({"readOnly": str(character.user) != user['id']})
 
 
-    def get_character(self, secure=True):
 class SQLResource (Resource):
+    def get_character(self, secure=True):
         '''
         Uses character data and request arguments to select a character
 

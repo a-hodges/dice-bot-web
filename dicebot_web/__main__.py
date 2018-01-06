@@ -418,8 +418,8 @@ def owns_character():
     return jsonify({"readOnly": str(character.user) != user['id']})
 
 
-class Object (Resource):
     def get_character(self, secure=True):
+class SQLResource (Resource):
         '''
         Uses character data and request arguments to select a character
 
@@ -515,7 +515,7 @@ class Object (Resource):
         return {'message': 'successful'}
 
 
-class Constant (Object):
+class Constant (SQLResource):
     type = m.Constant
     order = 'name'
     fields = {
@@ -527,7 +527,7 @@ class Constant (Object):
 api.add_resource(Constant, '/constants')
 
 
-class Roll (Object):
+class Roll (SQLResource):
     type = m.Roll
     order = 'name'
     fields = {
@@ -539,7 +539,7 @@ class Roll (Object):
 api.add_resource(Roll, '/rolls')
 
 
-class Resource (Object):
+class Resource (SQLResource):
     type = m.Resource
     order = 'name'
     fields = {
@@ -553,7 +553,7 @@ class Resource (Object):
 api.add_resource(Resource, '/resources')
 
 
-class Spell (Object):
+class Spell (SQLResource):
     type = m.Spell
     order = ('level', 'name')  # 'level,name'
     fields = {
@@ -566,7 +566,7 @@ class Spell (Object):
 api.add_resource(Spell, '/spells')
 
 
-class Item (Object):
+class Item (SQLResource):
     type = m.Item
     order = 'name'
     fields = {

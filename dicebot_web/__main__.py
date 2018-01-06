@@ -450,10 +450,10 @@ class Object (Resource):
         character = self.get_character(secure=False)
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)
-        if isinstance(self.order, tuple):
-            data = data.order_by(*self.order)
-        else:
+        if isinstance(self.order, str):
             data = data.order_by(self.order)
+        else:
+            data = data.order_by(*self.order)
         data = data.all()
         return table2json(data)
 

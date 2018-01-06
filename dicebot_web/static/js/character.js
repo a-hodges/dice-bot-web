@@ -109,7 +109,7 @@ class Group extends React.Component {
         let body
         if (this.state.data !== undefined) {
             const list = this.state.data.map((item) => (
-                <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} editDisplay={this.props.editDisplay} readDisplay={this.props.readDisplay} item={item} />
+                <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} editDisplay={this.props.editDisplay} readDisplay={this.props.readDisplay} readOnly={this.props.readOnly} item={item} />
             ))
             body = (
                 <ul className="list-group">
@@ -179,10 +179,11 @@ class GroupItem extends React.Component {
             )
         }
         else {
+            const edit = (this.props.readOnly) ? "" : <a href="#" className="badge badge-info badge-pill m-1" onClick={this.editItem}>edit</a>
             return (
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.readDisplay(this.props.item)}
-                    <a href="#" className="badge badge-info badge-pill m-1" onClick={this.editItem}>edit</a>
+                    {edit}
                 </li>
             )
         }
@@ -334,11 +335,24 @@ class Character extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: ""}
+        this.state = {error: undefined, readOnly: undefined}
     }
 
     error(message) {
         this.setState({error: message})
+    }
+
+    componentDidMount() {
+        this.request = $.ajax({
+            url: "/owns_character",
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                character: this.props.character_id,
+            },
+            error: () => this.error("Could not load character"),
+            success: (data) => this.setState({readOnly: data.readOnly}),
+        })
     }
 
     componentDidCatch(error, info) {
@@ -346,17 +360,22 @@ class Character extends React.Component {
     }
 
     render() {
-        if (this.state.error === "") {
+        if (this.state.error === undefined && this.state.readOnly !== undefined) {
             return (
                 <div>
-                    <Constants character_id={this.props.character_id} onError={this.error} />
-                    <Rolls character_id={this.props.character_id} onError={this.error} />
-                    <Resources character_id={this.props.character_id} onError={this.error} />
-                    <Spells character_id={this.props.character_id} onError={this.error} />
-                    <Inventory character_id={this.props.character_id} onError={this.error} />
+                    <Constants character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
+                    <Rolls character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
+                    <Resources character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
+                    <Spells character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
+                    <Inventory character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <br />
                     <div><a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a></div>
                 </div>
+            )
+        }
+        else if (this.state.error === undefined) {
+            return (
+                <Warning>Loading...</Warning>
             )
         }
         else {

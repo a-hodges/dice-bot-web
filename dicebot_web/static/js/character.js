@@ -172,15 +172,15 @@ class GroupItem extends React.Component {
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.editDisplay(this.props.item, this.setRef)}
                     <div className="d-flex flex-column">
-                        <a href="#" className="badge badge-success badge-pill m-1" onClick={this.updateItem}>save</a>
-                        <a href="#" className="badge badge-warning badge-pill m-1" onClick={this.cancel}>cancel</a>
-                        <a href="#" className="badge badge-danger badge-pill m-1" onClick={this.deleteItem}>delete</a>
+                        <button className="btn btn-success badge badge-success badge-pill m-1" onClick={this.updateItem}>save</button>
+                        <button className="btn btn-warning badge badge-warning badge-pill m-1" onClick={this.cancel}>cancel</button>
+                        <button className="btn btn-danger badge badge-danger badge-pill m-1" onClick={this.deleteItem}>delete</button>
                     </div>
                 </li>
             )
         }
         else {
-            const edit = (this.props.readOnly) ? "" : <a href="#" className="badge badge-info badge-pill m-1" onClick={this.editItem}>edit</a>
+            const edit = (this.props.readOnly) ? "" : <button className="btn btn-info badge badge-info badge-pill m-1" onClick={this.editItem}>edit</button>
             return (
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.readDisplay(this.props.item)}

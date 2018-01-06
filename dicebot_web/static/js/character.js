@@ -171,9 +171,9 @@ class GroupItem extends React.Component {
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.editDisplay(this.props.item, this.setRef)}
                     <div className="d-flex flex-column">
-                        <button className="btn btn-primary badge badge-primary badge-pill" onClick={this.updateItem}>save</button>
-                        <button className="btn btn-warning badge badge-warning badge-pill" onClick={this.cancel}>cancel</button>
-                        <button className="btn btn-danger badge badge-danger badge-pill" onClick={this.deleteItem}>delete</button>
+                        <a href="#" className="badge badge-success badge-pill m-1" onClick={this.updateItem}>save</a>
+                        <a href="#" className="badge badge-warning badge-pill m-1" onClick={this.cancel}>cancel</a>
+                        <a href="#" className="badge badge-danger badge-pill m-1" onClick={this.deleteItem}>delete</a>
                     </div>
                 </li>
             )
@@ -182,7 +182,7 @@ class GroupItem extends React.Component {
             return (
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.readDisplay(this.props.item)}
-                    <button className="btn btn-info badge badge-info badge-pill" onClick={this.editItem}>edit</button>
+                    <a href="#" className="badge badge-info badge-pill m-1" onClick={this.editItem}>edit</a>
                 </li>
             )
         }

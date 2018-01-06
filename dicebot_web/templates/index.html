@@ -14,7 +14,7 @@
                 <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
                 {{ guild.get('name') }}: {{ character.name }}
             </a>
-            <a class="btn btn-info badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
+            <a class="badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
         </li>
         {% endfor %}
     </ul>
@@ -26,7 +26,7 @@
                 <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
                 {{ guild.get('name') }}
             </a>
-            <a class="btn btn-info badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
+            <a class="badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
         </li>
         {% endfor %}
     </ul>

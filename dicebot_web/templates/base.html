@@ -9,7 +9,7 @@
         {{ title }}
     </title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/bootstrap/4.0.0-b3/bootstrap.min.css') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     {% endblock %}
@@ -45,13 +45,13 @@
     {% block content %}{{ content|safe }}{% endblock %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='libs/jquery/3.2.1/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/popper/1.12.9/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/bootstrap/4.0.0-b3/bootstrap.min.js') }}"></script>
     {% if react %}
-    <script crossorigin="" src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin="" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script crossorigin="" src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="{{ url_for('static', filename='libs/react/16.2.0/react.development.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/react/16.2.0/react-dom.development.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/babel/6.15.0/babel.min.js') }}"></script>
     {% endif %}
     {% block js %}{% endblock %}
 </body>

@@ -438,9 +438,8 @@ class SQLResource (Resource):
 
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, help='ID for the character')
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
         args = parser.parse_args()
-        if args['character'] == None: abort(400)
         character = self.get_character(args['character'], secure=False)
         data = db.session.query(self.type)\
             .filter_by(character_id=character.id)
@@ -453,9 +452,8 @@ class SQLResource (Resource):
 
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, help='ID for the character')
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
         args = parser.parse_args()
-        if args['character'] == None: abort(400)
         character = self.get_character(args['character'], secure=False)
         item = self.type(character_id=character.id)
         for field, cast in self.fields.items():
@@ -478,10 +476,9 @@ class SQLResource (Resource):
 
     def patch(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, help='ID for the character')
-        parser.add_argument('id', type=int, help='ID for the resource')
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
+        parser.add_argument('id', type=int, required=True, help='ID for the resource')
         args = parser.parse_args()
-        if args['character'] == None: abort(400)
         character = self.get_character(args['character'], secure=False)
         item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
         if item is None:
@@ -505,10 +502,9 @@ class SQLResource (Resource):
 
     def delete(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, help='ID for the character')
-        parser.add_argument('id', type=int, help='ID for the resource')
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
+        parser.add_argument('id', type=int, required=True, help='ID for the resource')
         args = parser.parse_args()
-        if args['character'] == None: abort(400)
         character = self.get_character(args['character'], secure=False)
         item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
         if item is not None:

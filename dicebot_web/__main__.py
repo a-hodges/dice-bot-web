@@ -489,20 +489,18 @@ class SQLResource (Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         parser.add_argument('id', type=int, required=True, help='ID for the resource')
+        for field, cast in self.fields.items():
+            if field != 'id':
+                parser.add_argument(field, type=self.do_cast(cast), store_missing=False)
         args = parser.parse_args()
         character = self.get_character(args['character'], secure=False)
         item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
         if item is None:
             abort(404)
 
-        for field, cast in self.fields.items():
-            if field in request.form:
-                if cast == int:
-                    setattr(item, field, cast(request.form[field] or 0))
-                elif isinstance(cast, enum.EnumMeta):
-                    setattr(item, field, cast[request.form[field]])
-                else:
-                    setattr(item, field, cast(request.form[field]))
+        for field in self.fields.keys():
+            if field != 'id' and field in args:
+                setattr(item, field, args[field])
 
         try:
             db.session.commit()

@@ -362,6 +362,10 @@ class Character extends React.Component {
 
     render() {
         if (this.state.error === undefined && this.state.readOnly !== undefined) {
+            const unclaim = (this.state.readOnly) ? "" : <div>
+                <br />
+                <a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a>
+            </div>
             return (
                 <div>
                     <Constants character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
@@ -369,8 +373,7 @@ class Character extends React.Component {
                     <Resources character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Spells character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Inventory character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <br />
-                    <div><a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a></div>
+                    {unclaim}
                 </div>
             )
         }

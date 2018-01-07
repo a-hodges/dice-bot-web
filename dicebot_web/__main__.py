@@ -11,7 +11,6 @@ from flask import (
     Flask,
     abort,
     flash,
-    jsonify,
     redirect,
     render_template,
     request,
@@ -402,19 +401,18 @@ def claim_character():
 # ----#-   REST endpoints
 
 
-@application.route('/owns_character', methods=['GET'])
-def owns_character():
-    user, discord = get_user(session.get('oauth2_token'))
+class OwnsCharacter (Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
+        args = parser.parse_args()
+        user, discord = get_user(session.get('oauth2_token'))
+        character = db.session.query(m.Character).get(args['character'])
+        if not character: abort(404)
+        return {"readOnly": str(character.user) != user['id']}
 
-    character_id = request.args.get('character')
-    if not character_id:
-        abort(400)
 
-    character = db.session.query(m.Character).get(character_id)
-    if not character:
-        abort(404)
-
-    return jsonify({"readOnly": str(character.user) != user['id']})
+api.add_resource(OwnsCharacter, '/owns_character')
 
 
 class SQLResource (Resource):

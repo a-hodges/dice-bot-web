@@ -85,6 +85,37 @@ def table2json(table):
     return data
 
 
+def bot_get(url):
+    '''
+    A get request authenticated by the bot
+    Handles rate limiting
+    '''
+    response = requests.get(url, headers={'Authorization': 'Bot ' + application.config['token']})
+    while response.status_code == 429:
+        ms = response.json().get('retry_after', 1000) + 5
+        time.sleep(ms / 1000)
+        response = requests.get(url, headers={'Authorization': 'Bot ' + application.config['token']})
+    return response
+
+
+def user_in_guild(guild, user):
+    '''
+    Returns whether the given user is in the given guild
+    Both guild and user should be the respective IDs
+    '''
+    member = bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
+    return bool(member)
+
+
+def bot_in_guild(guild):
+    '''
+    Returns whether the bot is in the given guild
+    The guild should be a dict as returned by discord Guild resources
+    '''
+    guild = bot_get(API_BASE_URL + '/guilds/{}'.format(guild.get('id')))
+    return bool(guild)
+
+
 # ----#-   Application
 
 
@@ -291,6 +322,8 @@ def list_characters():
     guild = request.args.get('server')
     if not guild:
         abort(400)
+    if not user_in_guild(guild, user['id']):
+        abort(403)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -347,6 +380,8 @@ def pick_character():
     guild = request.args.get('server')
     if not guild:
         abort(400)
+    if not user_in_guild(guild, user['id']):
+        abort(403)
 
     user['avatar'] = get_user_avatar(user)
     guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
@@ -375,15 +410,17 @@ def claim_character():
     if not user:
         abort(403)
 
-    server = request.args.get('server')
+    guild = request.args.get('server')
     name = request.args.get('character')
-    if not server or not name:
+    if not guild or not name:
         abort(400)
+    if not user_in_guild(guild, user['id']):
+        abort(403)
 
-    character = db.session.query(m.Character).filter_by(name=name, server=server).one_or_none()
+    character = db.session.query(m.Character).filter_by(name=name, server=guild).one_or_none()
 
     if character is None:
-        character = m.Character(name=name, server=server, user=user['id'])
+        character = m.Character(name=name, server=guild, user=user['id'])
         try:
             db.session.add(character)
             db.session.commit()
@@ -441,9 +478,14 @@ class SQLResource (Resource):
         if not character:
             abort(404)
 
+        user, discord = get_user(session.get('oauth2_token'))
         if secure:
-            user, discord = get_user(session.get('oauth2_token'))
+            # ensure that the user owns the character
             if str(character.user) != user['id']:
+                abort(403)
+        else:
+            # ensure that the user is in the same guild
+            if not user_in_guild(character.server, user['id']):
                 abort(403)
 
         return character
@@ -651,20 +693,6 @@ def logout():
         '&#10004; Successfully logged out. ' +
         'You will need to log out of Discord separately.')
     return redirect(url_for('index'))
-
-
-def bot_in_guild(guild):
-    '''
-    Returns whether the bot is in the given guild
-    The guild should be a dict as returned by discord Guild resources
-    '''
-    guild = requests.get(
-        API_BASE_URL + '/guilds/{}'.format(guild.get('id')),
-        headers={
-            'Authorization': 'Bot ' + application.config['token'],
-        },
-    )
-    return bool(guild)
 
 
 # ----#-   Main

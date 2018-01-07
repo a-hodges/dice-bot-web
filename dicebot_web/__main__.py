@@ -40,6 +40,7 @@ db.Model = m.Base
 API_BASE_URL = 'https://discordapp.com/api'
 AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
 TOKEN_URL = API_BASE_URL + '/oauth2/token'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'  # possibly insecure
 
 
 # ----#-   Utilities
@@ -699,9 +700,6 @@ if __name__ == '__main__':
 
     if args.reload:
         application.config['TEMPLATES_AUTO_RELOAD'] = True
-
-    if args.debug:
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
     application.run(
         host='0.0.0.0',

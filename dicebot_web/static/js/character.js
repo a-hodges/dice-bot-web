@@ -158,7 +158,7 @@ class GroupItem extends React.Component {
         const keys = this.state.refs.map((item) => item.name)
         const data = {}
         this.state.refs.forEach((item) => data[item.name] = item.value)
-        this.props.updateItem(Object.assign(this.props.item, data), ...keys)
+        this.props.updateItem(Object.assign({}, this.props.item, data), ...keys)
         this.cancel()
     }
 

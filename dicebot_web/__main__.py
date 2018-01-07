@@ -451,19 +451,21 @@ class SQLResource (Resource):
         return table2json(data)
 
     def post(self):
+        defaults = {
+            int: 0,
+            str: '',
+            m.Rest: m.Rest.other,
+        }
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
+        for field, cast in self.fields.items():
+            if field != 'id':
+                parser.add_argument(field, type=cast, default=defaults[cast])
         args = parser.parse_args()
         character = self.get_character(args['character'], secure=False)
         item = self.type(character_id=character.id)
-        for field, cast in self.fields.items():
-            if cast == int:
-                data = request.form.get(field) or 0
-            elif isinstance(cast, enum.EnumMeta):
-                data = cast[request.form.get(field, 'other')]
-            else:
-                data = request.form.get(field, '')
-            setattr(item, field, cast(data))
+        for field in self.fields.keys():
+            setattr(item, field, args[field])
 
         try:
             db.session.add(item)

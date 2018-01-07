@@ -424,6 +424,13 @@ class SQLResource (Resource):
         m.Rest: m.Rest.other,
     }
 
+    def do_cast(self, cast):
+        if isinstance(cast, enum.EnumMeta):
+            def cast2(value):
+                return cast[value]
+            return cast2
+        return cast
+
     def get_character(self, character_id, secure=True):
         '''
         Uses character_id to select a character
@@ -461,7 +468,7 @@ class SQLResource (Resource):
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         for field, cast in self.fields.items():
             if field != 'id':
-                parser.add_argument(field, type=cast, default=self.defaults[cast])
+                parser.add_argument(field, type=self.do_cast(cast), default=self.defaults[cast])
         args = parser.parse_args()
         character = self.get_character(args['character'], secure=False)
         item = self.type(character_id=character.id)

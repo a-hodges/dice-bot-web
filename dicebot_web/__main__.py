@@ -506,7 +506,7 @@ class SQLResource (Resource):
         parser.add_argument('id', type=int, required=True, help='ID for the resource')
         args = parser.parse_args()
         character = self.get_character(args['character'], secure=False)
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=id).one_or_none()
+        item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
         if item is not None:
             db.session.delete(item)
             db.session.commit()

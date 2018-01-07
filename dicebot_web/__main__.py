@@ -418,6 +418,12 @@ def owns_character():
 
 
 class SQLResource (Resource):
+    defaults = {
+        int: 0,
+        str: '',
+        m.Rest: m.Rest.other,
+    }
+
     def get_character(self, character_id, secure=True):
         '''
         Uses character_id to select a character
@@ -451,21 +457,17 @@ class SQLResource (Resource):
         return table2json(data)
 
     def post(self):
-        defaults = {
-            int: 0,
-            str: '',
-            m.Rest: m.Rest.other,
-        }
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         for field, cast in self.fields.items():
             if field != 'id':
-                parser.add_argument(field, type=cast, default=defaults[cast])
+                parser.add_argument(field, type=cast, default=self.defaults[cast])
         args = parser.parse_args()
         character = self.get_character(args['character'], secure=False)
         item = self.type(character_id=character.id)
         for field in self.fields.keys():
-            setattr(item, field, args[field])
+            if field != 'id':
+                setattr(item, field, args[field])
 
         try:
             db.session.add(item)

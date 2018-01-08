@@ -629,6 +629,18 @@ class Item (SQLResource):
 api.add_resource(Item, '/inventory')
 
 
+class Information (SQLResource):
+    type = m.Information
+    order = 'name'
+    fields = {
+        'name': str,
+        'description': str,
+    }
+
+
+api.add_resource(Information, '/information')
+
+
 # ----#-   Login/Logout
 
 

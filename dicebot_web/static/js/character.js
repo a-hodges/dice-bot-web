@@ -191,6 +191,31 @@ class GroupItem extends React.Component {
     }
 }
 
+function Information(props) {
+    const display = (item, setRef) => (
+        <div className="w-100">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">name:</span>
+                </div>
+                <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
+            </div>
+            <textarea className="form-control" name="description" defaultValue={item.description || ''} ref={setRef} />
+        </div>
+    )
+    const readDisplay = (item) => (
+        <div>
+            <span>{item.name}</span>
+            {lines(item.description)}
+        </div>
+    )
+    return <Group
+        title="Information"
+        editDisplay={display} readDisplay={readDisplay}
+        {...props}
+    />
+}
+
 function Variables(props) {
     const display = (item, setRef) => (
         <div className="w-100">
@@ -368,6 +393,7 @@ class Character extends React.Component {
             </div>
             return (
                 <div>
+                    <Information character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Variables character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Rolls character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Resources character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />

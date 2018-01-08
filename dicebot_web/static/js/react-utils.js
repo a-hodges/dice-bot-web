@@ -1,12 +1,3 @@
-function lines(str) {
-    if (str) {
-        return str.split("\n").map((item, i) => <span key={i}><br /> {item}</span>)
-    }
-    else {
-        return ""
-    }
-}
-
 function Error(props) {
     return (
         <p className="alert alert-danger">{props.children}</p>

@@ -204,9 +204,9 @@ function Information(props) {
         </div>
     )
     const readDisplay = (item) => (
-        <div>
+        <div className="w-100 form-group">
             <span>{item.name}</span>
-            {lines(item.description)}
+            <textarea className="form-control" name="description" value={item.description} readOnly={true} />
         </div>
     )
     return <Group
@@ -316,9 +316,9 @@ function Spells(props) {
         </div>
     )
     const readDisplay = (item) => (
-        <div>
+        <div className="w-100 form-group">
             <span>{item.name} | level: {item.level}</span>
-            {lines(item.description)}
+            <textarea className="form-control" name="description" value={item.description} readOnly={true} />
         </div>
     )
     return <Group
@@ -345,9 +345,9 @@ function Inventory(props) {
         </div>
     )
     const readDisplay = (item) => (
-        <div>
+        <div className="w-100 form-group">
             <span>{item.name} | quantity: {item.number}</span>
-            {lines(item.description)}
+            <textarea className="form-control" name="description" value={item.description} readOnly={true} />
         </div>
     )
     return <Group

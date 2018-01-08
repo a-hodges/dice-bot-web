@@ -3,6 +3,7 @@
 import os
 import argparse
 import enum
+import time
 import datetime
 from operator import itemgetter
 
@@ -446,7 +447,8 @@ class OwnsCharacter (Resource):
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
         character = db.session.query(m.Character).get(args['character'])
-        if not character: abort(404)
+        if not character:
+            abort(404)
         return {"readOnly": str(character.user) != user['id']}
 
 

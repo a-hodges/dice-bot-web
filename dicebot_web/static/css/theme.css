@@ -16,3 +16,7 @@ img.icon-lg {
 .form-control {
     min-width: 5rem;
 }
+
+textarea {
+    height: 5rem;
+}

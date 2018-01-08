@@ -191,7 +191,7 @@ class GroupItem extends React.Component {
     }
 }
 
-function Constants(props) {
+function Variables(props) {
     const display = (item, setRef) => (
         <div className="w-100">
             <div className="input-group">
@@ -210,7 +210,7 @@ function Constants(props) {
     )
     const readDisplay = (item) => <span>{item.name}: {item.value}</span>
     return <Group
-        title="Constants"
+        title="Variables"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -368,7 +368,7 @@ class Character extends React.Component {
             </div>
             return (
                 <div>
-                    <Constants character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
+                    <Variables character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Rolls character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Resources character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
                     <Spells character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />

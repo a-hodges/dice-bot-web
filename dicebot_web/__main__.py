@@ -563,8 +563,8 @@ class SQLResource (Resource):
         return {'message': 'successful'}
 
 
-class Constant (SQLResource):
-    type = m.Constant
+class Variable (SQLResource):
+    type = m.Variable
     order = 'name'
     fields = {
         'name': str,
@@ -572,7 +572,7 @@ class Constant (SQLResource):
     }
 
 
-api.add_resource(Constant, '/constants')
+api.add_resource(Variable, '/variables')
 
 
 class Roll (SQLResource):

@@ -441,16 +441,41 @@ def claim_character():
 # ----#-   REST endpoints
 
 
+def get_character(character_id, secure=True):
+    '''
+    Uses character_id to select a character
+
+    If successful returns a character
+    If unsuccessful calls an abort function
+    '''
+    character = db.session.query(m.Character).get(character_id)
+    if not character:
+        abort(404)
+
+    character = character.dict()
+    user, discord = get_user(session.get('oauth2_token'))
+    character['own'] = character['user'] == user['id']
+
+    if secure:
+        # ensure that the user owns the character
+        if not character['own']:
+            abort(403)
+    else:
+        # ensure that the user is in the same guild
+        if not user_in_guild(character['server'], user['id']):
+            abort(403)
+
+    return character
+
+
 class Characters (Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
-        character = db.session.query(m.Character).get(args['character'])
-        if not character:
-            abort(404)
-        return {"own": str(character.user) != user['id']}
+        character = get_character(args['character'], secure=False)
+        return character
 
 
 api.add_resource(Characters, '/rest/character')
@@ -470,36 +495,13 @@ class SQLResource (Resource):
             return cast2
         return cast
 
-    def get_character(self, character_id, secure=True):
-        '''
-        Uses character_id to select a character
-
-        If successful returns a character
-        If unsuccessful calls an abort function
-        '''
-        character = db.session.query(m.Character).get(character_id)
-        if not character:
-            abort(404)
-
-        user, discord = get_user(session.get('oauth2_token'))
-        if secure:
-            # ensure that the user owns the character
-            if str(character.user) != user['id']:
-                abort(403)
-        else:
-            # ensure that the user is in the same guild
-            if not user_in_guild(character.server, user['id']):
-                abort(403)
-
-        return character
-
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         args = parser.parse_args()
-        character = self.get_character(args['character'], secure=False)
+        character = get_character(args['character'], secure=False)
         data = db.session.query(self.type)\
-            .filter_by(character_id=character.id)
+            .filter_by(character_id=character['id'])
         if isinstance(self.order, str):
             data = data.order_by(self.order)
         else:
@@ -514,8 +516,8 @@ class SQLResource (Resource):
             if field != 'id':
                 parser.add_argument(field, type=self.do_cast(cast), default=self.defaults[cast])
         args = parser.parse_args()
-        character = self.get_character(args['character'], secure=False)
-        item = self.type(character_id=character.id)
+        character = get_character(args['character'], secure=False)
+        item = self.type(character_id=character['id'])
         for field in self.fields.keys():
             if field != 'id':
                 setattr(item, field, args[field])
@@ -537,8 +539,8 @@ class SQLResource (Resource):
             if field != 'id':
                 parser.add_argument(field, type=self.do_cast(cast), store_missing=False)
         args = parser.parse_args()
-        character = self.get_character(args['character'], secure=False)
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
+        character = get_character(args['character'], secure=False)
+        item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
         if item is None:
             abort(404)
 
@@ -558,8 +560,8 @@ class SQLResource (Resource):
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         parser.add_argument('id', type=int, required=True, help='ID for the resource')
         args = parser.parse_args()
-        character = self.get_character(args['character'], secure=False)
-        item = db.session.query(self.type).filter_by(character_id=character.id, id=args['id']).one_or_none()
+        character = get_character(args['character'], secure=False)
+        item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
         if item is not None:
             db.session.delete(item)
             db.session.commit()

@@ -53,9 +53,12 @@ def get_user_avatar(user, size=32):
     '''
     if user.get('avatar') is None:
         descriminator = int(user.get('discriminator', 0)) % 5
-        return 'https://cdn.discordapp.com/embed/avatars/{0}.png?size={1}'.format(descriminator, size)
+        url = 'https://cdn.discordapp.com/embed/avatars/{0}.png'.format(descriminator)
     else:
-        return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
+        url = 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png'.format(user)
+    if size is not None:
+        url += '?size={}'.format(size)
+    return url
 
 
 def get_guild_icon(guild, size=32):
@@ -63,9 +66,12 @@ def get_guild_icon(guild, size=32):
     Gets the url for the guild's icon
     '''
     if guild.get('icon') is None:
-        return 'https://cdn.discordapp.com/embed/avatars/0.png?size={1}'.format(guild, size)
+        url = 'https://cdn.discordapp.com/embed/avatars/0.png'.format(guild)
     else:
-        return 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png?size={1}'.format(guild, size)
+        url = 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png'.format(guild)
+    if size is not None:
+        url += '?size={}'.format(size)
+    return url
 
 
 def get_user(token=None):

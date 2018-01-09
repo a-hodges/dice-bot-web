@@ -452,8 +452,10 @@ class User (Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('user', required=True, help='ID for the user')
         args = parser.parse_args()
-        user = bot_get(API_BASE_URL + '/users/' + args.user).json()
-        return user
+        user = bot_get(API_BASE_URL + '/users/' + args.user)
+        if user.status_code >= 300:
+            abort(user.status_code)
+        return user.json()
 
 
 api.add_resource(User, '/rest/user')
@@ -464,8 +466,10 @@ class Server (Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('server', required=True, help='ID for the server')
         args = parser.parse_args()
-        server = bot_get(API_BASE_URL + '/guilds/' + args.server).json()
-        return server
+        server = bot_get(API_BASE_URL + '/guilds/' + args.server)
+        if server.status_code >= 300:
+            abort(server.status_code)
+        return server.json()
 
 
 api.add_resource(Server, '/rest/server')

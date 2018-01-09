@@ -9,12 +9,5 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>{{ character.name }}</h1>
-    {% if not readonly %}
-    {{ show_user(user) }}
-    {% endif %}
-    {{ show_guild(guild) }}
-    <div id="root"></div>
-</div>
+<div id="root"></div>
 {% endblock %}

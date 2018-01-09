@@ -361,7 +361,7 @@ class Character extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: undefined, readOnly: undefined}
+        this.state = {}
     }
 
     error(message) {
@@ -373,12 +373,42 @@ class Character extends React.Component {
             url: '/rest/character',
             type: 'GET',
             dataType: 'json',
-            data: {
-                character: this.props.character_id,
-            },
+            data: {character: this.props.character_id},
             error: () => this.error("Could not load character"),
-            success: (data) => this.setState({readOnly: !data.own}),
+            success: (data) => this.setState({character: data}, loadMore),
         })
+        const loadMore = () => {
+            this.serverRequest = $.ajax({
+                url: '/rest/server',
+                type: 'GET',
+                dataType: 'json',
+                data: {server: this.state.character.server},
+                error: () => this.error("Could not load server"),
+                success: (data) => this.setState({server: data}),
+            })
+            if (this.state.character.user !== null) {
+                this.userRequest = $.ajax({
+                    url: '/rest/user',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {user: this.state.character.user},
+                    error: () => this.error("Could not load user"),
+                    success: (data) => this.setState({user: data}),
+                })
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.request !== undefined) {
+            this.request.abort()
+        }
+        if (this.userRequest !== undefined) {
+            this.userRequest.abort()
+        }
+        if (this.serverRequest !== undefined) {
+            this.serverRequest.abort()
+        }
     }
 
     componentDidCatch(error, info) {
@@ -386,33 +416,56 @@ class Character extends React.Component {
     }
 
     render() {
-        if (this.state.error === undefined && this.state.readOnly !== undefined) {
-            const unclaim = (this.state.readOnly) ? "" : <div>
-                <br />
-                <a className="btn btn-danger" href={"/unclaim?character=" + this.props.character_id}>Unclaim character</a>
-            </div>
-            return (
-                <div>
-                    <Information character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <Variables character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <Rolls character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <Resources character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <Spells character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    <Inventory character_id={this.props.character_id} onError={this.error} readOnly={this.state.readOnly} />
-                    {unclaim}
+        let body
+        if (this.state.error === undefined && this.state.character !== undefined) {
+            const readOnly = !this.state.character.own
+
+            let user
+            if (this.state.character.user === null) {
+            }
+            else if (this.state.user === undefined) {
+                user = <Warning>Loading user...</Warning>
+            }
+            else {
+                user = <User user={this.state.user} link={true} />
+            }
+
+            let server
+            if (this.state.server === undefined) {
+                server = <Warning>Loading server...</Warning>
+            }
+            else {
+                server = <Server server={this.state.server} link={true} />
+            }
+
+            let unclaim
+            if (!readOnly) {
+                unclaim = <div>
+                    <br />
+                    <a className="btn btn-danger" href={"/unclaim?character=" + this.state.character.id}>Unclaim character</a>
                 </div>
-            )
+            }
+
+            body = <div>
+                <h1>{this.state.character.name}</h1>
+                {server}
+                {user}
+                <Information character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                <Variables character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                <Rolls character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                <Resources character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                <Spells character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                {unclaim}
+            </div>
         }
         else if (this.state.error === undefined) {
-            return (
-                <Warning>Loading...</Warning>
-            )
+            body = <Warning>Loading...</Warning>
         }
         else {
-            return (
-                <Error>{this.state.error}</Error>
-            )
+            body = <Error>{this.state.error}</Error>
         }
+        return <div className="container">{body}</div>
     }
 }
 

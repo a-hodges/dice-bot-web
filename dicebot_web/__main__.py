@@ -450,7 +450,7 @@ class Character (Resource):
         character = db.session.query(m.Character).get(args['character'])
         if not character:
             abort(404)
-        return {"readOnly": str(character.user) != user['id']}
+        return {"own": str(character.user) != user['id']}
 
 
 api.add_resource(Character, '/rest/character')

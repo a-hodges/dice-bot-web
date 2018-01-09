@@ -377,7 +377,7 @@ class Character extends React.Component {
                 character: this.props.character_id,
             },
             error: () => this.error("Could not load character"),
-            success: (data) => this.setState({readOnly: data.readOnly}),
+            success: (data) => this.setState({readOnly: data.own}),
         })
     }
 

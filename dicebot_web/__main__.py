@@ -447,6 +447,30 @@ def claim_character():
 # ----#-   REST endpoints
 
 
+class User (Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user', required=True, help='ID for the user')
+        args = parser.parse_args()
+        user = bot_get(API_BASE_URL + '/users/' + args.user).json()
+        return user
+
+
+api.add_resource(User, '/rest/user')
+
+
+class Server (Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('server', required=True, help='ID for the server')
+        args = parser.parse_args()
+        server = bot_get(API_BASE_URL + '/guilds/' + args.server).json()
+        return server
+
+
+api.add_resource(Server, '/rest/server')
+
+
 def get_character(character_id, secure=True):
     '''
     Uses character_id to select a character

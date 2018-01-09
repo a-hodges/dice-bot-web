@@ -441,7 +441,7 @@ def claim_character():
 # ----#-   REST endpoints
 
 
-class Character (Resource):
+class Characters (Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
@@ -453,7 +453,7 @@ class Character (Resource):
         return {"own": str(character.user) != user['id']}
 
 
-api.add_resource(Character, '/rest/character')
+api.add_resource(Characters, '/rest/character')
 
 
 class SQLResource (Resource):

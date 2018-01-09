@@ -440,7 +440,7 @@ def claim_character():
 # ----#-   REST endpoints
 
 
-class OwnsCharacter (Resource):
+class Character (Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
@@ -452,7 +452,7 @@ class OwnsCharacter (Resource):
         return {"readOnly": str(character.user) != user['id']}
 
 
-api.add_resource(OwnsCharacter, '/owns_character')
+api.add_resource(Character, '/rest/character')
 
 
 class SQLResource (Resource):
@@ -574,7 +574,7 @@ class Variable (SQLResource):
     }
 
 
-api.add_resource(Variable, '/variables')
+api.add_resource(Variable, '/rest/variables')
 
 
 class Roll (SQLResource):
@@ -586,7 +586,7 @@ class Roll (SQLResource):
     }
 
 
-api.add_resource(Roll, '/rolls')
+api.add_resource(Roll, '/rest/rolls')
 
 
 class Resource (SQLResource):
@@ -600,7 +600,7 @@ class Resource (SQLResource):
     }
 
 
-api.add_resource(Resource, '/resources')
+api.add_resource(Resource, '/rest/resources')
 
 
 class Spell (SQLResource):
@@ -613,7 +613,7 @@ class Spell (SQLResource):
     }
 
 
-api.add_resource(Spell, '/spells')
+api.add_resource(Spell, '/rest/spells')
 
 
 class Item (SQLResource):
@@ -626,7 +626,7 @@ class Item (SQLResource):
     }
 
 
-api.add_resource(Item, '/inventory')
+api.add_resource(Item, '/rest/inventory')
 
 
 class Information (SQLResource):
@@ -638,7 +638,7 @@ class Information (SQLResource):
     }
 
 
-api.add_resource(Information, '/information')
+api.add_resource(Information, '/rest/information')
 
 
 # ----#-   Login/Logout

@@ -14,7 +14,7 @@ class Group extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/' + this.slug
+        const url = '/rest/' + this.slug
         this.request = $.ajax({
             url: url,
             type: 'GET',
@@ -45,7 +45,7 @@ class Group extends React.Component {
     addItem() {
         const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
-        const url = '/' + this.slug
+        const url = '/rest/' + this.slug
         this.addRequest = $.ajax({
             url: url,
             type: 'POST',
@@ -67,7 +67,7 @@ class Group extends React.Component {
     }
 
     updateItem(item, ...updated) {
-        const url = '/' + this.slug
+        const url = '/rest/' + this.slug
         const data = {character: this.props.character_id, id: item.id}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
@@ -91,7 +91,7 @@ class Group extends React.Component {
     }
 
     deleteItem(id) {
-        const url = '/' + this.slug
+        const url = '/rest/' + this.slug
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
@@ -370,7 +370,7 @@ class Character extends React.Component {
 
     componentDidMount() {
         this.request = $.ajax({
-            url: "/owns_character",
+            url: '/rest/character',
             type: 'GET',
             dataType: 'json',
             data: {

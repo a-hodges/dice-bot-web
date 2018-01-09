@@ -52,7 +52,7 @@ def get_user_avatar(user, size=32):
     Gets the url for the user's avatar
     '''
     if user.get('avatar') is None:
-        return 'https://cdn.discordapp.com/embed/avatars/{0}.png?size={1}'.format(int(user['discriminator']) % 5, size)
+        return 'https://cdn.discordapp.com/embed/avatars/{0}.png?size={1}'.format(int(user.get('discriminator', 0)) % 5, size)
     else:
         return 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png?size={1}'.format(user, size)
 

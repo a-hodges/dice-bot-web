@@ -441,7 +441,7 @@ def claim_character():
         character.user = user['id']
         db.session.commit()
 
-    return redirect(url_for('index'))
+    return redirect(url_for('character', character=character.id))
 
 
 # ----#-   REST endpoints

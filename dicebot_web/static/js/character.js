@@ -9,8 +9,8 @@ class Group extends React.Component {
         this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
 
-    criticalError(message) {
-        this.props.onError(message)
+    criticalError(message, jqXHR) {
+        this.props.onError(message, jqXHR)
     }
 
     componentDidMount() {
@@ -22,7 +22,7 @@ class Group extends React.Component {
             data: {
                 character: this.props.character_id,
             },
-            error: () => this.criticalError("Could not load data"),
+            error: (jqXHR) => this.criticalError("Could not load data", jqXHR),
             success: (data) => this.setState({data: data}),
         })
     }
@@ -59,7 +59,7 @@ class Group extends React.Component {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {
-                    this.criticalError("Failed to add item")
+                    this.criticalError("Failed to add item", jqXHR)
                 }
             },
             success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.concat([newItem])})),
@@ -83,7 +83,7 @@ class Group extends React.Component {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {
-                    this.criticalError("Failed to update item")
+                    this.criticalError("Failed to update item", jqXHR)
                 }
             },
             success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.map((item) => (item.id == newItem.id) ? newItem : item)})),
@@ -100,7 +100,7 @@ class Group extends React.Component {
                 character: this.props.character_id,
                 id: id,
             },
-            error: () => this.criticalError("Failed to remove item"),
+            error: (jqXHR) => this.criticalError("Failed to remove item", jqXHR),
             success: () => this.setState((prevState, props) => ({data: prevState.data.filter((item) => item.id != id)})),
         })
     }
@@ -364,7 +364,7 @@ class Character extends React.Component {
         this.state = {}
     }
 
-    error(message) {
+    error(message, jqXHR) {
         this.setState({error: message})
     }
 
@@ -427,7 +427,7 @@ class Character extends React.Component {
                 user = <Warning>Loading user...</Warning>
             }
             else {
-                user = <User user={this.state.user} link={true} />
+                user = <User user={this.state.user} link={!readOnly} />
             }
 
             let server

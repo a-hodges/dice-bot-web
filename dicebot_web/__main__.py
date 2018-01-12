@@ -373,7 +373,7 @@ def unclaim():
     character.user = None
     db.session.commit()
 
-    return redirect(url_for('index'))
+    return redirect(url_for('pick_character', server=character.server))
 
 
 @application.route('/pick_character')

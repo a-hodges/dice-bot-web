@@ -458,23 +458,20 @@ class Character extends React.Component {
 
             let unclaim
             if (!readOnly) {
-                unclaim = <div>
-                    <br />
-                    <a className="btn btn-danger" href={"/unclaim?character=" + this.state.character.id}>Unclaim character</a>
-                </div>
+                unclaim = <p><a className="btn btn-danger" href={"/unclaim?character=" + this.state.character.id}>Unclaim character</a></p>
             }
 
             body = <div>
                 <h1>{this.state.character.name}</h1>
                 {server}
                 {user}
+                {unclaim}
                 <Information character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
                 <Variables character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
                 <Rolls character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
                 <Resources character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
                 <Spells character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
                 <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                {unclaim}
             </div>
         }
         else if (this.state.error === undefined) {

@@ -379,6 +379,9 @@ class Character extends React.Component {
             else if (status == 409) {
                 message += " Conflicted with another value"
             }
+            else if (status == 500) {
+                message += " Server error"
+            }
         }
         this.setState({error: message})
     }

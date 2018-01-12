@@ -550,7 +550,7 @@ class SQLResource (Resource):
             if field != 'id':
                 parser.add_argument(field, type=self.do_cast(cast), default=self.defaults[cast])
         args = parser.parse_args()
-        character = get_character(args['character'], secure=False)
+        character = get_character(args['character'], secure=True)
         item = self.type(character_id=character['id'])
         for field in self.fields.keys():
             if field != 'id':
@@ -573,7 +573,7 @@ class SQLResource (Resource):
             if field != 'id':
                 parser.add_argument(field, type=self.do_cast(cast), store_missing=False)
         args = parser.parse_args()
-        character = get_character(args['character'], secure=False)
+        character = get_character(args['character'], secure=True)
         item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
         if item is None:
             abort(404)
@@ -594,7 +594,7 @@ class SQLResource (Resource):
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         parser.add_argument('id', type=int, required=True, help='ID for the resource')
         args = parser.parse_args()
-        character = get_character(args['character'], secure=False)
+        character = get_character(args['character'], secure=True)
         item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
         if item is not None:
             db.session.delete(item)

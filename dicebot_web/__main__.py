@@ -294,7 +294,7 @@ def character():
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if not user:
-        user = {}
+        abort(403)
 
     character_id = request.args.get('character')
     if not character_id:
@@ -326,6 +326,8 @@ def list_characters():
     Lists all of the characters in a server
     '''
     user, discord = get_user(session.get('oauth2_token'))
+    if not user:
+        abort(403)
 
     guild = request.args.get('server')
     if not guild:

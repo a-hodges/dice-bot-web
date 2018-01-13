@@ -482,12 +482,15 @@ def get_character(character_id, secure=True):
     If successful returns a character
     If unsuccessful calls an abort function
     '''
+    user, discord = get_user(session.get('oauth2_token'))
+    if user is None:
+        abort(403)
+
     character = db.session.query(m.Character).get(character_id)
     if not character:
-        abort(404)
+        abort(403)
 
     character = character.dict()
-    user, discord = get_user(session.get('oauth2_token'))
     character['own'] = character['user'] == user['id']
 
     if secure:

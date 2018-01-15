@@ -76,7 +76,7 @@ def get_guild_icon(guild, size=32):
 
 def get_user(token=None):
     discord = make_session(token=token)
-    user = discord.get(API_BASE_URL + '/users/@me').json()
+    user = user_get(discord, API_BASE_URL + '/users/@me').json()
     return user if 'id' in user else None, discord
 
 
@@ -91,6 +91,19 @@ def entry2json(entry):
 def table2json(table):
     data = [entry2json(item) for item in table]
     return data
+
+
+def user_get(discord, url):
+    '''
+    A get request authenticated by the user token
+    Handles rate limiting
+    '''
+    response = discord.get(url)
+    while response.status_code == 429:
+        ms = response.json().get('retry_after', 1000) + 5
+        time.sleep(ms / 1000)
+        response = discord.get(url)
+    return response
 
 
 def bot_get(url):
@@ -267,7 +280,7 @@ def index():
         user['avatar'] = get_user_avatar(user)
         characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
         characters = {str(c.server): c for c in characters}
-        guilds = discord.get(API_BASE_URL + '/users/@me/guilds').json()
+        guilds = user_get(discord, API_BASE_URL + '/users/@me/guilds').json()
         guilds = filter(bot_in_guild, guilds)
         guilds = sorted(guilds, key=itemgetter('name'))
         for guild in guilds:
@@ -306,7 +319,7 @@ def character():
     readonly = str(character.user) != user.get('id')
 
     user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
     guild = guilds.get(str(character.server), {})
     guild['icon'] = get_guild_icon(guild)
 
@@ -336,7 +349,7 @@ def list_characters():
         abort(403)
 
     user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
     guild = guilds.get(guild, {})
     guild['icon'] = get_guild_icon(guild, size=64)
     if not guild:
@@ -394,7 +407,7 @@ def pick_character():
         abort(403)
 
     user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in discord.get(API_BASE_URL + '/users/@me/guilds').json()}
+    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
     guild = guilds.get(guild, {})
     guild['icon'] = get_guild_icon(guild)
     if not guild:

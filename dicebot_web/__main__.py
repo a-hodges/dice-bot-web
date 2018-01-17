@@ -37,7 +37,7 @@ application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 application.config['SQLALCHEMY_DATABASE_URI'] = None
 # Attach Database and REST
 db.init_app(application)
-application.register_blueprint(api_bp, url_prefix='/rest')
+application.register_blueprint(api_bp, url_prefix='/api')
 
 
 # ----#-   Application

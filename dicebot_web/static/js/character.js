@@ -14,7 +14,7 @@ class Group extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/rest/' + this.slug
+        const url = '/api/' + this.slug
         this.request = $.ajax({
             url: url,
             type: 'GET',
@@ -45,7 +45,7 @@ class Group extends React.Component {
     addItem() {
         const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
-        const url = '/rest/' + this.slug
+        const url = '/api/' + this.slug
         this.addRequest = $.ajax({
             url: url,
             type: 'POST',
@@ -67,7 +67,7 @@ class Group extends React.Component {
     }
 
     updateItem(item, ...updated) {
-        const url = '/rest/' + this.slug
+        const url = '/api/' + this.slug
         const data = {character: this.props.character_id, id: item.id}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
@@ -91,7 +91,7 @@ class Group extends React.Component {
     }
 
     deleteItem(id) {
-        const url = '/rest/' + this.slug
+        const url = '/api/' + this.slug
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
@@ -388,7 +388,7 @@ class Character extends React.Component {
 
     componentDidMount() {
         this.request = $.ajax({
-            url: '/rest/character',
+            url: '/api/character',
             type: 'GET',
             dataType: 'json',
             data: {character: this.props.character_id},
@@ -397,7 +397,7 @@ class Character extends React.Component {
         })
         const loadMore = () => {
             this.serverRequest = $.ajax({
-                url: '/rest/server',
+                url: '/api/server',
                 type: 'GET',
                 dataType: 'json',
                 data: {server: this.state.character.server},
@@ -406,7 +406,7 @@ class Character extends React.Component {
             })
             if (this.state.character.user !== null) {
                 this.userRequest = $.ajax({
-                    url: '/rest/user',
+                    url: '/api/user',
                     type: 'GET',
                     dataType: 'json',
                     data: {user: this.state.character.user},

@@ -525,9 +525,26 @@ class Characters (Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('character', type=int, required=True, help='ID for the character')
         args = parser.parse_args()
-        user, discord = get_user(session.get('oauth2_token'))
         character = get_character(args['character'], secure=False)
         return character
+
+    def patch(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('character', type=int, required=True, help='ID for the character')
+        parser.add_argument('name', help='Name of the character')
+        args = parser.parse_args()
+        user, discord = get_user(session.get('oauth2_token'))
+        character = db.session.query(m.Character).get(args['character'])
+        if not character or character.user != user['id']:
+            abort(403)
+        if args['name']:
+            character.name = args['name']
+        try:
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            abort(409)
+        return character.dict()
 
 
 api.add_resource(Characters, '/rest/character')

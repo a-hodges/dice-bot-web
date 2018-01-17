@@ -29,14 +29,14 @@ from .database import db, m
 from .restful import api_bp
 
 # Create App
-application = Flask(__name__)
-application.jinja_env.trim_blocks = True
-application.jinja_env.lstrip_blocks = True
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-application.config['SQLALCHEMY_DATABASE_URI'] = None
+app = Flask(__name__)
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = None
 # Attach Database and REST
-db.init_app(application)
-application.register_blueprint(api_bp, url_prefix='/api')
+db.init_app(app)
+app.register_blueprint(api_bp, url_prefix='/api')
 
 
 # ----#-   Application
@@ -47,12 +47,12 @@ def create_app(database):
     Sets up app for use
     Adds database configuration and the secret key
     '''
-    if database is not None and database != application.config['SQLALCHEMY_DATABASE_URI']:
+    if database is not None and database != app.config['SQLALCHEMY_DATABASE_URI']:
         # setup Database
-        application.config['SQLALCHEMY_DATABASE_URI'] = database
+        app.config['SQLALCHEMY_DATABASE_URI'] = database
 
         # setup config values
-        with application.app_context():
+        with app.app_context():
             db.create_all()
             # these settings are stored in the configuration table
             # values here are defaults (and should all be strings or null)
@@ -77,18 +77,18 @@ def create_app(database):
                     key = m.Config(name=name, value=config[name])
                     db.session.add(key)
                     db.session.commit()
-            application.config.update(config)
-            application.config['PERMANENT_SESSION_LIFETIME'] = \
-                datetime.timedelta(int(application.config['PERMANENT_SESSION_LIFETIME']))
-            application.secret_key = application.config['token']
+            app.config.update(config)
+            app.config['PERMANENT_SESSION_LIFETIME'] = \
+                datetime.timedelta(int(app.config['PERMANENT_SESSION_LIFETIME']))
+            app.secret_key = app.config['token']
 
 
-@application.before_request
+@app.before_request
 def make_session_permanent():
     session.permanent = True
 
 
-@application.context_processor
+@app.context_processor
 def context():
     '''
     Makes extra variables available to the template engine
@@ -114,7 +114,7 @@ def error(e, message):
     return html
 
 
-@application.errorhandler(400)
+@app.errorhandler(400)
 def four_hundred(e):
     '''
     400 (bad request) error page
@@ -122,7 +122,7 @@ def four_hundred(e):
     return error(e, "Bad request."), 400
 
 
-@application.errorhandler(403)
+@app.errorhandler(403)
 def four_oh_three(e):
     '''
     403 (forbidden) error page
@@ -130,7 +130,7 @@ def four_oh_three(e):
     return error(e, "You don't have access to this page."), 403
 
 
-@application.errorhandler(404)
+@app.errorhandler(404)
 def four_oh_four(e):
     '''
     404 (page not found) error page
@@ -138,7 +138,7 @@ def four_oh_four(e):
     return error(e, "We couldn't find the page you were looking for."), 404
 
 
-@application.errorhandler(500)
+@app.errorhandler(500)
 def five_hundred(e):
     '''
     500 (internal server) error page
@@ -156,13 +156,13 @@ def five_hundred(e):
     return error('500: ' + type(e).__name__, message), 500
 
 
-@application.route('/favicon.ico')
+@app.route('/favicon.ico')
 def favicon():
     '''
     The favorites icon for the site
     '''
     return send_from_directory(
-        os.path.join(application.root_path, 'static', 'images'),
+        os.path.join(app.root_path, 'static', 'images'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon',
     )
@@ -171,7 +171,7 @@ def favicon():
 # ----#-   Pages
 
 
-@application.route('/')
+@app.route('/')
 def index():
     '''
     Homepage for the bot
@@ -202,7 +202,7 @@ def index():
     )
 
 
-@application.route('/character')
+@app.route('/character')
 def character():
     '''
     Character homepage, allows access to character attributes
@@ -235,7 +235,7 @@ def character():
     )
 
 
-@application.route('/list_characters')
+@app.route('/list_characters')
 def list_characters():
     '''
     Lists all of the characters in a server
@@ -268,7 +268,7 @@ def list_characters():
     )
 
 
-@application.route('/unclaim')
+@app.route('/unclaim')
 def unclaim():
     '''
     Removes a claim on a specific character
@@ -293,7 +293,7 @@ def unclaim():
     return redirect(url_for('pick_character', server=character.server))
 
 
-@application.route('/pick_character')
+@app.route('/pick_character')
 def pick_character():
     '''
     Pick a character from the server or create a new one
@@ -326,7 +326,7 @@ def pick_character():
     )
 
 
-@application.route('/claim_character')
+@app.route('/claim_character')
 def claim_character():
     '''
     Claim an existing character
@@ -364,35 +364,35 @@ def claim_character():
 # ----#-   Login/Logout
 
 
-@application.route('/login/')
+@app.route('/login/')
 def login():
     '''
     Redirects the user to the Discord sign in page
     '''
     scope = request.args.get('scope', 'identify guilds')
-    discord = make_session(application, scope=scope.split(' '))
+    discord = make_session(app, scope=scope.split(' '))
     authorization_url, state = discord.authorization_url(AUTHORIZATION_BASE_URL)
     session['oauth2_state'] = state
     return redirect(authorization_url)
 
 
-@application.route('/callback')
+@app.route('/callback')
 def callback():
     '''
     Logs the user in using the OAuth API
     '''
     if request.values.get('error'):
         return request.values['error']
-    discord = make_session(application, state=session.get('oauth2_state'))
+    discord = make_session(app, state=session.get('oauth2_state'))
     token = discord.fetch_token(
         TOKEN_URL,
-        client_secret=application.config['discord_client_secret'],
+        client_secret=app.config['discord_client_secret'],
         authorization_response=request.url)
     session['oauth2_token'] = token
     return redirect(url_for('index'))
 
 
-@application.route('/logout/')
+@app.route('/logout/')
 def logout():
     '''
     Logs the user out and returns them to the homepage

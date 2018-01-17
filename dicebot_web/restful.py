@@ -4,8 +4,8 @@ from flask import Blueprint, session
 from flask_restful import Api, Resource, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
-from util import API_BASE_URL, get_user, user_in_guild, bot_get, table2json, entry2json
-from database import db, m
+from .util import API_BASE_URL, get_user, user_in_guild, bot_get, table2json, entry2json
+from .database import db, m
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)

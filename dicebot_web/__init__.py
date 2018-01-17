@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import argparse
 import datetime
 from operator import itemgetter
 
@@ -19,15 +18,15 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from util import (
+from .util import (
     API_BASE_URL, AUTHORIZATION_BASE_URL, TOKEN_URL,
     get_user, user_get, user_in_guild,
     bot_in_guild,
     get_user_avatar, get_guild_icon,
     make_session,
 )
-from database import db, m
-from restful import api_bp
+from .database import db, m
+from .restful import api_bp
 
 # Create App
 application = Flask(__name__)
@@ -408,40 +407,3 @@ def logout():
 # ----#-   Main
 
 create_app(os.environ.get('DB', None))  # default database setup
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 80))  # default port
-    parser = argparse.ArgumentParser(
-        description='Tutoring Portal Server',
-        epilog='The server runs locally on port %d if PORT is not specified.'
-        % port)
-    parser.add_argument(
-        'database', nargs='?',
-        help='The database url to be accessed')
-    parser.add_argument(
-        '-p, --port', dest='port', type=int,
-        help='The port where the server will run')
-    parser.add_argument(
-        '--debug', dest='debug', action='store_true',
-        help='run the server in debug mode')
-    parser.add_argument(
-        '--reload', dest='reload', action='store_true',
-        help='reload on source update without restarting server (also debug)')
-    args = parser.parse_args()
-    if args.reload:
-        args.debug = True
-
-    if args.port is None:
-        args.port = port
-
-    create_app(args.database)
-
-    if args.reload:
-        application.config['TEMPLATES_AUTO_RELOAD'] = True
-
-    application.run(
-        host='0.0.0.0',
-        port=args.port,
-        debug=args.debug,
-        use_reloader=args.reload,
-    )

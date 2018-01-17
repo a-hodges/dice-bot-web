@@ -150,7 +150,7 @@ class GroupItem extends React.Component {
         this.setState({edit: true, refs: []})
     }
 
-    cancel() {
+    cancel(e) {
         this.setState({edit: false, refs: []})
     }
 

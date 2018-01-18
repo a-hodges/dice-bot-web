@@ -1,7 +1,7 @@
 import enum
 
 from flask import Blueprint, session
-from flask_restful import Api, Resource, reqparse, abort, url_for
+from flask_restful import Api, Resource, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
 from .util import API_BASE_URL, get_user, user_in_guild, bot_get, table2json, entry2json
@@ -88,10 +88,10 @@ class Server (Resource):
     def get(self, server_id):
         server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
-        if not user_in_guild(server_id, user['id']):
+        if not user or not user_in_guild(server_id, user['id']):
             abort(403)
         server = bot_get(API_BASE_URL + '/guilds/' + server_id)
-        if server.status_code >= 300:
+        if not server:
             abort(server.status_code)
         return server.json()
 
@@ -101,7 +101,7 @@ class CharacterList (Resource):
     def get(self, server_id):
         server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
-        if not user_in_guild(server_id, user['id']):
+        if not user or not user_in_guild(server_id, user['id']):
             abort(403)
         characters = db.session.query(m.Character)\
             .filter_by(server=server_id)\

@@ -107,7 +107,7 @@ class CharacterList (Resource):
             .filter_by(server=server_id)\
             .order_by(m.Character.name).all()
         return table2json(characters)
-    
+
     def post(self, server_id):
         server_id = str(server_id)
         parser = reqparse.RequestParser()

@@ -91,6 +91,21 @@ class Server (Resource):
 api.add_resource(Server, '/server/<int:server_id>')
 
 
+class CharacterList (Resource):
+    def get(self, server_id):
+        server_id = str(server_id)
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user_in_guild(server_id, user['id']):
+            abort(403)
+        characters = db.session.query(m.Character)\
+            .filter_by(server=server_id)\
+            .order_by(m.Character.name).all()
+        return table2json(characters)
+
+
+api.add_resource(CharacterList, '/server/<int:server_id>/characters')
+
+
 class Characters (Resource):
     def get(self, character_id):
         character = get_character(character_id, secure=False)

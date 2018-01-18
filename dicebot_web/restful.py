@@ -110,7 +110,7 @@ class Characters (Resource):
         return character.dict()
 
 
-api.add_resource(Characters, '/character/<int:character_id>')
+api.add_resource(Characters, '/characters/<int:character_id>')
 
 
 class CharacterResource (Resource):
@@ -201,13 +201,13 @@ class CharacterResourceList (Resource):
 def add_character_resource(api, short_name, name, type, order, fields):
     api.add_resource(
         CharacterResource,
-        '/character/<int:character_id>/{}/<int:item_id>'.format(name),
+        '/characters/<int:character_id>/{}/<int:item_id>'.format(name),
         resource_class_kwargs={'type': type, 'fields': fields},
         endpoint=short_name)
 
     api.add_resource(
         CharacterResourceList,
-        '/character/<int:character_id>/{}'.format(name),
+        '/characters/<int:character_id>/{}'.format(name),
         resource_class_kwargs={'type': type, 'order': order, 'fields': fields},
         endpoint=name)
 

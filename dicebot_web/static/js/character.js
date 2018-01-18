@@ -13,7 +13,7 @@ class Group extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/api/character/' + this.props.character_id + '/' + this.props.url
+        const url = '/api/characters/' + this.props.character_id + '/' + this.props.url
         this.request = $.ajax({
             url: url,
             type: 'GET',
@@ -41,7 +41,7 @@ class Group extends React.Component {
     addItem() {
         const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
-        const url = '/api/character/' + this.props.character_id + '/' + this.props.url
+        const url = '/api/characters/' + this.props.character_id + '/' + this.props.url
         this.addRequest = $.ajax({
             url: url,
             type: 'POST',
@@ -62,7 +62,7 @@ class Group extends React.Component {
     }
 
     updateItem(item, ...updated) {
-        const url = '/api/character/' + this.props.character_id + '/' + this.props.url + '/' + item.id
+        const url = '/api/characters/' + this.props.character_id + '/' + this.props.url + '/' + item.id
         const data = {}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
@@ -86,7 +86,7 @@ class Group extends React.Component {
     }
 
     deleteItem(id) {
-        const url = '/api/character/' + this.props.character_id + '/' + this.props.url + '/' + id
+        const url = '/api/characters/' + this.props.character_id + '/' + this.props.url + '/' + id
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
@@ -379,7 +379,7 @@ class Character extends React.Component {
 
     componentDidMount() {
         this.request = $.ajax({
-            url: '/api/character/' + this.props.character_id,
+            url: '/api/characters/' + this.props.character_id,
             type: 'GET',
             dataType: 'json',
             error: () => this.error("Could not load character"),

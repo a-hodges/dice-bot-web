@@ -21,7 +21,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from .util import (
     API_BASE_URL, AUTHORIZATION_BASE_URL, TOKEN_URL,
     get_user, user_get, user_in_guild,
-    bot_in_guild,
+    bot_get, bot_in_guild,
     get_user_avatar, get_guild_icon,
     make_session,
 )
@@ -216,22 +216,13 @@ def character():
         abort(400)
 
     character = db.session.query(m.Character).get(character_id)
-    if not character:
-        abort(404)
-    readonly = str(character.user) != user.get('id')
-
-    user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
-    guild = guilds.get(str(character.server), {})
-    guild['icon'] = get_guild_icon(guild)
+    if not character or not user_in_guild(character.server, user['id']):
+        abort(403)
 
     return render_template(
         'character.html',
         user=user,
         title=character.name,
-        character=character,
-        guild=guild,
-        readonly=readonly,
     )
 
 
@@ -244,27 +235,19 @@ def list_characters():
     if not user:
         abort(403)
 
-    guild = request.args.get('server')
-    if not guild:
-        abort(400)
-    if not user_in_guild(guild, user['id']):
+    server_id = request.args.get('server')
+    if not user_in_guild(server_id, user['id']):
         abort(403)
 
-    user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
-    guild = guilds.get(guild, {})
-    guild['icon'] = get_guild_icon(guild, size=64)
+    guild = bot_get(API_BASE_URL + '/guilds/' + server_id)
     if not guild:
         abort(403)
-
-    characters = db.session.query(m.Character).filter_by(server=guild['id']).order_by(m.Character.name).all()
+    guild = guild.json()
 
     return render_template(
         'list_characters.html',
         user=user,
         title=guild['name'],
-        guild=guild,
-        characters=characters,
     )
 
 

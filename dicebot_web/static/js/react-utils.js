@@ -23,7 +23,10 @@ function User(props) {
     if (props.link) {
         body = <a href="/">{body}</a>
     }
-    return <p>{body}</p>
+    if (!props.inline) {
+        body = <p>{body}</p>
+    }
+    return body
 }
 
 function Server(props) {
@@ -38,7 +41,10 @@ function Server(props) {
     if (props.link) {
         body = <a href={"/list_characters?server=" + props.server.id}>{body}</a>
     }
-    return <p>{body}</p>
+    if (!props.inline) {
+        body = <p>{body}</p>
+    }
+    return body
 }
 
 const urlparams = new URLSearchParams(window.location.search)

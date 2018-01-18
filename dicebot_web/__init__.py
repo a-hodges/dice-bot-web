@@ -285,63 +285,20 @@ def pick_character():
     if not user:
         abort(403)
 
-    guild = request.args.get('server')
-    if not guild:
+    server_id = request.args.get('server')
+    if not server_id:
         abort(400)
-    if not user_in_guild(guild, user['id']):
-        abort(403)
 
-    user['avatar'] = get_user_avatar(user)
-    guilds = {guild['id']: guild for guild in user_get(discord, API_BASE_URL + '/users/@me/guilds').json()}
-    guild = guilds.get(guild, {})
-    guild['icon'] = get_guild_icon(guild)
-    if not guild:
+    guild = bot_get(API_BASE_URL + '/guilds/' + server_id)
+    if not guild or not user_in_guild(server_id, user['id']):
         abort(403)
-
-    characters = db.session.query(m.Character).filter_by(server=guild['id'], user=None).order_by(m.Character.name).all()
+    guild = guild.json()
 
     return render_template(
         'pick_character.html',
         user=user,
         title=guild['name'],
-        guild=guild,
-        characters=characters,
     )
-
-
-@app.route('/claim_character')
-def claim_character():
-    '''
-    Claim an existing character
-    '''
-    user, discord = get_user(session.get('oauth2_token'))
-    if not user:
-        abort(403)
-
-    guild = request.args.get('server')
-    name = request.args.get('character')
-    if not guild or not name:
-        abort(400)
-    if not user_in_guild(guild, user['id']):
-        abort(403)
-
-    character = db.session.query(m.Character).filter_by(name=name, server=guild).one_or_none()
-
-    if character is None:
-        character = m.Character(name=name, server=guild, user=user['id'])
-        try:
-            db.session.add(character)
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            abort(409)
-    elif character.user is not None:
-        abort(409)
-    else:
-        character.user = user['id']
-        db.session.commit()
-
-    return redirect(url_for('character', character=character.id))
 
 
 # ----#-   Login/Logout

@@ -1,31 +1,10 @@
 {% extends "base.html" %}
-{% from "base.html" import show_user, show_guild %}
+
+{% set react = True %}
+{% block js %}
+<script type="text/babel" src="{{ url_for('static', filename='js/character-pick.js') }}"></script>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Claim Character</h1>
-    {{ show_user(user) }}
-    {{ show_guild(guild) }}
-    <form class="form-group" action="{{ url_for('claim_character') }}" method="get">
-        <h2>Create character:</h2>
-        <input type="hidden" name="server" value="{{ guild['id'] }}">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Name:</span>
-            </div>
-            <input class="form-control" type="text" name="character">
-            <div class="input-group-append">
-                <button type="submit" class="form-control btn btn-success">Create</button>
-            </div>
-        </div>
-    </form>
-    <h2>Select a character:</h2>
-    <ul class="list-group">
-        {% for character in characters %}
-        <li class="list-group-item"><a href="{{ url_for('claim_character', server=guild['id'], character=character.name) }}">
-            {{ character.name }}
-        </a></li>
-        {% endfor %}
-    </ul>
-</div>
+<div id="root"></div>
 {% endblock %}

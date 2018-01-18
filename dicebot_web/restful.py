@@ -118,13 +118,34 @@ class Characters (Resource):
     def patch(self, character_id):
         parser = reqparse.RequestParser()
         parser.add_argument('name', help='Name of the character')
+        parser.add_argument('user', help='"@me" to claim character, "null" to unclaim')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
         character = db.session.query(m.Character).get(character_id)
-        if not character or character.user != user['id']:
+        if not user or not character:
             abort(403)
+
+        # change name
         if args['name']:
+            if character.user != user['id']:
+                abort(403)
             character.name = args['name']
+
+        # claim/unclaim
+        if args['user']:
+            if args['user'] == 'null':  # unclaim
+                # restrict to character claimed by the current user on the same server
+                if character.user != user['id'] or not user_in_guild(character.server, user['id']):
+                    abort(403)
+                character.user = None
+            elif args['user'] == '@me':  # claim
+                # restrict to unclaimed characters on the same server
+                if character.user is not None or not user_in_guild(character.server, user['id']):
+                    abort(403)
+                character.user = user['id']
+            else:
+                abort(400)
+
         try:
             session.commit()
         except IntegrityError:

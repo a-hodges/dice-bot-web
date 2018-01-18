@@ -11,6 +11,14 @@ api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
 
+def prep_cast(cast):
+    if isinstance(cast, enum.EnumMeta):
+        def cast2(value):
+            return cast[value]
+        return cast2
+    return cast
+
+
 class User (Resource):
     def get(self, user_id):
         user_id = str(user_id)
@@ -91,121 +99,28 @@ class Characters (Resource):
 api.add_resource(Characters, '/character/<int:character_id>')
 
 
-class CharacterResourceList (Resource):
-    def __init__(self, type, order):
+class CharacterResource (Resource):
+    def __init__(self, type, fields):
         self.type = type
-        self.order = order
+        self.fields = fields
 
-    def get(self, character_id):
+    def get(self, character_id, item_id):
         character = get_character(character_id, secure=False)
         data = db.session.query(self.type)\
-            .filter_by(character_id=character['id'])
-        if isinstance(self.order, str):
-            data = data.order_by(self.order)
-        else:
-            data = data.order_by(*self.order)
-        data = data.all()
-        return table2json(data)
+            .filter_by(character_id=character['id'], id=item_id).one_or_none()
+        if not data:
+            abort(404)
+        return entry2json(data)
 
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/information',
-    resource_class_kwargs={'type': m.Information, 'order': 'name'},
-    endpoint='information')
-
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/variables',
-    resource_class_kwargs={'type': m.Variable, 'order': 'name'},
-    endpoint='variables')
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/rolls',
-    resource_class_kwargs={'type': m.Roll, 'order': 'name'},
-    endpoint='rolls')
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/resources',
-    resource_class_kwargs={'type': m.Resource, 'order': 'name'},
-    endpoint='resources')
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/spells',
-    resource_class_kwargs={'type': m.Spell, 'order': ('level', 'name')},
-    endpoint='spells')
-
-api.add_resource(
-    CharacterResourceList,
-    '/character/<int:character_id>/inventory',
-    resource_class_kwargs={'type': m.Item, 'order': 'name'},
-    endpoint='inventory')
-
-
-class CharacterResource (Resource):
-    defaults = {
-        int: 0,
-        str: '',
-        m.Rest: m.Rest.other,
-    }
-
-    def do_cast(self, cast):
-        if isinstance(cast, enum.EnumMeta):
-            def cast2(value):
-                return cast[value]
-            return cast2
-        return cast
-
-    def get(self):
+    def patch(self, character_id, item_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
-        args = parser.parse_args()
-        character = get_character(args['character'], secure=False)
-        data = db.session.query(self.type)\
-            .filter_by(character_id=character['id'])
-        if isinstance(self.order, str):
-            data = data.order_by(self.order)
-        else:
-            data = data.order_by(*self.order)
-        data = data.all()
-        return table2json(data)
-
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
         for field, cast in self.fields.items():
             if field != 'id':
-                parser.add_argument(field, type=self.do_cast(cast), default=self.defaults[cast])
+                parser.add_argument(field, type=prep_cast(cast), store_missing=False)
         args = parser.parse_args()
-        character = get_character(args['character'], secure=True)
-        item = self.type(character_id=character['id'])
-        for field in self.fields.keys():
-            if field != 'id':
-                setattr(item, field, args[field])
-
-        try:
-            db.session.add(item)
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            abort(409)
-        else:
-            return entry2json(item)
-
-    def patch(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
-        parser.add_argument('id', type=int, required=True, help='ID for the resource')
-        for field, cast in self.fields.items():
-            if field != 'id':
-                parser.add_argument(field, type=self.do_cast(cast), store_missing=False)
-        args = parser.parse_args()
-        character = get_character(args['character'], secure=True)
-        item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
+        character = get_character(character_id, secure=True)
+        item = db.session.query(self.type)\
+            .filter_by(character_id=character['id'], id=item_id).one_or_none()
         if item is None:
             abort(404)
 
@@ -220,90 +135,83 @@ class CharacterResource (Resource):
             abort(409)
         return entry2json(item)
 
-    def delete(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
-        parser.add_argument('id', type=int, required=True, help='ID for the resource')
-        args = parser.parse_args()
-        character = get_character(args['character'], secure=True)
-        item = db.session.query(self.type).filter_by(character_id=character['id'], id=args['id']).one_or_none()
+    def delete(self, character_id, item_id):
+        character = get_character(character_id, secure=True)
+        item = db.session.query(self.type)\
+            .filter_by(character_id=character['id'], id=item_id).one_or_none()
         if item is not None:
             db.session.delete(item)
             db.session.commit()
         return {'message': 'successful'}
 
 
-class Variable (CharacterResource):
-    type = m.Variable
-    order = 'name'
-    fields = {
-        'name': str,
-        'value': int,
-    }
+class CharacterResourceList (Resource):
+    def __init__(self, type, order, fields):
+        self.type = type
+        self.order = order
+        self.fields = fields
+
+    def get(self, character_id):
+        character = get_character(character_id, secure=False)
+        data = db.session.query(self.type)\
+            .filter_by(character_id=character['id'])
+        if isinstance(self.order, str):
+            data = data.order_by(self.order)
+        else:
+            data = data.order_by(*self.order)
+        data = data.all()
+        return table2json(data)
+
+    def post(self, character_id):
+        parser = reqparse.RequestParser()
+        for field, cast in self.fields.items():
+            if field != 'id':
+                parser.add_argument(field, type=prep_cast(cast))
+        args = parser.parse_args()
+        character = get_character(character_id, secure=True)
+        item = self.type(character_id=character['id'])
+        for field in self.fields.keys():
+            if field != 'id' and args[field] is not None:
+                setattr(item, field, args[field])
+
+        db.session.add(item)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+        else:
+            return entry2json(item)
 
 
-api.add_resource(Variable, '/variables')
+def add_character_resource(api, short_name, name, type, order, fields):
+    api.add_resource(
+        CharacterResource,
+        '/character/<int:character_id>/{}/<int:item_id>'.format(name),
+        resource_class_kwargs={'type': type, 'fields': fields},
+        endpoint=short_name)
+
+    api.add_resource(
+        CharacterResourceList,
+        '/character/<int:character_id>/{}'.format(name),
+        resource_class_kwargs={'type': type, 'order': order, 'fields': fields},
+        endpoint=name)
 
 
-class Roll (CharacterResource):
-    type = m.Roll
-    order = 'name'
-    fields = {
-        'name': str,
-        'expression': str,
-    }
+information_fields = {'name': str, 'description': str}
+add_character_resource(api, 'info', 'information', m.Information, 'name', information_fields)
 
+variable_fields = {'name': str, 'value': int}
+add_character_resource(api, 'variable', 'variables', m.Variable, 'name', variable_fields)
 
-api.add_resource(Roll, '/rolls')
+roll_fields = {'name': str, 'expression': str}
+add_character_resource(api, 'roll', 'rolls', m.Roll, 'name', roll_fields)
 
+resource_fields = {'name': str, 'current': int, 'max': int, 'recover': m.Rest}
+add_character_resource(api, 'resource', 'resources', m.Resource, 'name', resource_fields)
 
-class Resource (CharacterResource):
-    type = m.Resource
-    order = 'name'
-    fields = {
-        'name': str,
-        'current': int,
-        'max': int,
-        'recover': m.Rest,
-    }
+spell_fields = {'name': str, 'level': int, 'description': str}
+add_character_resource(api, 'spell', 'spells', m.Spell, ('level', 'name'), spell_fields)
 
-
-api.add_resource(Resource, '/resources')
-
-
-class Spell (CharacterResource):
-    type = m.Spell
-    order = ('level', 'name')  # 'level,name'
-    fields = {
-        'name': str,
-        'level': int,
-        'description': str,
-    }
-
-
-api.add_resource(Spell, '/spells')
-
-
-class Item (CharacterResource):
-    type = m.Item
-    order = 'name'
-    fields = {
-        'name': str,
-        'number': int,
-        'description': str,
-    }
-
-
-api.add_resource(Item, '/inventory')
-
-
-class Information (CharacterResource):
-    type = m.Information
-    order = 'name'
-    fields = {
-        'name': str,
-        'description': str,
-    }
-
-
-api.add_resource(Information, '/information', endpoint='info')
+item_fields = {'name': str, 'number': int, 'description': str}
+add_character_resource(api, 'item', 'inventory', m.Item, 'name', item_fields)

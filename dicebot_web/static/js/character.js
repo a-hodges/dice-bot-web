@@ -41,13 +41,12 @@ class Group extends React.Component {
     addItem() {
         const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
-        const url = '/api/' + this.props.url
+        const url = '/api/character/' + this.props.character_id + '/' + this.props.url
         this.addRequest = $.ajax({
             url: url,
             type: 'POST',
             dataType: 'json',
             data: {
-                character: this.props.character_id,
                 name: name,
             },
             error: (jqXHR) => {
@@ -63,8 +62,8 @@ class Group extends React.Component {
     }
 
     updateItem(item, ...updated) {
-        const url = '/api/' + this.props.url
-        const data = {character: this.props.character_id, id: item.id}
+        const url = '/api/character/' + this.props.character_id + '/' + this.props.url + '/' + item.id
+        const data = {}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
             url: url,
@@ -87,15 +86,11 @@ class Group extends React.Component {
     }
 
     deleteItem(id) {
-        const url = '/api/' + this.props.url
+        const url = '/api/character/' + this.props.character_id + '/' + this.props.url + '/' + id
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
             dataType: 'json',
-            data: {
-                character: this.props.character_id,
-                id: id,
-            },
             error: (jqXHR) => this.criticalError("Failed to remove item", jqXHR),
             success: () => this.setState((prevState, props) => ({data: prevState.data.filter((item) => item.id != id)})),
         })

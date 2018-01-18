@@ -51,6 +51,7 @@ def get_character(character_id, secure=True):
 
 class User (Resource):
     def get(self, user_id):
+        # add security?
         user_id = str(user_id)
         parser = reqparse.RequestParser()
         parser.add_argument('server', help='ID of a server the user is in, if relevant')
@@ -78,6 +79,9 @@ api.add_resource(User, '/user/<int:user_id>')
 class Server (Resource):
     def get(self, server_id):
         server_id = str(server_id)
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user_in_guild(server_id, user['id']):
+            abort(403)
         server = bot_get(API_BASE_URL + '/guilds/' + server_id)
         if server.status_code >= 300:
             abort(server.status_code)

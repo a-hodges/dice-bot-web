@@ -38,9 +38,6 @@ def make_session(token=None, state=None, scope=None):
     )
 
 
-# ----#-   ...
-
-
 def get_user_avatar(user, size=32):
     '''
     Gets the url for the user's avatar

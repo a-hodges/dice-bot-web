@@ -95,7 +95,62 @@ class Characters (Resource):
 api.add_resource(Characters, '/character/<int:character_id>')
 
 
-class SQLResource (Resource):
+class CharacterResourceList (Resource):
+    def __init__(self, type, order):
+        self.type = type
+        self.order = order
+
+    def get(self, character_id):
+        character = get_character(character_id, secure=False)
+        data = db.session.query(self.type)\
+            .filter_by(character_id=character['id'])
+        if isinstance(self.order, str):
+            data = data.order_by(self.order)
+        else:
+            data = data.order_by(*self.order)
+        data = data.all()
+        return table2json(data)
+
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/information',
+    resource_class_kwargs={'type': m.Information, 'order': 'name'},
+    endpoint='information')
+
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/variables',
+    resource_class_kwargs={'type': m.Variable, 'order': 'name'},
+    endpoint='variables')
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/rolls',
+    resource_class_kwargs={'type': m.Roll, 'order': 'name'},
+    endpoint='rolls')
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/resources',
+    resource_class_kwargs={'type': m.Resource, 'order': 'name'},
+    endpoint='resources')
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/spells',
+    resource_class_kwargs={'type': m.Spell, 'order': ('level', 'name')},
+    endpoint='spells')
+
+api.add_resource(
+    CharacterResourceList,
+    '/character/<int:character_id>/inventory',
+    resource_class_kwargs={'type': m.Item, 'order': 'name'},
+    endpoint='inventory')
+
+
+class CharacterResource (Resource):
     defaults = {
         int: 0,
         str: '',
@@ -182,7 +237,7 @@ class SQLResource (Resource):
         return {'message': 'successful'}
 
 
-class Variable (SQLResource):
+class Variable (CharacterResource):
     type = m.Variable
     order = 'name'
     fields = {
@@ -194,7 +249,7 @@ class Variable (SQLResource):
 api.add_resource(Variable, '/variables')
 
 
-class Roll (SQLResource):
+class Roll (CharacterResource):
     type = m.Roll
     order = 'name'
     fields = {
@@ -206,7 +261,7 @@ class Roll (SQLResource):
 api.add_resource(Roll, '/rolls')
 
 
-class Resource (SQLResource):
+class Resource (CharacterResource):
     type = m.Resource
     order = 'name'
     fields = {
@@ -220,7 +275,7 @@ class Resource (SQLResource):
 api.add_resource(Resource, '/resources')
 
 
-class Spell (SQLResource):
+class Spell (CharacterResource):
     type = m.Spell
     order = ('level', 'name')  # 'level,name'
     fields = {
@@ -233,7 +288,7 @@ class Spell (SQLResource):
 api.add_resource(Spell, '/spells')
 
 
-class Item (SQLResource):
+class Item (CharacterResource):
     type = m.Item
     order = 'name'
     fields = {
@@ -246,7 +301,7 @@ class Item (SQLResource):
 api.add_resource(Item, '/inventory')
 
 
-class Information (SQLResource):
+class Information (CharacterResource):
     type = m.Information
     order = 'name'
     fields = {
@@ -255,4 +310,4 @@ class Information (SQLResource):
     }
 
 
-api.add_resource(Information, '/information')
+api.add_resource(Information, '/information', endpoint='info')

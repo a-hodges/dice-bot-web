@@ -437,13 +437,7 @@ class Character extends React.Component {
                 user = <User user={this.state.user} link={!readOnly} />
             }
 
-            let server
-            if (this.state.server === undefined) {
-                server = <Warning>Loading server...</Warning>
-            }
-            else {
-                server = <Server server={this.state.server} link={true} />
-            }
+            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} link={true} />
 
             let unclaim
             if (!readOnly) {

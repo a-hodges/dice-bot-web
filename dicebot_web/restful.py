@@ -19,6 +19,36 @@ def prep_cast(cast):
     return cast
 
 
+def get_character(character_id, secure=True):
+    '''
+    Uses character_id to select a character
+
+    If successful returns a character
+    If unsuccessful calls an abort function
+    '''
+    user, discord = get_user(session.get('oauth2_token'))
+    if user is None:
+        abort(403)
+
+    character = db.session.query(m.Character).get(character_id)
+    if not character:
+        abort(403)
+
+    character = character.dict()
+    character['own'] = character['user'] == user['id']
+
+    if secure:
+        # ensure that the user owns the character
+        if not character['own']:
+            abort(403)
+    else:
+        # ensure that the user is in the same guild
+        if not user_in_guild(character['server'], user['id']):
+            abort(403)
+
+    return character
+
+
 class User (Resource):
     def get(self, user_id):
         user_id = str(user_id)
@@ -55,36 +85,6 @@ class Server (Resource):
 
 
 api.add_resource(Server, '/server/<int:server_id>')
-
-
-def get_character(character_id, secure=True):
-    '''
-    Uses character_id to select a character
-
-    If successful returns a character
-    If unsuccessful calls an abort function
-    '''
-    user, discord = get_user(session.get('oauth2_token'))
-    if user is None:
-        abort(403)
-
-    character = db.session.query(m.Character).get(character_id)
-    if not character:
-        abort(403)
-
-    character = character.dict()
-    character['own'] = character['user'] == user['id']
-
-    if secure:
-        # ensure that the user owns the character
-        if not character['own']:
-            abort(403)
-    else:
-        # ensure that the user is in the same guild
-        if not user_in_guild(character['server'], user['id']):
-            abort(403)
-
-    return character
 
 
 class Characters (Resource):

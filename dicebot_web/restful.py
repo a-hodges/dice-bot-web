@@ -107,6 +107,23 @@ class CharacterList (Resource):
             .filter_by(server=server_id)\
             .order_by(m.Character.name).all()
         return table2json(characters)
+    
+    def post(self, server_id):
+        server_id = str(server_id)
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', required=True, help='Name of the character')
+        args = parser.parse_args()
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user or not user_in_guild(server_id, user['id']):
+            abort(403)
+        character = m.Character(name=args['name'], user=user['id'], server=server_id)
+        db.session.add(character)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+        return entry2json(character)
 
 
 @api.resource('/characters/<int:character_id>')
@@ -147,11 +164,11 @@ class Characters (Resource):
                 abort(400)
 
         try:
-            session.commit()
+            db.session.commit()
         except IntegrityError:
-            session.rollback()
+            db.session.rollback()
             abort(409)
-        return character.dict()
+        return entry2json(character)
 
 
 class CharacterResource (Resource):

@@ -70,20 +70,16 @@ def get_character(character_id, secure=True):
 
 
 class Characters (Resource):
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
-        args = parser.parse_args()
-        character = get_character(args['character'], secure=False)
+    def get(self, character_id):
+        character = get_character(character_id, secure=False)
         return character
 
-    def patch(self):
+    def patch(self, character_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('character', type=int, required=True, help='ID for the character')
         parser.add_argument('name', help='Name of the character')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
-        character = db.session.query(m.Character).get(args['character'])
+        character = db.session.query(m.Character).get(character_id)
         if not character or character.user != user['id']:
             abort(403)
         if args['name']:
@@ -96,7 +92,7 @@ class Characters (Resource):
         return character.dict()
 
 
-api.add_resource(Characters, '/character')
+api.add_resource(Characters, '/character/<int:character_id>')
 
 
 class SQLResource (Resource):

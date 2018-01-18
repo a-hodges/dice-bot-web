@@ -388,10 +388,9 @@ class Character extends React.Component {
 
     componentDidMount() {
         this.request = $.ajax({
-            url: '/api/character',
+            url: '/api/character/' + this.props.character_id,
             type: 'GET',
             dataType: 'json',
-            data: {character: this.props.character_id},
             error: () => this.error("Could not load character"),
             success: (data) => this.setState({character: data}, loadMore),
         })

@@ -180,6 +180,7 @@ class Base extends React.Component {
                 {server}
                 {user}
                 <Create server_id={this.props.server_id} onError={this.error} />
+                <br />
                 <Pick server_id={this.props.server_id} onError={this.error} />
             </div>
         }

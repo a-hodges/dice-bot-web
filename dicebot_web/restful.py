@@ -1,7 +1,7 @@
 import enum
 
 from flask import Blueprint, session
-from flask_restful import Api, Resource, reqparse, abort
+from flask_restful import Api, Resource, reqparse, abort, url_for
 from sqlalchemy.exc import IntegrityError
 
 from .util import API_BASE_URL, get_user, user_in_guild, bot_get, table2json, entry2json
@@ -49,6 +49,7 @@ def get_character(character_id, secure=True):
     return character
 
 
+@api.resource('/user/<int:user_id>')
 class User (Resource):
     def get(self, user_id):
         # add security?
@@ -76,6 +77,7 @@ class User (Resource):
 api.add_resource(User, '/user/<int:user_id>')
 
 
+@api.resource('/server/<int:server_id>')
 class Server (Resource):
     def get(self, server_id):
         server_id = str(server_id)
@@ -88,9 +90,7 @@ class Server (Resource):
         return server.json()
 
 
-api.add_resource(Server, '/server/<int:server_id>')
-
-
+@api.resource('/server/<int:server_id>/characters')
 class CharacterList (Resource):
     def get(self, server_id):
         server_id = str(server_id)
@@ -103,9 +103,7 @@ class CharacterList (Resource):
         return table2json(characters)
 
 
-api.add_resource(CharacterList, '/server/<int:server_id>/characters')
-
-
+@api.resource('/characters/<int:character_id>')
 class Characters (Resource):
     def get(self, character_id):
         character = get_character(character_id, secure=False)
@@ -127,9 +125,6 @@ class Characters (Resource):
             session.rollback()
             abort(409)
         return character.dict()
-
-
-api.add_resource(Characters, '/characters/<int:character_id>')
 
 
 class CharacterResource (Resource):

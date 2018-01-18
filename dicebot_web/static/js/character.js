@@ -6,7 +6,6 @@ class Group extends React.Component {
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
         this.state = {data: undefined}
-        this.slug = this.props.title.replace(" ", "_").toLowerCase()
     }
 
     criticalError(message, jqXHR) {
@@ -14,14 +13,11 @@ class Group extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/api/' + this.slug
+        const url = '/api/character/' + this.props.character_id + '/' + this.props.list_url
         this.request = $.ajax({
             url: url,
             type: 'GET',
             dataType: 'json',
-            data: {
-                character: this.props.character_id,
-            },
             error: (jqXHR) => this.criticalError("Could not load data", jqXHR),
             success: (data) => this.setState({data: data}),
         })
@@ -45,7 +41,7 @@ class Group extends React.Component {
     addItem() {
         const name = prompt("Please enter the name of the new item:", "")
         if (!name) {return}
-        const url = '/api/' + this.slug
+        const url = '/api/' + this.props.url
         this.addRequest = $.ajax({
             url: url,
             type: 'POST',
@@ -67,7 +63,7 @@ class Group extends React.Component {
     }
 
     updateItem(item, ...updated) {
-        const url = '/api/' + this.slug
+        const url = '/api/' + this.props.url
         const data = {character: this.props.character_id, id: item.id}
         updated.map(key => data[key] = item[key])
         this.updateRequest = $.ajax({
@@ -91,7 +87,7 @@ class Group extends React.Component {
     }
 
     deleteItem(id) {
-        const url = '/api/' + this.slug
+        const url = '/api/' + this.props.url
         this.deleteRequest = $.ajax({
             url: url,
             type: 'DELETE',
@@ -211,6 +207,7 @@ function Information(props) {
     )
     return <Group
         title="Information"
+        url="information" list_url="information"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -236,6 +233,7 @@ function Variables(props) {
     const readDisplay = (item) => <span>{item.name}: {item.value}</span>
     return <Group
         title="Variables"
+        url="variables" list_url="variables"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -261,6 +259,7 @@ function Rolls(props) {
     const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
     return <Group
         title="Rolls"
+        url="rolls" list_url="rolls"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -294,6 +293,7 @@ function Resources(props) {
     const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
     return <Group
         title="Resources"
+        url="resources" list_url="resources"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -323,6 +323,7 @@ function Spells(props) {
     )
     return <Group
         title="Spells"
+        url="spells" list_url="spells"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -352,6 +353,7 @@ function Inventory(props) {
     )
     return <Group
         title="Inventory"
+        url="inventory" list_url="inventory"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />

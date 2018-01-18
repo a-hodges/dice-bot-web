@@ -13,7 +13,7 @@ class Group extends React.Component {
     }
 
     componentDidMount() {
-        const url = '/api/character/' + this.props.character_id + '/' + this.props.list_url
+        const url = '/api/character/' + this.props.character_id + '/' + this.props.url
         this.request = $.ajax({
             url: url,
             type: 'GET',
@@ -206,8 +206,7 @@ function Information(props) {
         </div>
     )
     return <Group
-        title="Information"
-        url="information" list_url="information"
+        title="Information" url="information"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -232,8 +231,7 @@ function Variables(props) {
     )
     const readDisplay = (item) => <span>{item.name}: {item.value}</span>
     return <Group
-        title="Variables"
-        url="variables" list_url="variables"
+        title="Variables" url="variables"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -258,8 +256,7 @@ function Rolls(props) {
     )
     const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
     return <Group
-        title="Rolls"
-        url="rolls" list_url="rolls"
+        title="Rolls" url="rolls"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -292,8 +289,7 @@ function Resources(props) {
     )
     const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
     return <Group
-        title="Resources"
-        url="resources" list_url="resources"
+        title="Resources" url="resources"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -322,8 +318,7 @@ function Spells(props) {
         </div>
     )
     return <Group
-        title="Spells"
-        url="spells" list_url="spells"
+        title="Spells" url="spells"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />
@@ -352,8 +347,7 @@ function Inventory(props) {
         </div>
     )
     return <Group
-        title="Inventory"
-        url="inventory" list_url="inventory"
+        title="Inventory" url="inventory"
         editDisplay={display} readDisplay={readDisplay}
         {...props}
     />

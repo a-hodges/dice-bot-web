@@ -133,6 +133,20 @@ class CharacterList (Resource):
         return entry2json(character)
 
 
+@api.resource('/server/<int:server_id>/characters/@me')
+class MyCharacter (Resource):
+    def get(self, server_id):
+        server_id = set(server_id)
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user or not user_in_guild(server_id, user['id']):
+            abort(403)
+        character = db.session.query(m.Character)\
+            .filter_by(server=server_id, user=user['id']).one_or_none()
+        if not character:
+            abort(404)
+        return entry2json(character)
+
+
 @api.resource('/characters/<int:character_id>')
 class Characters (Resource):
     def get(self, character_id):

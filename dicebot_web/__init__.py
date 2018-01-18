@@ -236,11 +236,11 @@ def list_characters():
         abort(403)
 
     server_id = request.args.get('server')
-    if not user_in_guild(server_id, user['id']):
-        abort(403)
+    if not server_id:
+        abort(400)
 
     guild = bot_get(API_BASE_URL + '/guilds/' + server_id)
-    if not guild:
+    if not guild or not user_in_guild(server_id, user['id']):
         abort(403)
     guild = guild.json()
 

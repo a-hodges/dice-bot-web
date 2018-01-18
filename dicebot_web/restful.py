@@ -76,11 +76,18 @@ class User (Resource):
 
 @api.resource('/user/@me')
 class Me (Resource):
+    '''
+    Proxy to get the user object without needing an ID
+    '''
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
     def get(self):
         user, discord = get_user(session.get('oauth2_token'))
         if not user:
             abort(403)
-        return User().get(user['id'])
+        return User(*self.args, **self.kwargs).get(user['id'])
 
 
 @api.resource('/server/<int:server_id>')

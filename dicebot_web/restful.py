@@ -74,7 +74,13 @@ class User (Resource):
         return user
 
 
-api.add_resource(User, '/user/<int:user_id>')
+@api.resource('/user/@me')
+class Me (Resource):
+    def get(self):
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user:
+            abort(403)
+        return User().get(user['id'])
 
 
 @api.resource('/server/<int:server_id>')

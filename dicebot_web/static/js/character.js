@@ -398,6 +398,7 @@ class Character extends React.Component {
                     url: '/api/user/' + this.state.character.user,
                     type: 'GET',
                     dataType: 'json',
+                    data: {server: this.state.character.server},
                     error: () => this.error("Could not load user"),
                     success: (data) => this.setState({user: data}),
                 })

@@ -14,9 +14,10 @@ function User(props) {
     const avatar = (props.user.avatar)
         ? 'https://cdn.discordapp.com/avatars/' + props.user.id + '/' + props.user.avatar + '.png?size=32'
         : 'https://cdn.discordapp.com/embed/avatars/0.png?size=32'
+    const name = (props.user.nick) ? props.user.nick + ' (' + props.user.username + ')' : props.user.username
     let body = (
         <span>
-            User: <img className="icon" src={avatar} alt={props.user.username + " icon"} /> {props.user.username}
+            User: <img className="icon" src={avatar} alt={props.user.username + " icon"} /> {name}
         </span>
     )
     if (props.link) {

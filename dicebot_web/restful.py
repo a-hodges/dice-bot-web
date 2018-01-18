@@ -22,10 +22,24 @@ def prep_cast(cast):
 class User (Resource):
     def get(self, user_id):
         user_id = str(user_id)
-        user = bot_get(API_BASE_URL + '/users/' + user_id)
-        if user.status_code >= 300:
-            abort(user.status_code)
-        return user.json()
+        parser = reqparse.RequestParser()
+        parser.add_argument('server', help='ID of a server the user is in, if relevant')
+        args = parser.parse_args()
+
+        user = None
+        if args.server is None:
+            resp = bot_get(API_BASE_URL + '/users/' + user_id)
+            user = resp.json()
+        else:
+            resp = bot_get(API_BASE_URL + '/guilds/' + args.server + '/members/' + user_id)
+            if resp:
+                member = resp.json()
+                user = member.pop('user')
+                user.update(member)
+
+        if not resp:
+            abort(resp.status_code)
+        return user
 
 
 api.add_resource(User, '/user/<int:user_id>')

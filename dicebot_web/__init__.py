@@ -370,7 +370,7 @@ def login():
     Redirects the user to the Discord sign in page
     '''
     scope = request.args.get('scope', 'identify guilds')
-    discord = make_session(app, scope=scope.split(' '))
+    discord = make_session(scope=scope.split(' '))
     authorization_url, state = discord.authorization_url(AUTHORIZATION_BASE_URL)
     session['oauth2_state'] = state
     return redirect(authorization_url)
@@ -383,7 +383,7 @@ def callback():
     '''
     if request.values.get('error'):
         return request.values['error']
-    discord = make_session(app, state=session.get('oauth2_state'))
+    discord = make_session(state=session.get('oauth2_state'))
     token = discord.fetch_token(
         TOKEN_URL,
         client_secret=app.config['discord_client_secret'],

@@ -12,31 +12,27 @@ api = Api(api_bp)
 
 
 class User (Resource):
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('user', required=True, help='ID for the user')
-        args = parser.parse_args()
-        user = bot_get(API_BASE_URL + '/users/' + args.user)
+    def get(self, user_id):
+        user_id = str(user_id)
+        user = bot_get(API_BASE_URL + '/users/' + user_id)
         if user.status_code >= 300:
             abort(user.status_code)
         return user.json()
 
 
-api.add_resource(User, '/user')
+api.add_resource(User, '/user/<int:user_id>')
 
 
 class Server (Resource):
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('server', required=True, help='ID for the server')
-        args = parser.parse_args()
-        server = bot_get(API_BASE_URL + '/guilds/' + args.server)
+    def get(self, server_id):
+        server_id = str(server_id)
+        server = bot_get(API_BASE_URL + '/guilds/' + server_id)
         if server.status_code >= 300:
             abort(server.status_code)
         return server.json()
 
 
-api.add_resource(Server, '/server')
+api.add_resource(Server, '/server/<int:server_id>')
 
 
 def get_character(character_id, secure=True):

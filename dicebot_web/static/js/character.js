@@ -398,19 +398,17 @@ class Character extends React.Component {
         })
         const loadMore = () => {
             this.serverRequest = $.ajax({
-                url: '/api/server',
+                url: '/api/server/' + this.state.character.server,
                 type: 'GET',
                 dataType: 'json',
-                data: {server: this.state.character.server},
                 error: () => this.error("Could not load server"),
                 success: (data) => this.setState({server: data}),
             })
             if (this.state.character.user !== null) {
                 this.userRequest = $.ajax({
-                    url: '/api/user',
+                    url: '/api/user/' + this.state.character.user,
                     type: 'GET',
                     dataType: 'json',
-                    data: {user: this.state.character.user},
                     error: () => this.error("Could not load user"),
                     success: (data) => this.setState({user: data}),
                 })

@@ -56,7 +56,7 @@ class List extends React.Component {
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
+        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
     }
 
     componentDidMount() {

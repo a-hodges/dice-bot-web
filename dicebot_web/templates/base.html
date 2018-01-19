@@ -57,29 +57,3 @@
     {% block js %}{% endblock %}
 </body>
 </html>
-
-{% macro show_user(user, size='sm', link=True) %}
-{% if user %}
-{% set sizes = {'sm': 'p', 'md': 'h1'} %}
-<{{ sizes.get(size, 'p') }}>
-{% if link %}<a href="{{ url_for('index') }}">{% endif %}
-User:
-<img class="icon-{{ size }}" src="{{ user.get('avatar') }}" alt="{{ user.get('username') }} icon">
-{{ user.get('username') }}
-{% if link %}</a>{% endif %}
-</{{ sizes.get(size, 'p') }}>
-{% endif %}
-{% endmacro %}
-
-{% macro show_guild(guild, size='sm', link=True) %}
-{% if guild %}
-{% set sizes = {'sm': 'p', 'md': 'h1'} %}
-<{{ sizes.get(size, 'p') }}>
-{% if link %}<a href="{{ url_for('list_characters', server=guild['id']) }}">{% endif %}
-Server:
-<img class="icon-{{ size }}" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
-{{ guild.get('name') }}
-{% if link %}</a>{% endif %}
-</{{ sizes.get(size, 'p') }}>
-{% endif %}
-{% endmacro %}

@@ -1,35 +1,10 @@
 {% extends "base.html" %}
-{% from "base.html" import show_user, show_guild %}
+
+{% set react = True %}
+{% block js %}
+<script type="text/babel" src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Dice-bot</h1>
-    {% if user %}
-    {{ show_user(user) }}
-    <h2>Characters:</h2>
-    <ul class="list-group">
-        {% for character, guild in characters %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a href="{{ url_for('character', character=character.id) }}">
-                <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
-                {{ guild.get('name') }}: {{ character.name }}
-            </a>
-            <a class="badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
-        </li>
-        {% endfor %}
-    </ul>
-    <h2>Claim Character:</h2>
-    <ul class="list-group">
-        {% for guild in other_guilds %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a href="{{ url_for('pick_character', server=guild['id']) }}">
-                <img class="icon" src="{{ guild.get('icon') }}" alt="{{ guild.get('name') }} icon">
-                {{ guild.get('name') }}
-            </a>
-            <a class="badge badge-info badge-pill" href="{{ url_for('list_characters', server=guild['id']) }}">view characters</a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
+<div id="root"></div>
 {% endblock %}

@@ -178,27 +178,10 @@ def index():
     '''
     user, discord = get_user(session.get('oauth2_token'))
 
-    if user:
-        user['avatar'] = get_user_avatar(user)
-        characters = db.session.query(m.Character).filter_by(user=user.get('id')).order_by(m.Character.name).all()
-        characters = {str(c.server): c for c in characters}
-        guilds = user_get(discord, API_BASE_URL + '/users/@me/guilds').json()
-        guilds = filter(bot_in_guild, guilds)
-        guilds = sorted(guilds, key=itemgetter('name'))
-        for guild in guilds:
-            guild['icon'] = get_guild_icon(guild)
-        other_guilds = [guild for guild in guilds if guild['id'] not in characters]
-        characters = [(characters[guild['id']], guild) for guild in guilds if guild['id'] in characters]
-    else:
-        characters = None
-        other_guilds = None
-
     return render_template(
         'index.html',
         title='Dice-Bot',
         user=user,
-        characters=characters,
-        other_guilds=other_guilds,
     )
 
 

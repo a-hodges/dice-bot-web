@@ -100,7 +100,7 @@ class Home extends React.Component {
                 const toServer = (item) => <CharacterServer key={item.id} server={item} character={this.state.characters[item.id]} />
                 const serverList = this.state.servers.map(toServer)
                 characters = serverList.filter((item) => item.props.character)
-                servers = serverList.filter((item) => item.props.character == null)
+                servers = serverList.filter((item) => !item.props.character)
             }
 
             body = <div>

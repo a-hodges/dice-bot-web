@@ -52,12 +52,7 @@ class List extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        if (this.props.error) {
-            this.state = {error: [this.props.error]}
-        }
-        else {
-            this.state = {error: []}
-        }
+        this.state = {error: []}
     }
 
     error(message, jqXHR) {

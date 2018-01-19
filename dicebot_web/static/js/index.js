@@ -19,12 +19,12 @@ class Home extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: [], characters: {}}
+        this.state = {characters: {}}
         this.requests = []
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
+        this.props.onError(message, jqXHR)
     }
 
     componentDidMount() {
@@ -47,7 +47,7 @@ class Home extends React.Component {
                 url: '/api/user/@me/servers',
                 type: 'GET',
                 dataType: 'json',
-                error: () => this.error("Could not load servers"),
+                error: () => this.error("Failed to load servers"),
                 success: (data) => this.setState({servers: data}, evenMore),
             })
         }
@@ -61,7 +61,7 @@ class Home extends React.Component {
                         this.setState((prevState, props) => ({characters: {[item.id]: null, ...prevState.characters}}))
                     }
                     else {
-                        this.error("Failed to load user", jqXHR)
+                        this.error("Failed to load server", jqXHR)
                     }
                 },
                 success: (data) => this.setState((prevState, props) => ({characters: {[item.id]: data, ...prevState.characters}})),
@@ -83,13 +83,9 @@ class Home extends React.Component {
         })
     }
 
-    componentDidCatch(error, info) {
-        this.error("Unknown error")
-    }
-
     render() {
         let body
-        if (this.state.error.length === 0 && this.state.user != null) {
+        if (this.state.user != null) {
             let characters
             let servers
             if (this.state.servers === undefined) {
@@ -111,20 +107,17 @@ class Home extends React.Component {
                 <ul className="list-group">{servers}</ul>
             </div>
         }
-        else if (this.state.error.length === 0) {
+        else {
             /* Not logged in */
         }
-        else {
-            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
-        }
-        return <div className="container">
+        return <Container>
             <h1>Dice-bot</h1>
             {body}
-        </div>
+        </Container>
     }
 }
 
 ReactDOM.render(
-    <Home />,
+    <ErrorHandler><Home /></ErrorHandler>,
     document.getElementById("root")
 )

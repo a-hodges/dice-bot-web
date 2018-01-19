@@ -21,8 +21,8 @@ function User(props) {
             {(props.hidePrefix) ? null : "User: "}<img className="img-thumbnail" src={avatar} alt={props.user.username + " icon"} /> {name}
         </span>
     )
-    if (props.link) {
-        body = <a href="/">{body}</a>
+    if (props.href) {
+        body = <a href={props.href}>{body}</a>
     }
     if (!props.inline) {
         body = <p>{body}</p>
@@ -40,8 +40,8 @@ function Server(props) {
             {(props.hidePrefix) ? null : "Server: "}<img className="img-thumbnail" src={icon} alt={props.server.name + " icon"} /> {props.server.name}
         </span>
     )
-    if (props.link) {
-        body = <a href={"/list_characters?server=" + props.server.id}>{body}</a>
+    if (props.href) {
+        body = <a href={props.href}>{body}</a>
     }
     if (!props.inline) {
         body = <p>{body}</p>

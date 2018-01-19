@@ -4,7 +4,7 @@ function CharacterServer(props) {
         return <li className="list-group-item list-group-item-warning">Loading character...</li>
     }
     else if (props.character === null) {
-        body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} hidePrefix={true} /></a>
+        body = <Server server={props.server} inline={true} hidePrefix={true} href={"/pick_character?server=" + props.server.id} />
     }
     else {
         body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} /> | {props.character.name}</a>

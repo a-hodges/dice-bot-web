@@ -141,7 +141,7 @@ if (server !== null) {
 }
 else {
     ReactDOM.render(
-        <div className="container"><Error>Bad request, no server specified</Error></div>,
+        <Container><Error>Bad request, no server specified</Error></Container>,
         document.getElementById("root")
     )
 }

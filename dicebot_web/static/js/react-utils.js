@@ -1,3 +1,8 @@
+function Container(props) {
+    const className = (props.className) ? "container " + props.className : "container"
+    return <div {...props} className={className}>{props.children}</div>
+}
+
 function Error(props) {
     return (
         <p className="alert alert-danger">{props.children}</p>

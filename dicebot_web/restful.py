@@ -1,10 +1,11 @@
 import enum
+from operator import itemgetter
 
 from flask import Blueprint, session
 from flask_restful import Api, Resource, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
-from .util import API_BASE_URL, get_user, user_in_guild, bot_get, table2json, entry2json
+from .util import API_BASE_URL, get_user, user_get, user_in_guild, bot_get, bot_in_guild, table2json, entry2json
 from .database import db, m
 
 api_bp = Blueprint('api', __name__)
@@ -88,6 +89,18 @@ class Me (Resource):
         if not user:
             abort(401)
         return User(*self.args, **self.kwargs).get(user['id'])
+
+
+@api.resource('/user/@me/servers')
+class MyServers (Resource):
+    def get(self):
+        user, discord = get_user(session.get('oauth2_token'))
+        if not user:
+            abort(401)
+        guilds = user_get(discord, API_BASE_URL + '/users/@me/guilds').json()
+        guilds = filter(bot_in_guild, guilds)
+        guilds = sorted(guilds, key=itemgetter('name'))
+        return list(guilds)
 
 
 @api.resource('/server/<int:server_id>')

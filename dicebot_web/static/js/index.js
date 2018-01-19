@@ -4,10 +4,10 @@ function CharacterServer(props) {
         return <li className="list-group-item list-group-item-warning">Loading character...</li>
     }
     else if (props.character === null) {
-        body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} link={false} /></a>
+        body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} hidePrefix={true} link={false} /></a>
     }
     else {
-        body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} link={false} /> | Character: {props.character.name}</a>
+        body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} link={false} /> | {props.character.name}</a>
     }
     return <li className="list-group-item d-flex justify-content-between align-items-center">
         {body}

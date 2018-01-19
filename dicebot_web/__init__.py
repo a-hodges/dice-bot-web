@@ -177,12 +177,7 @@ def index():
     Homepage for the bot
     '''
     user, discord = get_user(session.get('oauth2_token'))
-
-    return render_template(
-        'index.html',
-        title='Dice-Bot',
-        user=user,
-    )
+    return render_template('index.html', user=user)
 
 
 @app.route('/character')

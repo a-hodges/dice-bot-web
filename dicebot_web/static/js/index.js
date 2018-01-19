@@ -94,7 +94,7 @@ class Home extends React.Component {
     render() {
         const header = <h1>Dice-bot</h1>
         let body
-        if (this.state.error === undefined && this.state.user !== undefined) {
+        if (this.state.error === undefined && this.state.user != null) {
             let characters
             let servers
             if (this.state.servers === undefined) {

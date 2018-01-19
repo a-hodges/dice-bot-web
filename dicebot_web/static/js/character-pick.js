@@ -129,11 +129,11 @@ class Base extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: []}
+        this.state = {}
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
+        this.props.onError(message, jqXHR)
     }
 
     componentDidMount() {
@@ -163,34 +163,23 @@ class Base extends React.Component {
         }
     }
 
-    componentDidCatch(error, info) {
-        this.error("Unknown error")
-    }
-
     render() {
-        let body
-        if (this.state.error.length === 0) {
-            const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
-            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/list_characters?server=" + this.state.server.id} />
+        const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
+        const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/list_characters?server=" + this.state.server.id} />
 
-            body = <div>
-                <h1>Character select</h1>
-                {server}
-                {user}
-                <Create server_id={this.props.server_id} onError={this.error} />
-                <br />
-                <Pick server_id={this.props.server_id} onError={this.error} />
-            </div>
-        }
-        else {
-            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
-        }
-        return <div className="container">{body}</div>
+        return <Container>
+            <h1>Character select</h1>
+            {server}
+            {user}
+            <Create server_id={this.props.server_id} onError={this.error} />
+            <br />
+            <Pick server_id={this.props.server_id} onError={this.error} />
+        </Container>
     }
 }
 
 const server = urlparams.get("server")
 ReactDOM.render(
-    <Base server_id={server} />,
+    <ErrorHandler><Base server_id={server} /></ErrorHandler>,
     document.getElementById("root")
 )

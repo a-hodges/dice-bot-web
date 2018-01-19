@@ -18,7 +18,7 @@ class Group extends React.Component {
             url: url,
             type: 'GET',
             dataType: 'json',
-            error: (jqXHR) => this.criticalError("Could not load data", jqXHR),
+            error: (jqXHR) => this.criticalError("Could not load " + this.props.title.toLowerCase(), jqXHR),
             success: (data) => this.setState({data: data}),
         })
     }
@@ -353,11 +353,11 @@ class Character extends React.Component {
         super(props)
         this.error = this.error.bind(this)
         this.unclaim = this.unclaim.bind(this)
-        this.state = {error: []}
+        this.state = {}
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
+        this.props.onError(message, jqXHR)
     }
 
     componentDidMount() {
@@ -401,10 +401,6 @@ class Character extends React.Component {
         }
     }
 
-    componentDidCatch(error, info) {
-        this.error("Unknown error")
-    }
-
     unclaim(e) {
         this.request = $.ajax({
             url: '/api/characters/' + this.props.character_id,
@@ -418,7 +414,7 @@ class Character extends React.Component {
 
     render() {
         let body
-        if (this.state.error.length === 0 && this.state.character !== undefined) {
+        if (this.state.character !== undefined) {
             const readOnly = !this.state.character.own
 
             let user
@@ -451,18 +447,15 @@ class Character extends React.Component {
                 <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
             </div>
         }
-        else if (this.state.error.length === 0) {
+        else {
             body = <Warning>Loading...</Warning>
         }
-        else {
-            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
-        }
-        return <div className="container">{body}</div>
+        return <Container>{body}</Container>
     }
 }
 
 const character = urlparams.get("character")
 ReactDOM.render(
-    <Character character_id={character} />,
+    <ErrorHandler><Character character_id={character} /></ErrorHandler>,
     document.getElementById("root")
 )

@@ -45,7 +45,7 @@ class Create extends React.Component {
                 </div>
                 <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
                 <div className="input-group-append">
-                    <a href="#" className="form-control btn btn-success" onClick={this.claim}>Create</a>
+                    <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
                 </div>
             </div>
         </div>
@@ -77,9 +77,7 @@ class Character extends React.Component {
 
     render() {
         return <li className="list-group-item">
-            <a href="#" onClick={this.pick}>
-                {this.props.character.name}
-            </a>
+            <button className="btn btn-link" onClick={this.pick}>{this.props.character.name}</button>
         </li>
     }
 }

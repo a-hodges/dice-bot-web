@@ -17,7 +17,7 @@ function User(props) {
     const name = (props.user.nick) ? props.user.nick + ' (' + props.user.username + ')' : props.user.username
     let body = (
         <span>
-            {(props.hidePrefix) ? null : "User: "}<img className="icon" src={avatar} alt={props.user.username + " icon"} /> {name}
+            {(props.hidePrefix) ? null : "User: "}<img className="img-thumbnail" src={avatar} alt={props.user.username + " icon"} /> {name}
         </span>
     )
     if (props.link) {
@@ -35,7 +35,7 @@ function Server(props) {
         : 'https://cdn.discordapp.com/embed/avatars/0.png?size=32'
     let body = (
         <span>
-            {(props.hidePrefix) ? null : "Server: "}<img className="icon" src={icon} alt={props.server.name + "icon"} /> {props.server.name}
+            {(props.hidePrefix) ? null : "Server: "}<img className="img-thumbnail" src={icon} alt={props.server.name + " icon"} /> {props.server.name}
         </span>
     )
     if (props.link) {

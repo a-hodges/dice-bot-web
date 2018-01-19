@@ -1,7 +1,7 @@
 function CharacterServer(props) {
     let body
     if (props.character === undefined) {
-        return <Warning>Loading character...</Warning>
+        return <li className="list-group-item list-group-item-warning">Loading character...</li>
     }
     else if (props.character === null) {
         body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} link={false} /></a>

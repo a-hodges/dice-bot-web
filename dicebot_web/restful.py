@@ -149,7 +149,7 @@ class CharacterList (Resource):
 @api.resource('/server/<int:server_id>/characters/@me')
 class MyCharacter (Resource):
     def get(self, server_id):
-        server_id = set(server_id)
+        server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
         if not user or not user_in_guild(server_id, user['id']):
             abort(403)

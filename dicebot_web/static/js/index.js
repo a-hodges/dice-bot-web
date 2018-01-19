@@ -115,7 +115,7 @@ class Home extends React.Component {
             /* Not logged in */
         }
         else {
-            body = <div>{this.state.error.map((item) => <Error>{item}</Error>)}</div>
+            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
         }
         return <div className="container">
             <h1>Dice-bot</h1>

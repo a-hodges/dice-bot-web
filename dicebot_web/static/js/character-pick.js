@@ -183,7 +183,7 @@ class Base extends React.Component {
             </div>
         }
         else {
-            body = <div>{this.state.error.map((item) => <Error>{item}</Error>)}</div>
+            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
         }
         return <div className="container">{body}</div>
     }

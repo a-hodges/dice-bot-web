@@ -37,7 +37,7 @@ class Character extends React.Component {
             return <li className="list-group-item list-group-item-warning">Loading user...</li>
         }
         else {
-            character = <span>{this.props.character.name}: <User user={this.state.user} inline={true} hidePrefix={true} link={false} /></span>
+            character = <span>{this.props.character.name}: <User user={this.state.user} inline={true} hidePrefix={true} /></span>
         }
 
         return <li className="list-group-item">

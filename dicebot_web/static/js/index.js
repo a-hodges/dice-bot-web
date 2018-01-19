@@ -4,10 +4,10 @@ function CharacterServer(props) {
         return <li className="list-group-item list-group-item-warning">Loading character...</li>
     }
     else if (props.character === null) {
-        body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} hidePrefix={true} link={false} /></a>
+        body = <a href={"/pick_character?server=" + props.server.id}><Server server={props.server} inline={true} hidePrefix={true} /></a>
     }
     else {
-        body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} link={false} /> | {props.character.name}</a>
+        body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} /> | {props.character.name}</a>
     }
     return <li className="list-group-item d-flex justify-content-between align-items-center">
         {body}
@@ -104,7 +104,7 @@ class Home extends React.Component {
             }
 
             body = <div>
-                <User user={this.state.user} link={false} />
+                <User user={this.state.user} />
                 <h2>Characters:</h2>
                 <ul className="list-group">{characters}</ul>
                 <h2>Available servers:</h2>

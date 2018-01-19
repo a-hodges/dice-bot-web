@@ -86,7 +86,7 @@ class Me (Resource):
     def get(self):
         user, discord = get_user(session.get('oauth2_token'))
         if not user:
-            abort(403)
+            abort(401)
         return User(*self.args, **self.kwargs).get(user['id'])
 
 

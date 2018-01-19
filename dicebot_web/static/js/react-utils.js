@@ -14,7 +14,7 @@ function User(props) {
     const size = props.iconSize || 32
     const avatar = (props.user.avatar)
         ? 'https://cdn.discordapp.com/avatars/' + props.user.id + '/' + props.user.avatar + '.png?size=' + size
-        : 'https://cdn.discordapp.com/embed/avatars/0.png?size=' + size
+        : 'https://cdn.discordapp.com/embed/avatars/' + props.user.discriminator % 5 + '.png?size=' + size
     const name = (props.user.nick) ? props.user.nick + ' (' + props.user.username + ')' : props.user.username
     let body = (
         <span>

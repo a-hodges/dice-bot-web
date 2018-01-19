@@ -362,6 +362,9 @@ class Character extends React.Component {
             if (status == 400) {
                 message += " Bad request"
             }
+            else if (status == 401) {
+                message += " You must be logged in to access"
+            }
             else if (status == 403) {
                 message += " You do not have access to edit this character"
             }

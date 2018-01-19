@@ -102,7 +102,7 @@ class Group extends React.Component {
             const list = this.state.data.map((item) => (
                 <GroupItem key={item.id} updateItem={this.updateItem} deleteItem={this.deleteItem} editDisplay={this.props.editDisplay} readDisplay={this.props.readDisplay} readOnly={this.props.readOnly} item={item} />
             ))
-            const addItem = (this.props.readOnly) ? "" : <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
+            const addItem = (this.props.readOnly) ? null : <li className="list-group-item"><button className="btn btn-secondary w-100" onClick={this.addItem}>+ New</button></li>
             body = (
                 <ul className="list-group">
                     {list}
@@ -171,7 +171,7 @@ class GroupItem extends React.Component {
             )
         }
         else {
-            const edit = (this.props.readOnly) ? "" : <button className="btn btn-info badge badge-info badge-pill m-1" onClick={this.editItem}>edit</button>
+            const edit = (this.props.readOnly) ? null : <button className="btn btn-info badge badge-info badge-pill m-1" onClick={this.editItem}>edit</button>
             return (
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.props.readDisplay(this.props.item)}

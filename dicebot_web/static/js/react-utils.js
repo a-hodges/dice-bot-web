@@ -11,7 +11,7 @@ function Warning(props) {
 }
 
 function User(props) {
-    const size = (props.iconSize) ? props.iconSize : 32
+    const size = props.iconSize || 32
     const avatar = (props.user.avatar)
         ? 'https://cdn.discordapp.com/avatars/' + props.user.id + '/' + props.user.avatar + '.png?size=' + size
         : 'https://cdn.discordapp.com/embed/avatars/0.png?size=' + size
@@ -31,7 +31,7 @@ function User(props) {
 }
 
 function Server(props) {
-    const size = (props.iconSize) ? props.iconSize : 32
+    const size = props.iconSize || 32
     const icon = (props.server.icon)
         ? 'https://cdn.discordapp.com/icons/' + props.server.id + '/' + props.server.icon + '.png?size=' + size
         : 'https://cdn.discordapp.com/embed/avatars/0.png?size=' + size

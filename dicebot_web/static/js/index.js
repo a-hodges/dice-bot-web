@@ -92,7 +92,6 @@ class Home extends React.Component {
     }
 
     render() {
-        const header = <h1>Dice-bot</h1>
         let body
         if (this.state.error === undefined && this.state.user != null) {
             let characters
@@ -122,7 +121,7 @@ class Home extends React.Component {
             body = <Error>{this.state.error}</Error>
         }
         return <div className="container">
-            {header}
+            <h1>Dice-bot</h1>
             {body}
         </div>
     }

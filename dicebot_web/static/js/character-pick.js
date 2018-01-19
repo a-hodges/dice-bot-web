@@ -129,11 +129,11 @@ class Base extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {}
+        this.state = {error: []}
     }
 
     error(message, jqXHR) {
-        this.setState({error: message})
+        this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
     }
 
     componentDidMount() {
@@ -169,7 +169,7 @@ class Base extends React.Component {
 
     render() {
         let body
-        if (this.state.error === undefined) {
+        if (this.state.error.length === 0) {
             const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
             const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/list_characters?server=" + this.state.server.id} />
 
@@ -183,7 +183,7 @@ class Base extends React.Component {
             </div>
         }
         else {
-            body = <Error>{this.state.error}</Error>
+            body = <div>{this.state.error.map((item) => <Error>{item}</Error>)}</div>
         }
         return <div className="container">{body}</div>
     }

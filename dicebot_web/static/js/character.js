@@ -353,7 +353,7 @@ class Character extends React.Component {
         super(props)
         this.error = this.error.bind(this)
         this.unclaim = this.unclaim.bind(this)
-        this.state = {}
+        this.state = {error: []}
     }
 
     error(message, jqXHR) {
@@ -375,7 +375,7 @@ class Character extends React.Component {
                 message += " Server error"
             }
         }
-        this.setState({error: message})
+        this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
     }
 
     componentDidMount() {
@@ -436,7 +436,7 @@ class Character extends React.Component {
 
     render() {
         let body
-        if (this.state.error === undefined && this.state.character !== undefined) {
+        if (this.state.error.length === 0 && this.state.character !== undefined) {
             const readOnly = !this.state.character.own
 
             let user
@@ -469,11 +469,11 @@ class Character extends React.Component {
                 <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
             </div>
         }
-        else if (this.state.error === undefined) {
+        else if (this.state.error.length === 0) {
             body = <Warning>Loading...</Warning>
         }
         else {
-            body = <Error>{this.state.error}</Error>
+            body = <div>{this.state.error.map((item) => <Error>{item}</Error>)}</div>
         }
         return <div className="container">{body}</div>
     }

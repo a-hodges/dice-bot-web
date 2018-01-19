@@ -19,12 +19,12 @@ class Home extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {characters: {}}
+        this.state = {error: [], characters: {}}
         this.requests = []
     }
 
     error(message, jqXHR) {
-        this.setState({error: message})
+        this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
     }
 
     componentDidMount() {
@@ -89,7 +89,7 @@ class Home extends React.Component {
 
     render() {
         let body
-        if (this.state.error === undefined && this.state.user != null) {
+        if (this.state.error.length === 0 && this.state.user != null) {
             let characters
             let servers
             if (this.state.servers === undefined) {
@@ -111,11 +111,11 @@ class Home extends React.Component {
                 <ul className="list-group">{servers}</ul>
             </div>
         }
-        else if (this.state.error === undefined) {
+        else if (this.state.error.length === 0) {
             /* Not logged in */
         }
         else {
-            body = <Error>{this.state.error}</Error>
+            body = <div>{this.state.error.map((item) => <Error>{item}</Error>)}</div>
         }
         return <div className="container">
             <h1>Dice-bot</h1>

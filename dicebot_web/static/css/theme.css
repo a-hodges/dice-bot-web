@@ -1,18 +1,3 @@
-img.icon, img.icon-sm {
-    height: 32px;
-    width: 32px;
-}
-
-img.icon-md {
-    height: 64px;
-    width: 64px;
-}
-
-img.icon-lg {
-    height: 128px;
-    width: 128px;
-}
-
 .form-control {
     min-width: 5rem;
 }

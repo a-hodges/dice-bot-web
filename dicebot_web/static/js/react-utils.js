@@ -54,6 +54,31 @@ function Server(props) {
     return body
 }
 
+class ErrorHandler extends React.Component {
+    constructor(props) {
+        super(props)
+        this.error = this.error.bind(this)
+        this.state = {error: []}
+    }
+
+    error(message, jqXHR) {
+        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}), () => console.log(this.state.error))
+    }
+
+    componentDidCatch(error, info) {
+        this.error("Unknown error")
+    }
+
+    render() {
+        if (this.state.error.length === 0) {
+            return React.Children.map(this.props.children, (item) => React.cloneElement(item, {onError: this.error}))
+        }
+        else {
+            return <Container>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</Container>
+        }
+    }
+}
+
 function verboseError(message, jqXHR) {
     if (jqXHR !== undefined) {
         const status = jqXHR.status

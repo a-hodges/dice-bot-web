@@ -52,11 +52,11 @@ class List extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: []}
+        this.state = {}
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
+        this.props.onError(message, jqXHR)
     }
 
     componentDidMount() {
@@ -105,37 +105,26 @@ class List extends React.Component {
         }
     }
 
-    componentDidCatch(error, info) {
-        this.error("Unknown error")
-    }
-
     render() {
-        let body
-        if (this.state.error.length === 0) {
-            const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
-            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} inline={true} hidePrefix={true} iconSize={64} />
-            const list = (this.state.list === undefined) ? <Warning>Loading characters...</Warning> : <ul className="list-group">
-                {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
-            </ul>
+        const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
+        const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} inline={true} hidePrefix={true} iconSize={64} />
+        const list = (this.state.list === undefined) ? <Warning>Loading characters...</Warning> : <ul className="list-group">
+            {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
+        </ul>
 
-            body = <div>
-                <h1>{server}</h1>
-                {user}
-                <h2>View character:</h2>
-                {list}
-            </div>
-        }
-        else {
-            body = <div>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</div>
-        }
-        return <div className="container">{body}</div>
+        return <Container>
+            <h1>{server}</h1>
+            {user}
+            <h2>View character:</h2>
+            {list}
+        </Container>
     }
 }
 
 const server = urlparams.get("server")
 if (server !== null) {
     ReactDOM.render(
-        <List server_id={server} />,
+        <ErrorHandler><List server_id={server} /></ErrorHandler>,
         document.getElementById("root")
     )
 }

@@ -1,3 +1,23 @@
+img.icon-32 {
+    height: 32px;
+    width: 32px;
+}
+
+img.icon-32.img-thumbnail {
+    height: 42px;
+    width: 42px;
+}
+
+img.icon-64 {
+    height: 64px;
+    width: 64px;
+}
+
+img.icon-64.img-thumbnail {
+    height: 74px;
+    width: 74px;
+}
+
 .form-control {
     min-width: 5rem;
 }

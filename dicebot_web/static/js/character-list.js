@@ -76,19 +76,19 @@ class List extends React.Component {
             success: (data) => this.setState({user: data}, loadMore),
         })
         const loadMore = () => {
+            this.serverRequest = $.ajax({
+                url: '/api/server/' + this.props.server_id,
+                type: 'GET',
+                dataType: 'json',
+                error: () => this.error("Could not load server"),
+                success: (data) => this.setState({server: data}, () => document.title = this.state.server.name),
+            })
             this.listRequest = $.ajax({
                 url: '/api/server/' + this.props.server_id + '/characters',
                 type: 'GET',
                 dataType: 'json',
                 error: () => this.error("Could not load characters"),
                 success: (data) => this.setState({list: data}),
-            })
-            this.serverRequest = $.ajax({
-                url: '/api/server/' + this.props.server_id,
-                type: 'GET',
-                dataType: 'json',
-                error: () => this.error("Could not load server"),
-                success: (data) => this.setState({server: data}),
             })
         }
     }

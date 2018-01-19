@@ -251,31 +251,6 @@ def list_characters():
     )
 
 
-@app.route('/unclaim')
-def unclaim():
-    '''
-    Removes a claim on a specific character
-    '''
-    user, discord = get_user(session.get('oauth2_token'))
-    if not user:
-        abort(403)
-
-    character_id = request.args.get('character')
-    if not character_id:
-        abort(400)
-
-    character = db.session.query(m.Character).get(character_id)
-    if not character:
-        abort(404)
-    if str(character.user) != user['id']:
-        abort(403)
-
-    character.user = None
-    db.session.commit()
-
-    return redirect(url_for('pick_character', server=character.server))
-
-
 @app.route('/pick_character')
 def pick_character():
     '''

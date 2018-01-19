@@ -1,7 +1,3 @@
-function null_or_undefined(item) {
-    return item === null || item === undefined
-}
-
 function CharacterServer(props) {
     let body
     if (props.character === undefined) {
@@ -102,8 +98,9 @@ class Home extends React.Component {
             }
             else {
                 const toServer = (item) => <CharacterServer key={item.id} server={item} character={this.state.characters[item.id]} />
-                characters = this.state.servers.filter((item) => this.state.characters[item.id]).map(toServer)
-                servers = this.state.servers.filter((item) => this.state.characters[item.id] == null).map(toServer)
+                const serverList = this.state.servers.map(toServer)
+                characters = serverList.filter((item) => item.props.character)
+                servers = serverList.filter((item) => item.props.character == null)
             }
 
             body = <div>

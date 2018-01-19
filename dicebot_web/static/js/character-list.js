@@ -104,14 +104,13 @@ class List extends React.Component {
         let body
         if (this.state.error === undefined) {
             const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
-            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} />
+            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} inline={true} hidePrefix={true} iconSize={64} />
             const list = (this.state.list === undefined) ? <Warning>Loading characters...</Warning> : <ul className="list-group">
                 {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
             </ul>
 
             body = <div>
-                <h1>Server:</h1>
-                {server}
+                <h1>{server}</h1>
                 {user}
                 <h2>View character:</h2>
                 {list}

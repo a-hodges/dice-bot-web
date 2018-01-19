@@ -215,23 +215,7 @@ def list_characters():
     Lists all of the characters in a server
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    if not user:
-        abort(403)
-
-    server_id = request.args.get('server')
-    if not server_id:
-        abort(400)
-
-    guild = bot_get(API_BASE_URL + '/guilds/' + server_id)
-    if not guild or not user_in_guild(server_id, user['id']):
-        abort(403)
-    guild = guild.json()
-
-    return render_template(
-        'list_characters.html',
-        user=user,
-        title=guild['name'],
-    )
+    return render_template('list_characters.html', user=user)
 
 
 @app.route('/pick_character')

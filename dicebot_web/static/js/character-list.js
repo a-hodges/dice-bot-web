@@ -52,7 +52,12 @@ class List extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.state = {error: []}
+        if (this.props.error) {
+            this.state = {error: [this.props.error]}
+        }
+        else {
+            this.state = {error: []}
+        }
     }
 
     error(message, jqXHR) {
@@ -60,28 +65,37 @@ class List extends React.Component {
     }
 
     componentDidMount() {
-        this.listRequest = $.ajax({
-            url: '/api/server/' + this.props.server_id + '/characters',
-            type: 'GET',
-            dataType: 'json',
-            error: () => this.error("Could not load characters"),
-            success: (data) => this.setState({list: data}),
-        })
-        this.serverRequest = $.ajax({
-            url: '/api/server/' + this.props.server_id,
-            type: 'GET',
-            dataType: 'json',
-            error: () => this.error("Could not load server"),
-            success: (data) => this.setState({server: data}),
-        })
         this.userRequest = $.ajax({
             url: '/api/user/@me',
             type: 'GET',
             dataType: 'json',
             data: {server: this.props.server_id},
-            error: () => this.error("Could not load user"),
-            success: (data) => this.setState({user: data}),
+            error: (jqXHR) => {
+                if (jqXHR.status == 401) {
+                    this.error("Not logged in", jqXHR)
+                }
+                else {
+                    this.error("Failed to load user", jqXHR)
+                }
+            },
+            success: (data) => this.setState({user: data}, loadMore),
         })
+        const loadMore = () => {
+            this.listRequest = $.ajax({
+                url: '/api/server/' + this.props.server_id + '/characters',
+                type: 'GET',
+                dataType: 'json',
+                error: () => this.error("Could not load characters"),
+                success: (data) => this.setState({list: data}),
+            })
+            this.serverRequest = $.ajax({
+                url: '/api/server/' + this.props.server_id,
+                type: 'GET',
+                dataType: 'json',
+                error: () => this.error("Could not load server"),
+                success: (data) => this.setState({server: data}),
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -124,7 +138,15 @@ class List extends React.Component {
 }
 
 const server = urlparams.get("server")
-ReactDOM.render(
-    <List server_id={server} />,
-    document.getElementById("root")
-)
+if (server !== null) {
+    ReactDOM.render(
+        <List server_id={server} />,
+        document.getElementById("root")
+    )
+}
+else {
+    ReactDOM.render(
+        <div className="container"><Error>Bad request, no server specified</Error></div>,
+        document.getElementById("root")
+    )
+}

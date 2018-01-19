@@ -62,7 +62,7 @@ class ErrorHandler extends React.Component {
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}), () => console.log(this.state.error))
+        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
     }
 
     componentDidCatch(error, info) {

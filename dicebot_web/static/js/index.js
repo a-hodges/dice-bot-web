@@ -100,7 +100,7 @@ class Home extends React.Component {
             }
 
             body = <div>
-                <User user={this.state.user} />
+                <h1><User user={this.state.user} hidePrefix={true} iconSize={64} /></h1>
                 <h2>Characters:</h2>
                 <ul className="list-group">{characters}</ul>
                 <h2>Available servers:</h2>

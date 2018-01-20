@@ -107,9 +107,7 @@ class Home extends React.Component {
                 <ul className="list-group">{servers}</ul>
             </div>
         }
-        else {
-            /* Not logged in */
-        }
+        /* else not logged in */
         return <Container>
             <h1>Dice-bot</h1>
             {body}

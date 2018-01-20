@@ -346,3 +346,80 @@ add_character_resource(api, 'spell', 'spells', m.Spell, ('level', 'name'), spell
 
 item_fields = {'name': str, 'number': int, 'description': str}
 add_character_resource(api, 'item', 'inventory', m.Item, 'name', item_fields)
+
+
+# ----#-   Extras
+
+
+stats_5e = {
+    'cha': 10,
+    'con': 10,
+    'dex': 10,
+    'int': 10,
+    'prof': 2,
+    'str': 10,
+    'wis': 10,
+}
+
+skills_5e = {
+    'acrobatics': 'dex',
+    'animal handling': 'wis',
+    'arcana': 'int',
+    'athletics': 'str',
+    'chasave': 'cha',
+    'consave': 'con',
+    'deception': 'cha',
+    'dexsave': 'dex',
+    'history': 'int',
+    'insight': 'wis',
+    'intimidation': 'cha',
+    'intsave': 'int',
+    'investigation': 'int',
+    'medicine': 'wis',
+    'nature': 'int',
+    'perception': 'wis',
+    'performance': 'cha',
+    'persuasion': 'cha',
+    'religion': 'int',
+    'sleight of hand': 'dex',
+    'stealth': 'dex',
+    'strsave': 'str',
+    'survival': 'wis',
+    'wissave': 'wis',
+}
+
+
+@api.resource('/make-character-template-5e/server/<int:server_id>')
+class MakeCharacterTemplate5e (Resource):
+    def post(self, server_id):
+        server_id = str(server_id)
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', required=True, help='Name of the character')
+        args = parser.parse_args()
+        if not args.name:
+            abort(400)
+        # authenticate user
+        user, discord = get_user(session.get('oauth2_token'))
+        if user is None:
+            abort(401)
+        if not user_in_guild(server_id, user['id']):
+            abort(403)
+        # create character
+        character = m.Character(name=args['name'], user=user['id'], server=server_id)
+        db.session.add(character)
+        # add children
+        for stat, value in stats_5e.items():
+            character.variables.append(m.Variable(name=stat, value=value))
+        for skill, stat in skills_5e.items():
+            character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat)))
+        character.rolls.append(m.Roll(name='attack', expression='1d20+!str'))
+        character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
+        character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
+        # commit
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            abort(409)
+        # return
+        return entry2json(character)

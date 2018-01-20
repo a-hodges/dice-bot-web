@@ -415,6 +415,7 @@ class MakeCharacterTemplate5e (Resource):
         character.rolls.append(m.Roll(name='attack', expression='1d20+!str'))
         character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
         character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
+        character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
         # commit
         try:
             db.session.commit()

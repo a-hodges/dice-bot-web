@@ -2,8 +2,8 @@ class Create extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.claim = this.claim.bind(this)
         this.change = this.change.bind(this)
+        this.claim = this.claim.bind(this)
         this.state = {name: ""}
     }
 

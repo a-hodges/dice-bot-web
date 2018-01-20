@@ -5,11 +5,24 @@ from flask import Blueprint, session
 from flask_restful import Api, Resource, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
-from .util import API_BASE_URL, get_user, user_get, user_in_guild, bot_get, bot_in_guild, table2json, entry2json
+from .util import API_BASE_URL, get_user, user_get, user_in_guild, bot_get, bot_in_guild
 from .database import db, m
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
+
+
+def entry2json(entry):
+    entry = entry.dict()
+    for key, value in entry.items():
+        if isinstance(value, enum.Enum):
+            entry[key] = value.name
+    return entry
+
+
+def table2json(table):
+    data = [entry2json(item) for item in table]
+    return data
 
 
 def prep_cast(cast):

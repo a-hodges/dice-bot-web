@@ -1,5 +1,4 @@
 import os
-import enum
 import time
 
 import requests
@@ -42,19 +41,6 @@ def get_user(token=None):
     discord = make_session(token=token)
     user = user_get(discord, API_BASE_URL + '/users/@me').json()
     return user if 'id' in user else None, discord
-
-
-def entry2json(entry):
-    entry = entry.dict()
-    for key, value in entry.items():
-        if isinstance(value, enum.Enum):
-            entry[key] = value.name
-    return entry
-
-
-def table2json(table):
-    data = [entry2json(item) for item in table]
-    return data
 
 
 def user_get(discord, url):

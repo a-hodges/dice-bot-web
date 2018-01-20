@@ -169,7 +169,7 @@ def index():
     Homepage for the bot
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    return render_template('index.html', user=user)
+    return render_template('react.html', user=user, scripts=['index.js'])
 
 
 @app.route('/character')
@@ -178,7 +178,7 @@ def character():
     Character homepage, allows access to character attributes
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    return render_template('character.html', user=user)
+    return render_template('react.html', user=user, scripts=['character.js'])
 
 
 @app.route('/list_characters')
@@ -187,7 +187,7 @@ def list_characters():
     Lists all of the characters in a server
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    return render_template('list_characters.html', user=user)
+    return render_template('react.html', user=user, scripts=['character-list.js'])
 
 
 @app.route('/pick_character')
@@ -196,7 +196,7 @@ def pick_character():
     Pick a character from the server or create a new one
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    return render_template('pick_character.html', user=user)
+    return render_template('react.html', user=user, scripts=['character-select.js'])
 
 
 # ----#-   Login/Logout

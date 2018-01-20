@@ -2,7 +2,9 @@
 
 {% set react = True %}
 {% block js %}
-<script type="text/babel" src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% for script in scripts %}
+<script type="text/babel" src="{{ url_for('static', filename='js/' + script) }}"></script>
+{% endfor %}
 {% endblock %}
 
 {% block content %}

@@ -140,6 +140,14 @@ def five_hundred(e):
     return error(message), 500
 
 
+@app.route('/error/<int:error>')
+def doError(error):
+    '''
+    For testing purposes, allows easy testing of error messages
+    '''
+    abort(error)
+
+
 @app.route('/favicon.ico')
 def favicon():
     '''
@@ -155,12 +163,12 @@ def favicon():
 # ----#-   Pages
 
 
-@app.route('/error/<int:error>')
-def doError(error):
-    '''
-    For testing purposes, allows easy testing of error messages
-    '''
-    abort(error)
+views = {
+    '/': ['index.js'],
+    '/character': ['character.js'],
+    '/character-list': ['character-list.js'],
+    '/character-select': ['character-select.js'],
+}
 
 
 @app.route('/')
@@ -168,35 +176,19 @@ def index():
     '''
     Homepage for the bot
     '''
-    user, discord = get_user(session.get('oauth2_token'))
-    return render_template('react.html', user=user, scripts=['index.js'])
+    return react_view(views['/'])
 
 
-@app.route('/character')
-def character():
+def react_view(scripts):
     '''
-    Character homepage, allows access to character attributes
+    Renders a template with the given react scripts loaded
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    return render_template('react.html', user=user, scripts=['character.js'])
+    return render_template('react.html', user=user, scripts=scripts)
 
 
-@app.route('/character-list')
-def character_list():
-    '''
-    Lists all of the characters in a server
-    '''
-    user, discord = get_user(session.get('oauth2_token'))
-    return render_template('react.html', user=user, scripts=['character-list.js'])
-
-
-@app.route('/character-select')
-def character_select():
-    '''
-    Pick a character from the server or create a new one
-    '''
-    user, discord = get_user(session.get('oauth2_token'))
-    return render_template('react.html', user=user, scripts=['character-select.js'])
+for rule, scripts in views.items():
+    app.add_url_rule(rule, view_func=react_view, defaults={'scripts': scripts})
 
 
 # ----#-   Login/Logout

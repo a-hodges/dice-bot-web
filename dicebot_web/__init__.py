@@ -186,22 +186,7 @@ def character():
     Character homepage, allows access to character attributes
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    if not user:
-        abort(403)
-
-    character_id = request.args.get('character')
-    if not character_id:
-        abort(400)
-
-    character = db.session.query(m.Character).get(character_id)
-    if not character or not user_in_guild(character.server, user['id']):
-        abort(403)
-
-    return render_template(
-        'character.html',
-        user=user,
-        title=character.name,
-    )
+    return render_template('character.html', user=user)
 
 
 @app.route('/list_characters')

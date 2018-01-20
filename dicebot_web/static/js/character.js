@@ -369,6 +369,7 @@ class Character extends React.Component {
             success: (data) => this.setState({character: data}, loadMore),
         })
         const loadMore = () => {
+            document.title = this.state.character.name
             this.serverRequest = $.ajax({
                 url: '/api/server/' + this.state.character.server,
                 type: 'GET',
@@ -455,7 +456,15 @@ class Character extends React.Component {
 }
 
 const character = urlparams.get("character")
-ReactDOM.render(
-    <ErrorHandler><Character character_id={character} /></ErrorHandler>,
-    document.getElementById("root")
-)
+if (character !== null) {
+    ReactDOM.render(
+        <ErrorHandler><Character character_id={character} /></ErrorHandler>,
+        document.getElementById("root")
+    )
+}
+else {
+    ReactDOM.render(
+        <Container><Error>Bad request, no character specified</Error></Container>,
+        document.getElementById("root")
+    )
+}

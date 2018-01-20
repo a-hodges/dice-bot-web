@@ -11,7 +11,12 @@ class Create extends React.Component {
         this.props.onError(message, jqXHR)
     }
 
-    claim(t) {
+    change(e) {
+        const t = e.target
+        this.setState({[t.name]: t.value})
+    }
+
+    claim(e) {
         const url = '/api/server/' + this.props.server_id + '/characters'
         const name = this.state.name
         this.addRequest = $.ajax({
@@ -29,11 +34,6 @@ class Create extends React.Component {
             },
             success: (newItem) => window.location = '/character?character=' + newItem.id,
         })
-    }
-
-    change(e) {
-        const t = e.target
-        this.setState({[t.name]: t.value})
     }
 
     render() {

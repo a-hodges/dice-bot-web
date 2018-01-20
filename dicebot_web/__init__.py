@@ -88,6 +88,9 @@ def context():
     return dict(AUTHORIZATION_BASE_URL=AUTHORIZATION_BASE_URL)
 
 
+# ----#-   Errors
+
+
 def error(e, message=None):
     '''
     Basic error template for all error pages
@@ -143,6 +146,9 @@ def doError(error):
     abort(error)
 
 
+# ----#-   Pages
+
+
 @app.route('/favicon.ico')
 def favicon():
     '''
@@ -153,9 +159,6 @@ def favicon():
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon',
     )
-
-
-# ----#-   Pages
 
 
 views = {

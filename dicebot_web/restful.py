@@ -150,6 +150,8 @@ class CharacterList (Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('name', required=True, help='Name of the character')
         args = parser.parse_args()
+        if not args.name:
+            abort(400)
         user, discord = get_user(session.get('oauth2_token'))
         if user is None:
             abort(401)

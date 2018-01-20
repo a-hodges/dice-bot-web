@@ -15,8 +15,6 @@ from flask import (
     session,
     url_for,
 )
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from .util import (
     API_BASE_URL, AUTHORIZATION_BASE_URL, TOKEN_URL,
@@ -101,13 +99,14 @@ def context():
     )
 
 
-def error(e, message):
+def error(e, message=None):
     '''
     Basic error template for all error pages
     '''
-
+    user, discord = get_user(session.get('oauth2_token'))
     html = render_template(
         'error.html',
+        user=user,
         title=str(e),
         message=message,
     )
@@ -119,7 +118,7 @@ def four_hundred(e):
     '''
     400 (bad request) error page
     '''
-    return error(e, "Bad request."), 400
+    return error(e), 400
 
 
 @app.errorhandler(403)
@@ -127,7 +126,7 @@ def four_oh_three(e):
     '''
     403 (forbidden) error page
     '''
-    return error(e, "You don't have access to this page."), 403
+    return error(e), 403
 
 
 @app.errorhandler(404)
@@ -135,7 +134,7 @@ def four_oh_four(e):
     '''
     404 (page not found) error page
     '''
-    return error(e, "We couldn't find the page you were looking for."), 404
+    return error(e), 404
 
 
 @app.errorhandler(500)
@@ -143,17 +142,8 @@ def five_hundred(e):
     '''
     500 (internal server) error page
     '''
-    if isinstance(e, NoResultFound):
-        message = 'Could not find the requested item in the database.'
-    elif isinstance(e, MultipleResultsFound):
-        message = 'Found too many results for the requested resource.'
-    elif isinstance(e, IntegrityError):
-        message = 'Invalid data entered. '
-        message += 'Either a duplicate record was entered or '
-        message += 'not all fields were filled out.'
-    else:
-        message = 'Whoops, looks like something went wrong!'
-    return error('500: ' + type(e).__name__, message), 500
+    message = '500 Internal Server Error: Whoops, looks like something went wrong!'
+    return error(message), 500
 
 
 @app.route('/favicon.ico')
@@ -169,6 +159,14 @@ def favicon():
 
 
 # ----#-   Pages
+
+
+@app.route('/error/<int:error>')
+def doError(error):
+    '''
+    For testing purposes, allows easy testing of error messages
+    '''
+    abort(error)
 
 
 @app.route('/')

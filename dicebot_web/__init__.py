@@ -191,19 +191,20 @@ def index():
     '''
     Homepage for the bot
     '''
-    return react_view(views['/'])
+    return react_view()
 
 
-def react_view(scripts):
+def react_view():
     '''
     Renders a template with the given react scripts loaded
     '''
     user, discord = get_user(session.get('oauth2_token'))
+    scripts = views[request.path]
     return render_template('react.html', user=user, scripts=scripts)
 
 
 for rule, scripts in views.items():
-    app.add_url_rule(rule, view_func=react_view, defaults={'scripts': scripts})
+    app.add_url_rule(rule, view_func=react_view)
 
 
 # ----#-   Login/Logout

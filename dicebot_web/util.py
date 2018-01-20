@@ -38,33 +38,6 @@ def make_session(token=None, state=None, scope=None):
     )
 
 
-def get_user_avatar(user, size=32):
-    '''
-    Gets the url for the user's avatar
-    '''
-    if user.get('avatar') is None:
-        descriminator = int(user.get('discriminator', 0)) % 5
-        url = 'https://cdn.discordapp.com/embed/avatars/{0}.png'.format(descriminator)
-    else:
-        url = 'https://cdn.discordapp.com/avatars/{0[id]}/{0[avatar]}.png'.format(user)
-    if size is not None:
-        url += '?size={}'.format(size)
-    return url
-
-
-def get_guild_icon(guild, size=32):
-    '''
-    Gets the url for the guild's icon
-    '''
-    if guild.get('icon') is None:
-        url = 'https://cdn.discordapp.com/embed/avatars/0.png'.format(guild)
-    else:
-        url = 'https://cdn.discordapp.com/icons/{0[id]}/{0[icon]}.png'.format(guild)
-    if size is not None:
-        url += '?size={}'.format(size)
-    return url
-
-
 def get_user(token=None):
     discord = make_session(token=token)
     user = user_get(discord, API_BASE_URL + '/users/@me').json()

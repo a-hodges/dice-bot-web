@@ -53,12 +53,6 @@
     <script src="{{ url_for('static', filename='libs/jquery/3.2.1/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='libs/popper/1.12.9/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='libs/bootstrap/4.0.0-b3/bootstrap.min.js') }}"></script>
-    {% if react %}
-    <script src="{{ url_for('static', filename='libs/react/16.2.0/react.development.js') }}"></script>
-    <script src="{{ url_for('static', filename='libs/react/16.2.0/react-dom.development.js') }}"></script>
-    <script src="{{ url_for('static', filename='libs/babel/6.15.0/babel.min.js') }}"></script>
-    <script type="text/babel" src="{{ url_for('static', filename='js/react-utils.js') }}"></script>
-    {% endif %}
     {% block js %}{% endblock %}
 </body>
 </html>

@@ -2,7 +2,6 @@
 
 import os
 import datetime
-from operator import itemgetter
 
 from flask import (
     Flask,
@@ -15,14 +14,9 @@ from flask import (
     session,
     url_for,
 )
+from sqlalchemy.orm.exc import NoResultFound
 
-from .util import (
-    API_BASE_URL, AUTHORIZATION_BASE_URL, TOKEN_URL,
-    get_user, user_get, user_in_guild,
-    bot_get, bot_in_guild,
-    get_user_avatar, get_guild_icon,
-    make_session,
-)
+from .util import AUTHORIZATION_BASE_URL, TOKEN_URL, get_user, make_session
 from .database import db, m
 from .restful import api_bp
 

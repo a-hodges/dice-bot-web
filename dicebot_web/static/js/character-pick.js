@@ -137,21 +137,30 @@ class Base extends React.Component {
     }
 
     componentDidMount() {
-        this.serverRequest = $.ajax({
-            url: '/api/server/' + this.props.server_id,
-            type: 'GET',
-            dataType: 'json',
-            error: () => this.error("Could not load server"),
-            success: (data) => this.setState({server: data}),
-        })
         this.userRequest = $.ajax({
             url: '/api/user/@me',
             type: 'GET',
             dataType: 'json',
             data: {server: this.props.server_id},
-            error: (jqXHR) => this.error("Could not load user", jqXHR),
-            success: (data) => this.setState({user: data}),
+            error: (jqXHR) => {
+                if (jqXHR.status == 401) {
+                    this.error("Not logged in", jqXHR)
+                }
+                else {
+                    this.error("Could not load user", jqXHR)
+                }
+            },
+            success: (data) => this.setState({user: data}, loadMore),
         })
+        const loadMore = () => {
+            this.serverRequest = $.ajax({
+                url: '/api/server/' + this.props.server_id,
+                type: 'GET',
+                dataType: 'json',
+                error: (jqXHR) => this.error("Could not load server", jqXHR),
+                success: (data) => this.setState({server: data}, () => document.title = this.state.server.name),
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -166,6 +175,7 @@ class Base extends React.Component {
     render() {
         const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
         const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/list_characters?server=" + this.state.server.id} />
+        const pick = (this.state.user === undefined) ? <Warning>Loading characters...</Warning> : <Pick server_id={this.props.server_id} onError={this.error} />
 
         return <Container>
             <h1>Character select</h1>
@@ -173,13 +183,21 @@ class Base extends React.Component {
             {user}
             <Create server_id={this.props.server_id} onError={this.error} />
             <br />
-            <Pick server_id={this.props.server_id} onError={this.error} />
+            {pick}
         </Container>
     }
 }
 
 const server = urlparams.get("server")
-ReactDOM.render(
-    <ErrorHandler><Base server_id={server} /></ErrorHandler>,
-    document.getElementById("root")
-)
+if (server !== null) {
+    ReactDOM.render(
+        <ErrorHandler><Base server_id={server} /></ErrorHandler>,
+        document.getElementById("root")
+    )
+}
+else {
+    ReactDOM.render(
+        <Container><Error>Bad request, no server specified</Error></Container>,
+        document.getElementById("root")
+    )
+}

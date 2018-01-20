@@ -161,6 +161,11 @@ def favicon():
     )
 
 
+@app.route('/node_modules/<path:filename>')
+def node_modules(filename):
+    return send_from_directory(os.path.join(app.root_path, '..', 'node_modules'), filename)
+
+
 views = {
     '/': ['index.js'],
     '/character': ['character.js'],

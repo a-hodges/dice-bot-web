@@ -365,7 +365,7 @@ class Character extends React.Component {
             url: '/api/characters/' + this.props.character_id,
             type: 'GET',
             dataType: 'json',
-            error: () => this.error("Could not load character"),
+            error: (jqXHR) => this.error("Could not load character", jqXHR),
             success: (data) => this.setState({character: data}, loadMore),
         })
         const loadMore = () => {
@@ -373,7 +373,7 @@ class Character extends React.Component {
                 url: '/api/server/' + this.state.character.server,
                 type: 'GET',
                 dataType: 'json',
-                error: () => this.error("Could not load server"),
+                error: (jqXHR) => this.error("Could not load server", jqXHR),
                 success: (data) => this.setState({server: data}),
             })
             if (this.state.character.user !== null) {
@@ -382,7 +382,7 @@ class Character extends React.Component {
                     type: 'GET',
                     dataType: 'json',
                     data: {server: this.state.character.server},
-                    error: () => this.error("Could not load user"),
+                    error: (jqXHR) => this.error("Could not load user", jqXHR),
                     success: (data) => this.setState({user: data}),
                 })
             }
@@ -407,7 +407,7 @@ class Character extends React.Component {
             type: 'PATCH',
             dataType: 'json',
             data: {user: 'null'},
-            error: () => this.error("Could not unclaim character"),
+            error: (jqXHR) => this.error("Could not unclaim character", jqXHR),
             success: (newItem) => window.location = '/pick_character?server=' + this.state.character.server,
         })
     }

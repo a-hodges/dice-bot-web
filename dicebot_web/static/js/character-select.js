@@ -4,6 +4,7 @@ class Create extends React.Component {
         this.error = this.error.bind(this)
         this.change = this.change.bind(this)
         this.claim = this.claim.bind(this)
+        this.makeTemplate = this.makeTemplate.bind(this)
         this.state = {name: ""}
     }
 
@@ -36,6 +37,26 @@ class Create extends React.Component {
         })
     }
 
+    makeTemplate(e) {
+        const url = '/api/make-character-template-5e/server/' + this.props.server_id
+        const name = this.state.name
+        this.addRequest = $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {name: name},
+            error: (jqXHR) => {
+                if (jqXHR.status == 409) {
+                    alert("There is already a character named " + name + " on this server")
+                }
+                else {
+                    this.error("Failed to create character", jqXHR)
+                }
+            },
+            success: (newItem) => window.location = '/character?character=' + newItem.id,
+        })
+    }
+
     render() {
         return (
             <div>
@@ -48,6 +69,9 @@ class Create extends React.Component {
                     <div className="input-group-append">
                         <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
                     </div>
+                </div>
+                <div class="btn-group">
+                    <button className="form-control btn btn-success" onClick={this.makeTemplate}>Create 5e template</button>
                 </div>
             </div>
         )

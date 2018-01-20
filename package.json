@@ -21,5 +21,8 @@
       "env",
       "react"
     ]
+  },
+  "scripts": {
+    "build": "babel dicebot_web/static/js -d dicebot_web/static/babel --source-maps"
   }
 }

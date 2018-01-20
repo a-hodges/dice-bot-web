@@ -1,14 +1,14 @@
 class Group extends React.Component {
     constructor(props) {
         super(props)
-        this.criticalError = this.criticalError.bind(this)
+        this.error = this.error.bind(this)
         this.addItem = this.addItem.bind(this)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
         this.state = {data: undefined}
     }
 
-    criticalError(message, jqXHR) {
+    error(message, jqXHR) {
         this.props.onError(message, jqXHR)
     }
 
@@ -18,7 +18,7 @@ class Group extends React.Component {
             url: url,
             type: 'GET',
             dataType: 'json',
-            error: (jqXHR) => this.criticalError("Could not load " + this.props.title.toLowerCase(), jqXHR),
+            error: (jqXHR) => this.error("Could not load " + this.props.title.toLowerCase(), jqXHR),
             success: (data) => this.setState({data: data}),
         })
     }
@@ -54,7 +54,7 @@ class Group extends React.Component {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {
-                    this.criticalError("Failed to add item", jqXHR)
+                    this.error("Failed to add item", jqXHR)
                 }
             },
             success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.concat([newItem])})),
@@ -78,7 +78,7 @@ class Group extends React.Component {
                     alert("There is already an item in " + this.props.title + " with the given name")
                 }
                 else {
-                    this.criticalError("Failed to update item", jqXHR)
+                    this.error("Failed to update item", jqXHR)
                 }
             },
             success: (newItem) => this.setState((prevState, props) => ({data: prevState.data.map((item) => (item.id == newItem.id) ? newItem : item)})),
@@ -91,7 +91,7 @@ class Group extends React.Component {
             url: url,
             type: 'DELETE',
             dataType: 'json',
-            error: (jqXHR) => this.criticalError("Failed to remove item", jqXHR),
+            error: (jqXHR) => this.error("Failed to remove item", jqXHR),
             success: () => this.setState((prevState, props) => ({data: prevState.data.filter((item) => item.id != id)})),
         })
     }

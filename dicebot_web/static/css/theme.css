@@ -25,3 +25,7 @@ img.icon-64.img-thumbnail {
 textarea {
     height: 5rem;
 }
+
+.paragraphs {
+    white-space: pre-wrap;
+}

@@ -182,6 +182,21 @@ class GroupItem extends React.Component {
     }
 }
 
+function Paragraphs(props) {
+    if (!props.children) {
+        return null
+    }
+    else {
+        let className = 'paragraphs border rounded p-3'
+        className = (props.className) ? props.className + ' ' + className : className
+        return (
+            <div {...props} className={className}>
+                {props.children}
+            </div>
+        )
+    }
+}
+
 function Information(props) {
     const display = (item, setRef) => (
         <div className="w-100">
@@ -196,8 +211,8 @@ function Information(props) {
     )
     const readDisplay = (item) => (
         <div className="w-100 form-group">
-            <span>{item.name}</span>
-            <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
+            <span className="font-weight-bold">{item.name}</span>
+            <Paragraphs>{item.description}</Paragraphs>
         </div>
     )
     return <Group title="Information" url="information" editDisplay={display} readDisplay={readDisplay} {...props} />
@@ -220,7 +235,12 @@ function Variables(props) {
             </div>
         </div>
     )
-    const readDisplay = (item) => <span>{item.name}: {item.value}</span>
+    const readDisplay = (item) => (
+        <span>
+            <span className="font-weight-bold">{item.name}: </span>
+            {item.value}
+        </span>
+    )
     return <Group title="Variables" url="variables" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
@@ -241,7 +261,12 @@ function Rolls(props) {
             </div>
         </div>
     )
-    const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
+    const readDisplay = (item) => (
+        <span>
+            <span className="font-weight-bold">{item.name}: </span>
+            {item.expression}
+        </span>
+    )
     return <Group title="Rolls" url="rolls" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
@@ -270,7 +295,12 @@ function Resources(props) {
             </div>
         </div>
     )
-    const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
+    const readDisplay = (item) => (
+        <span>
+            <span className="font-weight-bold">{item.name}: </span>
+            {item.current}/{item.max} per {item.recover} rest
+        </span>
+    )
     return <Group title="Resources" url="resources" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
@@ -292,8 +322,9 @@ function Spells(props) {
     )
     const readDisplay = (item) => (
         <div className="w-100 form-group">
-            <span>{item.name} | level: {item.level}</span>
-            <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
+            <span className="font-weight-bold">{item.name}</span>
+            <span> | level: {item.level}</span>
+            <Paragraphs>{item.description}</Paragraphs>
         </div>
     )
     return <Group title="Spells" url="spells" editDisplay={display} readDisplay={readDisplay} {...props} />
@@ -317,8 +348,9 @@ function Inventory(props) {
     )
     const readDisplay = (item) => (
         <div className="w-100 form-group">
-            <span>{item.name} | quantity: {item.number}</span>
-            <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
+            <span className="font-weight-bold">{item.name}</span>
+            <span> | quantity: {item.number}</span>
+            <Paragraphs>{item.description}</Paragraphs>
         </div>
     )
     return <Group title="Inventory" url="inventory" editDisplay={display} readDisplay={readDisplay} {...props} />

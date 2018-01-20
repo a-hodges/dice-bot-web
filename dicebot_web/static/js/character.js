@@ -200,11 +200,7 @@ function Information(props) {
             <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
         </div>
     )
-    return <Group
-        title="Information" url="information"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Information" url="information" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 function Variables(props) {
@@ -225,11 +221,7 @@ function Variables(props) {
         </div>
     )
     const readDisplay = (item) => <span>{item.name}: {item.value}</span>
-    return <Group
-        title="Variables" url="variables"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Variables" url="variables" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 function Rolls(props) {
@@ -250,11 +242,7 @@ function Rolls(props) {
         </div>
     )
     const readDisplay = (item) => <span>{item.name}: {item.expression}</span>
-    return <Group
-        title="Rolls" url="rolls"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Rolls" url="rolls" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 function Resources(props) {
@@ -283,11 +271,7 @@ function Resources(props) {
         </div>
     )
     const readDisplay = (item) => <span>{item.name}: {item.current}/{item.max} per {item.recover} rest</span>
-    return <Group
-        title="Resources" url="resources"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Resources" url="resources" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 function Spells(props) {
@@ -312,11 +296,7 @@ function Spells(props) {
             <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
         </div>
     )
-    return <Group
-        title="Spells" url="spells"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Spells" url="spells" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 function Inventory(props) {
@@ -341,11 +321,7 @@ function Inventory(props) {
             <textarea className="form-control" name="description" value={item.description || ''} readOnly={true} />
         </div>
     )
-    return <Group
-        title="Inventory" url="inventory"
-        editDisplay={display} readDisplay={readDisplay}
-        {...props}
-    />
+    return <Group title="Inventory" url="inventory" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
 class Character extends React.Component {
@@ -435,18 +411,20 @@ class Character extends React.Component {
                 unclaim = <p><button className="btn btn-danger" onClick={this.unclaim}>Unclaim character</button></p>
             }
 
-            body = <div>
-                <h1>{this.state.character.name}</h1>
-                {server}
-                {user}
-                {unclaim}
-                <Information character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                <Variables character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                <Rolls character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                <Resources character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                <Spells character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-            </div>
+            body = (
+                <div>
+                    <h1>{this.state.character.name}</h1>
+                    {server}
+                    {user}
+                    {unclaim}
+                    <Information character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <Variables character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <Rolls character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <Resources character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <Spells character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                </div>
+            )
         }
         else {
             body = <Warning>Loading...</Warning>

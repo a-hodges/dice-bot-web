@@ -37,18 +37,20 @@ class Create extends React.Component {
     }
 
     render() {
-        return <div>
-            <h2>Create character:</h2>
-            <div className="input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text">name:</span>
-                </div>
-                <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
-                <div className="input-group-append">
-                    <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
+        return (
+            <div>
+                <h2>Create character:</h2>
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">name:</span>
+                    </div>
+                    <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
+                    <div className="input-group-append">
+                        <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        )
     }
 }
 
@@ -76,9 +78,11 @@ class Character extends React.Component {
     }
 
     render() {
-        return <li className="list-group-item">
-            <button className="btn btn-link" onClick={this.pick}>{this.props.character.name}</button>
-        </li>
+        return (
+            <li className="list-group-item">
+                <button className="btn btn-link" onClick={this.pick}>{this.props.character.name}</button>
+            </li>
+        )
     }
 }
 
@@ -116,12 +120,14 @@ class Pick extends React.Component {
     render() {
         return (this.state.list === undefined)
         ? <Warning>Loading characters...</Warning>
-        : <div>
-            <h2>Claim character:</h2>
-            <ul className="list-group">
-                {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
-            </ul>
-        </div>
+        : (
+            <div>
+                <h2>Claim character:</h2>
+                <ul className="list-group">
+                    {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
+                </ul>
+            </div>
+        )
     }
 }
 
@@ -177,14 +183,16 @@ class Base extends React.Component {
         const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/character-list?server=" + this.state.server.id} />
         const pick = (this.state.user === undefined) ? <Warning>Loading characters...</Warning> : <Pick server_id={this.props.server_id} onError={this.error} />
 
-        return <Container>
-            <h1>Character select</h1>
-            {server}
-            {user}
-            <Create server_id={this.props.server_id} onError={this.error} />
-            <br />
-            {pick}
-        </Container>
+        return (
+            <Container>
+                <h1>Character select</h1>
+                {server}
+                {user}
+                <Create server_id={this.props.server_id} onError={this.error} />
+                <br />
+                {pick}
+            </Container>
+        )
     }
 }
 

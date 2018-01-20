@@ -4,15 +4,11 @@ function Container(props) {
 }
 
 function Error(props) {
-    return (
-        <p className="alert alert-danger">{props.children}</p>
-    )
+    return <p className="alert alert-danger">{props.children}</p>
 }
 
 function Warning(props) {
-    return (
-        <p className="alert alert-warning">{props.children}</p>
-    )
+    return <p className="alert alert-warning">{props.children}</p>
 }
 
 function User(props) {

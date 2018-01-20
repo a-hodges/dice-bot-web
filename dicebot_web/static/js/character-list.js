@@ -40,11 +40,13 @@ class Character extends React.Component {
             character = <span>{this.props.character.name}: <User user={this.state.user} inline={true} hidePrefix={true} /></span>
         }
 
-        return <li className="list-group-item">
-            <a href={'/character?character=' + this.props.character.id}>
-                {character}
-            </a>
-        </li>
+        return (
+            <li className="list-group-item">
+                <a href={'/character?character=' + this.props.character.id}>
+                    {character}
+                </a>
+            </li>
+        )
     }
 }
 
@@ -108,16 +110,22 @@ class List extends React.Component {
     render() {
         const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
         const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} inline={true} hidePrefix={true} iconSize={64} />
-        const list = (this.state.list === undefined) ? <Warning>Loading characters...</Warning> : <ul className="list-group">
-            {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
-        </ul>
+        const list = (this.state.list === undefined)
+        ? <Warning>Loading characters...</Warning>
+        : (
+            <ul className="list-group">
+                {this.state.list.map((item) => <Character key={item.id} character={item} onError={this.error} />)}
+            </ul>
+        )
 
-        return <Container>
-            <h1>{server}</h1>
-            {user}
-            <h2>View character:</h2>
-            {list}
-        </Container>
+        return (
+            <Container>
+                <h1>{server}</h1>
+                {user}
+                <h2>View character:</h2>
+                {list}
+            </Container>
+        )
     }
 }
 

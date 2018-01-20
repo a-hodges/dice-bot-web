@@ -9,10 +9,12 @@ function CharacterServer(props) {
     else {
         body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} /> | {props.character.name}</a>
     }
-    return <li className="list-group-item d-flex justify-content-between align-items-center">
-        {body}
-        <a className="badge badge-info badge-pill" href={"/character-list?server=" + props.server.id}>view characters</a>
-    </li>
+    return (
+        <li className="list-group-item d-flex justify-content-between align-items-center">
+            {body}
+            <a className="badge badge-info badge-pill" href={"/character-list?server=" + props.server.id}>view characters</a>
+        </li>
+    )
 }
 
 class Home extends React.Component {
@@ -99,19 +101,23 @@ class Home extends React.Component {
                 servers = serverList.filter((item) => !item.props.character)
             }
 
-            body = <div>
-                <h1><User user={this.state.user} hidePrefix={true} iconSize={64} /></h1>
-                <h2>Characters:</h2>
-                <ul className="list-group">{characters}</ul>
-                <h2>Available servers:</h2>
-                <ul className="list-group">{servers}</ul>
-            </div>
+            body = (
+                <div>
+                    <h1><User user={this.state.user} hidePrefix={true} iconSize={64} /></h1>
+                    <h2>Characters:</h2>
+                    <ul className="list-group">{characters}</ul>
+                    <h2>Available servers:</h2>
+                    <ul className="list-group">{servers}</ul>
+                </div>
+            )
         }
         /* else not logged in */
-        return <Container>
-            <h1>Dice-bot</h1>
-            {body}
-        </Container>
+        return (
+            <Container>
+                <h1>Dice-bot</h1>
+                {body}
+            </Container>
+        )
     }
 }
 

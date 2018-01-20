@@ -409,7 +409,7 @@ class Character extends React.Component {
             dataType: 'json',
             data: {user: 'null'},
             error: (jqXHR) => this.error("Failed to unclaim character", jqXHR),
-            success: (newItem) => window.location = '/pick_character?server=' + this.state.character.server,
+            success: (newItem) => window.location = '/character-select?server=' + this.state.character.server,
         })
     }
 
@@ -428,7 +428,7 @@ class Character extends React.Component {
                 user = <User user={this.state.user} href={(readOnly) ? undefined : "/"} />
             }
 
-            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/list_characters?server=" + this.state.server.id} />
+            const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/character-list?server=" + this.state.server.id} />
 
             let unclaim
             if (!readOnly) {

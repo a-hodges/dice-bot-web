@@ -181,8 +181,8 @@ def character():
     return render_template('react.html', user=user, scripts=['character.js'])
 
 
-@app.route('/list_characters')
-def list_characters():
+@app.route('/character-list')
+def character_list():
     '''
     Lists all of the characters in a server
     '''
@@ -190,8 +190,8 @@ def list_characters():
     return render_template('react.html', user=user, scripts=['character-list.js'])
 
 
-@app.route('/pick_character')
-def pick_character():
+@app.route('/character-select')
+def character_select():
     '''
     Pick a character from the server or create a new one
     '''

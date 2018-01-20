@@ -62,7 +62,28 @@ class ErrorHandler extends React.Component {
     }
 
     error(message, jqXHR) {
-        this.setState((prevState, props) => ({error: [verboseError(message, jqXHR)].concat(prevState.error)}))
+        if (jqXHR !== undefined) {
+            const status = jqXHR.status
+            if (status == 400) {
+                message += " Bad request"
+            }
+            else if (status == 401) {
+                message += " You must be logged in to access this resource"
+            }
+            else if (status == 403) {
+                message += " You do not have access to edit this character"
+            }
+            else if (status == 404) {
+                message += " Could not be found"
+            }
+            else if (status == 409) {
+                message += " Conflicted with another value"
+            }
+            else if (status == 500) {
+                message += " Server error"
+            }
+        }
+        this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
     }
 
     componentDidCatch(error, info) {
@@ -77,31 +98,6 @@ class ErrorHandler extends React.Component {
             return <Container>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</Container>
         }
     }
-}
-
-function verboseError(message, jqXHR) {
-    if (jqXHR !== undefined) {
-        const status = jqXHR.status
-        if (status == 400) {
-            message += " Bad request"
-        }
-        else if (status == 401) {
-            message += " You must be logged in to access this resource"
-        }
-        else if (status == 403) {
-            message += " You do not have access to edit this character"
-        }
-        else if (status == 404) {
-            message += " Could not be found"
-        }
-        else if (status == 409) {
-            message += " Conflicted with another value"
-        }
-        else if (status == 500) {
-            message += " Server error"
-        }
-    }
-    return message
 }
 
 const urlparams = new URLSearchParams(window.location.search)

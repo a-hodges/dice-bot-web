@@ -85,12 +85,7 @@ def context():
     '''
     Makes extra variables available to the template engine
     '''
-    return dict(
-        m=m,
-        str=str,
-        len=len,
-        AUTHORIZATION_BASE_URL=AUTHORIZATION_BASE_URL,
-    )
+    return dict(AUTHORIZATION_BASE_URL=AUTHORIZATION_BASE_URL)
 
 
 def error(e, message=None):

@@ -16,7 +16,7 @@ class Character extends React.Component {
                 type: 'GET',
                 dataType: 'json',
                 data: {server: this.props.character.server},
-                error: (jqXHR) => this.onError("Could not load user", jqXHR),
+                error: (jqXHR) => this.onError("Failed to load user", jqXHR),
                 success: (data) => this.setState({user: data}),
             })
         }
@@ -80,14 +80,14 @@ class List extends React.Component {
                 url: '/api/server/' + this.props.server_id,
                 type: 'GET',
                 dataType: 'json',
-                error: (jqXHR) => this.error("Could not load server", jqXHR),
+                error: (jqXHR) => this.error("Failed to load server", jqXHR),
                 success: (data) => this.setState({server: data}, () => document.title = this.state.server.name),
             })
             this.listRequest = $.ajax({
                 url: '/api/server/' + this.props.server_id + '/characters',
                 type: 'GET',
                 dataType: 'json',
-                error: (jqXHR) => this.error("Could not load characters", jqXHR),
+                error: (jqXHR) => this.error("Failed to load characters", jqXHR),
                 success: (data) => this.setState({list: data}),
             })
         }

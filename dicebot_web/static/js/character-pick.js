@@ -98,7 +98,7 @@ class Pick extends React.Component {
             url: '/api/server/' + this.props.server_id + '/characters',
             type: 'GET',
             dataType: 'json',
-            error: (jqXHR) => this.error("Could not load characters", jqXHR),
+            error: (jqXHR) => this.error("Failed to load characters", jqXHR),
             success: (data) => this.setState({list: data.filter((item) => item.user === null)}),
         })
     }
@@ -147,7 +147,7 @@ class Base extends React.Component {
                     this.error("Not logged in", jqXHR)
                 }
                 else {
-                    this.error("Could not load user", jqXHR)
+                    this.error("Failed to load user", jqXHR)
                 }
             },
             success: (data) => this.setState({user: data}, loadMore),
@@ -157,7 +157,7 @@ class Base extends React.Component {
                 url: '/api/server/' + this.props.server_id,
                 type: 'GET',
                 dataType: 'json',
-                error: (jqXHR) => this.error("Could not load server", jqXHR),
+                error: (jqXHR) => this.error("Failed to load server", jqXHR),
                 success: (data) => this.setState({server: data}, () => document.title = this.state.server.name),
             })
         }

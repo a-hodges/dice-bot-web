@@ -18,7 +18,7 @@ class Group extends React.Component {
             url: url,
             type: 'GET',
             dataType: 'json',
-            error: (jqXHR) => this.error("Could not load " + this.props.title.toLowerCase(), jqXHR),
+            error: (jqXHR) => this.error("Failed to load " + this.props.title.toLowerCase(), jqXHR),
             success: (data) => this.setState({data: data}),
         })
     }
@@ -365,7 +365,7 @@ class Character extends React.Component {
             url: '/api/characters/' + this.props.character_id,
             type: 'GET',
             dataType: 'json',
-            error: (jqXHR) => this.error("Could not load character", jqXHR),
+            error: (jqXHR) => this.error("Failed to load character", jqXHR),
             success: (data) => this.setState({character: data}, loadMore),
         })
         const loadMore = () => {
@@ -374,7 +374,7 @@ class Character extends React.Component {
                 url: '/api/server/' + this.state.character.server,
                 type: 'GET',
                 dataType: 'json',
-                error: (jqXHR) => this.error("Could not load server", jqXHR),
+                error: (jqXHR) => this.error("Failed to load server", jqXHR),
                 success: (data) => this.setState({server: data}),
             })
             if (this.state.character.user !== null) {
@@ -383,7 +383,7 @@ class Character extends React.Component {
                     type: 'GET',
                     dataType: 'json',
                     data: {server: this.state.character.server},
-                    error: (jqXHR) => this.error("Could not load user", jqXHR),
+                    error: (jqXHR) => this.error("Failed to load user", jqXHR),
                     success: (data) => this.setState({user: data}),
                 })
             }
@@ -408,7 +408,7 @@ class Character extends React.Component {
             type: 'PATCH',
             dataType: 'json',
             data: {user: 'null'},
-            error: (jqXHR) => this.error("Could not unclaim character", jqXHR),
+            error: (jqXHR) => this.error("Failed to unclaim character", jqXHR),
             success: (newItem) => window.location = '/pick_character?server=' + this.state.character.server,
         })
     }

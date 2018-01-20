@@ -5,14 +5,12 @@
     <script src="{{ url_for('node_modules', filename='react/umd/react.development.js') }}"></script>
     <script src="{{ url_for('node_modules', filename='react-dom/umd/react-dom.development.js') }}"></script>
     <script src="{{ url_for('node_modules', filename='babel-standalone/babel.min.js') }}"></script>
-    <script type="text/babel" src="{{ url_for('static', filename='js/react-utils.js') }}"></script>
     {% for script in scripts %}
     <script type="text/babel" src="{{ url_for('static', filename='js/' + script) }}"></script>
     {% endfor %}
 {% else %}
     <script src="{{ url_for('node_modules', filename='react/umd/react.production.min.js') }}"></script>
     <script src="{{ url_for('node_modules', filename='react-dom/umd/react-dom.production.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='babel/react-utils.js') }}"></script>
     {% for script in scripts %}
     <script src="{{ url_for('static', filename='babel/' + script) }}"></script>
     {% endfor %}

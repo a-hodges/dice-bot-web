@@ -167,10 +167,22 @@ def node_modules(filename):
 
 
 views = {
-    '/': ['index.js'],
-    '/character': ['character.js'],
-    '/character-list': ['character-list.js'],
-    '/character-select': ['character-select.js'],
+    '/': [
+        'react-utils.js',
+        'index.js',
+    ],
+    '/character': [
+        'react-utils.js',
+        'character.js',
+    ],
+    '/character-list': [
+        'react-utils.js',
+        'character-list.js',
+    ],
+    '/character-select': [
+        'react-utils.js',
+        'character-select.js',
+    ],
 }
 
 

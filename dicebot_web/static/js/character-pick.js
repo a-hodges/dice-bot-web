@@ -98,7 +98,7 @@ class Pick extends React.Component {
             url: '/api/server/' + this.props.server_id + '/characters',
             type: 'GET',
             dataType: 'json',
-            error: () => this.error("Could not load characters"),
+            error: (jqXHR) => this.error("Could not load characters", jqXHR),
             success: (data) => this.setState({list: data.filter((item) => item.user === null)}),
         })
     }
@@ -149,7 +149,7 @@ class Base extends React.Component {
             type: 'GET',
             dataType: 'json',
             data: {server: this.props.server_id},
-            error: () => this.error("Could not load user"),
+            error: (jqXHR) => this.error("Could not load user", jqXHR),
             success: (data) => this.setState({user: data}),
         })
     }

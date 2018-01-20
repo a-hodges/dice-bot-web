@@ -29,7 +29,7 @@ def get_character(character_id, secure=True):
     '''
     user, discord = get_user(session.get('oauth2_token'))
     if user is None:
-        abort(403)
+        abort(401)
 
     character = db.session.query(m.Character).get(character_id)
     if not character:
@@ -86,7 +86,7 @@ class Me (Resource):
 
     def get(self):
         user, discord = get_user(session.get('oauth2_token'))
-        if not user:
+        if user is None:
             abort(401)
         return User(*self.args, **self.kwargs).get(user['id'])
 
@@ -95,7 +95,7 @@ class Me (Resource):
 class MyServers (Resource):
     def get(self):
         user, discord = get_user(session.get('oauth2_token'))
-        if not user:
+        if user is None:
             abort(401)
         guilds = user_get(discord, API_BASE_URL + '/users/@me/guilds').json()
         guilds = filter(bot_in_guild, guilds)
@@ -108,7 +108,9 @@ class Server (Resource):
     def get(self, server_id):
         server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
-        if not user or not user_in_guild(server_id, user['id']):
+        if user is None:
+            abort(401)
+        if not user_in_guild(server_id, user['id']):
             abort(403)
         server = bot_get(API_BASE_URL + '/guilds/' + server_id)
         if not server:
@@ -121,7 +123,9 @@ class CharacterList (Resource):
     def get(self, server_id):
         server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
-        if not user or not user_in_guild(server_id, user['id']):
+        if user is None:
+            abort(401)
+        if not user_in_guild(server_id, user['id']):
             abort(403)
         characters = db.session.query(m.Character)\
             .filter_by(server=server_id)\
@@ -134,7 +138,9 @@ class CharacterList (Resource):
         parser.add_argument('name', required=True, help='Name of the character')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
-        if not user or not user_in_guild(server_id, user['id']):
+        if user is None:
+            abort(401)
+        if not user_in_guild(server_id, user['id']):
             abort(403)
         character = m.Character(name=args['name'], user=user['id'], server=server_id)
         db.session.add(character)
@@ -151,7 +157,9 @@ class MyCharacter (Resource):
     def get(self, server_id):
         server_id = str(server_id)
         user, discord = get_user(session.get('oauth2_token'))
-        if not user or not user_in_guild(server_id, user['id']):
+        if user is None:
+            abort(401)
+        if not user_in_guild(server_id, user['id']):
             abort(403)
         character = db.session.query(m.Character)\
             .filter_by(server=server_id, user=user['id']).one_or_none()
@@ -172,8 +180,10 @@ class Characters (Resource):
         parser.add_argument('user', help='"@me" to claim character, "null" to unclaim')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
+        if user is None:
+            abort(401)
         character = db.session.query(m.Character).get(character_id)
-        if not user or not character:
+        if not character:
             abort(403)
 
         # change name

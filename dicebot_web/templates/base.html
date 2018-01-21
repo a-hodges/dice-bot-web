@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 
+{% set view_channel = 0x00000400 %}
+{% set send_messages = 0x00000800 %}
+{% set manage_messages = 0x00002000 %}
+{% set embed_links = 0x00004000 %}
+{% set attach_files = 0x00008000 %}
+{% set read_message_history = 0x00010000 %}
+{% set mention_everyone = 0x00020000 %}
+{% set change_nickname = 0x04000000 %}
+{% set manage_roles = 0x10000000 %}
+{% set permissions = view_channel|send_messages|manage_messages|embed_links|attach_files|read_message_history|mention_everyone|change_nickname|manage_roles %}
+{% set invite_url = '{}?client_id={}&scope=bot&permissions={}'.format(AUTHORIZATION_BASE_URL, config['discord_client_id'], permissions) %}
+
 <html lang="en">
 <head>
     {% block head %}
@@ -30,7 +42,7 @@
                     {% endif %}
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ '{}?client_id={}&scope=bot&permissions=0'.format(AUTHORIZATION_BASE_URL, config['discord_client_id']) }}" target="_blank">Invite Bot</a>
+                    <a class="nav-link" href="{{ invite_url }}" target="_blank">Invite Bot</a>
                 </li>
             </ul>
         </div>

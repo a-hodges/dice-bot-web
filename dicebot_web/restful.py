@@ -409,7 +409,7 @@ To add proficiency to a roll simply add `+prof` to the end of the skill or save
 `+prof//2` can be used to add half proficiency (rounded down) or `+prof*2` for double proficiency
 
 Additionally, rolls can be used for more than just dice rolling, any calculated value can be stored
-e.x. `8+!int+prof` gives the spell dave DC for a wizard, or `14+(!dex<2)` gives your AC in scale mail
+e.x. `8+!int+prof` gives the spell save DC for a wizard, or `14+(!dex<2)` gives your AC in scale mail
 
 Resources:
 Resources track any limited use skills or resources like HP and spell slots

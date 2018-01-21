@@ -3,6 +3,7 @@ from flask_sslify import SSLify
 from dicebot_web import app as application
 
 sslify = SSLify(application)
+application.config['PREFERRED_URL_SCHEME'] = 'https'
 
 if __name__ == '__main__':
     import os
@@ -32,7 +33,10 @@ if __name__ == '__main__':
     if args.reload:
         application.config['TEMPLATES_AUTO_RELOAD'] = True
 
-    ssl_context = None if args.debug else 'adhoc'
+    ssl_context = 'adhoc'
+    if args.debug:
+        ssl_context = None
+        application.config['PREFERRED_URL_SCHEME'] = 'http'
 
     application.run(
         host='0.0.0.0',

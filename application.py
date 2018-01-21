@@ -1,4 +1,8 @@
+from flask_sslify import SSLify
+
 from dicebot_web import app as application
+
+sslify = SSLify(application)
 
 if __name__ == '__main__':
     import os
@@ -28,12 +32,12 @@ if __name__ == '__main__':
     if args.reload:
         application.config['TEMPLATES_AUTO_RELOAD'] = True
 
+    ssl_context = None if args.debug else 'adhoc'
+
     application.run(
         host='0.0.0.0',
         port=args.port,
         debug=args.debug,
         use_reloader=args.reload,
+        ssl_context=ssl_context,
     )
-else:
-    from flask_sslify import SSLify
-    sslify = SSLify(application)

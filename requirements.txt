@@ -8,4 +8,5 @@ requests ~= 2.18.4
 requests_oauthlib ~= 0.8.0
 git+git://github.com/b-hodges/dice-bot.git#egg=dice-bot
 
+pyOpenSSL ~= 17.5.0
 flask_sslify ~= 0.1.5

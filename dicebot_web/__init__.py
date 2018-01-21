@@ -34,15 +34,13 @@ app.register_blueprint(api_bp, url_prefix='/api')
 # ----#-   Application
 
 
-def create_app(database):
+@app.before_first_request
+def create_app():
     '''
     Sets up app for use
     Adds database configuration and the secret key
     '''
-    if database is not None and database != app.config['SQLALCHEMY_DATABASE_URI']:
-        # setup Database
-        app.config['SQLALCHEMY_DATABASE_URI'] = database
-
+    if app.config['SQLALCHEMY_DATABASE_URI'] is not None:
         # setup config values
         with app.app_context():
             db.create_all()
@@ -265,4 +263,4 @@ def logout():
 
 # ----#-   Main
 
-create_app(os.environ.get('DB', None))  # default database setup
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB', None)

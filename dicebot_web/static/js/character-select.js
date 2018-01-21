@@ -37,8 +37,8 @@ class Create extends React.Component {
         })
     }
 
-    makeTemplate(e) {
-        const url = '/api/make-character-template-5e/server/' + this.props.server_id
+    makeTemplate(edition) {
+        const url = '/api/make-character-template/' + edition + '/server/' + this.props.server_id
         const name = this.state.name
         this.addRequest = $.ajax({
             url: url,
@@ -71,7 +71,7 @@ class Create extends React.Component {
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button className="form-control btn btn-success" onClick={this.makeTemplate}>Create 5e template</button>
+                    <button className="form-control btn btn-success" onClick={() => this.makeTemplate('5e')}>Create 5e template</button>
                 </div>
             </div>
         )

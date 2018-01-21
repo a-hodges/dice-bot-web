@@ -1,7 +1,10 @@
+import os
 import enum
+import json
 from operator import itemgetter
+from collections import OrderedDict
 
-from flask import Blueprint, session
+from flask import Blueprint, current_app, session
 from flask_restful import Api, Resource, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
@@ -351,116 +354,58 @@ add_character_resource(api, 'item', 'inventory', m.Item, 'name', item_fields)
 # ----#-   Extras
 
 
-stats_5e = {
-    'cha': 10,
-    'con': 10,
-    'dex': 10,
-    'int': 10,
-    'prof': 2,
-    'str': 10,
-    'wis': 10,
-}
-
-skills_5e = {
-    'acrobatics': 'dex',
-    'animal handling': 'wis',
-    'arcana': 'int',
-    'athletics': 'str',
-    'chasave': 'cha',
-    'consave': 'con',
-    'deception': 'cha',
-    'dexsave': 'dex',
-    'history': 'int',
-    'insight': 'wis',
-    'intimidation': 'cha',
-    'intsave': 'int',
-    'investigation': 'int',
-    'medicine': 'wis',
-    'nature': 'int',
-    'perception': 'wis',
-    'performance': 'cha',
-    'persuasion': 'cha',
-    'religion': 'int',
-    'sleight of hand': 'dex',
-    'stealth': 'dex',
-    'strsave': 'str',
-    'survival': 'wis',
-    'wissave': 'wis',
-}
-
-instructions_5e = '''
-Information:
-The information section contains information about your character such as a description and features
-Any text blocks can be stored here for any reason
-It is recommended that you prefix information names with something like `Feature: ` to group them
-
-Variables:
-The variables section hold the numeric attributes of your character such as strength or proficiency bonus
-Some defaults have been filled in, be sure to change them to reflect your character
-Variables can only have whole number values, anything else will cause an error
-
-Rolls:
-The rolls section stores dice calculations to be used by the bot
-These rolls can use variables so that stored rolls don't have to change when your stats do
-The special `!` operator calculates the modifier for a stat, see the examples or bot help for more info
-
-Some defaults are included, notably all of the skills and saves are included with no proficiencies
-To add proficiency to a roll simply add `+prof` to the end of the skill or save
-`+prof//2` can be used to add half proficiency (rounded down) or `+prof*2` for double proficiency
-
-Additionally, rolls can be used for more than just dice rolling, any calculated value can be stored
-e.x. `8+!int+prof` gives the spell save DC for a wizard, or `14+(!dex<2)` gives your AC in scale mail
-
-Resources:
-Resources track any limited use skills or resources like HP and spell slots
-`long rest` resources recover during a long rest
-`short rest` resources recover during a short or long rest
-`other rest` resources must be recovered manually (magic item uses often go here)
-Resources can go above max or below 0, but must be whole number values
-
-Spells:
-The spell section contains information about spells
-Cantrips are considered level 0
-
-Inventory:
-The inventory section contains information about the items you carry
-This includes their quantity and an optional description
-'''.strip()
+def make_character(server_id, edition, helper):
+    # load data
+    filename = os.path.join(current_app.root_path, 'editions', edition + '.json')
+    if not os.path.exists(filename):
+        abort(404)
+    with open(filename, 'r') as f:
+        data = json.load(f, object_pairs_hook=OrderedDict)
+    instructions = os.path.join(current_app.root_path, 'editions', edition + '.md')
+    if os.path.exists(instructions):
+        with open(instructions, 'r') as f:
+            data['instructions'] = f.read().strip()
+    # get arguments
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', required=True, help='Name of the character')
+    args = parser.parse_args()
+    if not args.name:
+        abort(400)
+    # authenticate user
+    user, discord = get_user(session.get('oauth2_token'))
+    if user is None:
+        abort(401)
+    if not user_in_guild(server_id, user['id']):
+        abort(403)
+    # create character
+    character = m.Character(name=args['name'], user=user['id'], server=server_id)
+    db.session.add(character)
+    # add children
+    if 'instructions' in data:
+        character.information.append(m.Information(name='instructions', description=data['instructions']))
+    character = helper(character, data)
+    # commit
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409)
+    # return
+    return entry2json(character)
 
 
-@api.resource('/make-character-template-5e/server/<int:server_id>')
+@api.resource('/make-character-template/5e/server/<int:server_id>')
 class MakeCharacterTemplate5e (Resource):
     def post(self, server_id):
         server_id = str(server_id)
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', required=True, help='Name of the character')
-        args = parser.parse_args()
-        if not args.name:
-            abort(400)
-        # authenticate user
-        user, discord = get_user(session.get('oauth2_token'))
-        if user is None:
-            abort(401)
-        if not user_in_guild(server_id, user['id']):
-            abort(403)
-        # create character
-        character = m.Character(name=args['name'], user=user['id'], server=server_id)
-        db.session.add(character)
-        # add children
-        for stat, value in stats_5e.items():
-            character.variables.append(m.Variable(name=stat, value=value))
-        for skill, stat in skills_5e.items():
-            character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat)))
-        character.rolls.append(m.Roll(name='attack', expression='1d20+!str'))
-        character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
-        character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
-        character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
-        character.information.append(m.Information(name='instructions', description=instructions_5e))
-        # commit
-        try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            abort(409)
-        # return
-        return entry2json(character)
+        def helper(character, data):
+            for stat, value in data['stats'].items():
+                character.variables.append(m.Variable(name=stat, value=value))
+            for skill, stat in data['skills'].items():
+                character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat)))
+            character.rolls.append(m.Roll(name='attack', expression='1d20+!str'))
+            character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
+            character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
+            character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
+            return character
+        return make_character(server_id, '5e', helper)

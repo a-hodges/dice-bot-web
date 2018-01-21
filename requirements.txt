@@ -1,19 +1,19 @@
 # install with: pip install -r requirements.txt
 
 # general
-requests ~= 2.18.4
-requests_oauthlib ~= 0.8.0
+requests ~= 2.18
+requests_oauthlib ~= 0.8
 
 # WSGI
-flask ~= 0.12.2
-flask_restful ~= 0.3.6
-pyOpenSSL ~= 17.5.0
-flask_sslify ~= 0.1.5
+flask ~= 0.12
+flask_restful ~= 0.3
+pyOpenSSL ~= 17.5
+flask_sslify ~= 0.1
 
 # database
-sqlalchemy ~= 1.2.1
-flask_sqlalchemy ~= 2.3.2
-psycopg2 ~= 2.7.3
+sqlalchemy ~= 1.2
+flask_sqlalchemy ~= 2.3
+psycopg2 ~= 2.7
 
 # data model
 git+git://github.com/b-hodges/dice-bot.git#egg=dice-bot

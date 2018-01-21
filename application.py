@@ -34,3 +34,6 @@ if __name__ == '__main__':
         debug=args.debug,
         use_reloader=args.reload,
     )
+else:
+    from flask_sslify import SSLify
+    sslify = SSLify(application)

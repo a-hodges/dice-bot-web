@@ -7,3 +7,5 @@ psycopg2 ~= 2.7.3
 requests ~= 2.18.4
 requests_oauthlib ~= 0.8.0
 git+git://github.com/b-hodges/dice-bot.git#egg=dice-bot
+
+flask_sslify ~= 0.1.5

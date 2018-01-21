@@ -182,21 +182,6 @@ class GroupItem extends React.Component {
     }
 }
 
-function Paragraphs(props) {
-    if (!props.children) {
-        return null
-    }
-    else {
-        let className = 'paragraphs border rounded p-3'
-        className = (props.className) ? props.className + ' ' + className : className
-        return (
-            <div {...props} className={className}>
-                {props.children}
-            </div>
-        )
-    }
-}
-
 function Information(props) {
     const display = (item, setRef) => (
         <div className="w-100">

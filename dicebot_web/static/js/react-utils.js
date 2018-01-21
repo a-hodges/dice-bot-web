@@ -11,6 +11,21 @@ function Warning(props) {
     return <p className="alert alert-warning">{props.children}</p>
 }
 
+function Paragraphs(props) {
+    if (!props.children) {
+        return null
+    }
+    else {
+        let className = 'paragraphs border rounded p-3'
+        className = (props.className) ? props.className + ' ' + className : className
+        return (
+            <div {...props} className={className}>
+                {props.children}
+            </div>
+        )
+    }
+}
+
 function User(props) {
     const size = props.iconSize || 32
     const avatar = (props.user.avatar)

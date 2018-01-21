@@ -397,7 +397,6 @@ def make_character(server_id, edition, helper):
 @api.resource('/make-character-template/5e/server/<int:server_id>')
 class MakeCharacterTemplate5e (Resource):
     def post(self, server_id):
-        server_id = str(server_id)
         def helper(character, data):
             for stat, value in data['stats'].items():
                 character.variables.append(m.Variable(name=stat, value=value))
@@ -408,4 +407,5 @@ class MakeCharacterTemplate5e (Resource):
             character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
             character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
             return character
-        return make_character(server_id, '5e', helper)
+
+        return make_character(str(server_id), '5e', helper)

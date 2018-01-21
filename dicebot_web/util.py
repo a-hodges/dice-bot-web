@@ -19,15 +19,12 @@ def token_updater(token):
 def make_session(token=None, state=None, scope=None):
     client_id = current_app.config['discord_client_id']
     client_secret = current_app.config['discord_client_secret']
-    callback = url_for('callback', _external=True)
-    if not current_app.config['DEBUG']:
-        callback = callback.replace('http://', 'https://')
     return OAuth2Session(
         client_id=client_id,
         token=token,
         state=state,
         scope=scope,
-        redirect_uri=callback,
+        redirect_uri=url_for('callback', _external=True),
         auto_refresh_kwargs={
             'client_id': client_id,
             'client_secret': client_secret,

@@ -25,7 +25,7 @@
     ]
   },
   "scripts": {
-    "build": "babel dicebot_web/static/js -d dicebot_web/static/babel --source-maps",
+    "build": "babel dicebot_web/static/jsx -d dicebot_web/static/babel --source-maps",
     "test": "[ -d dicebot_web/static/babel/ ]"
   }
 }

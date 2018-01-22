@@ -79,6 +79,10 @@ class LoadingLink extends React.Component {
     }
 
     onClick(e) {
+        const callback = (data) => {
+            this.setState({loading: false})
+            this.props.callback(data)
+        }
         this.setState({loading: true})
         console.log(this.props.data)
         this.request = $.ajax({

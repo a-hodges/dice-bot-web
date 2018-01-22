@@ -414,7 +414,7 @@ class Character extends React.Component {
             let unclaim
             if (!readOnly) {
                 unclaim = (
-                    <p><LoadingLink
+                    <p><LoadingButton
                         className="btn btn-danger"
                         url={'/api/characters/' + this.props.character_id}
                         method="PATCH"
@@ -422,7 +422,7 @@ class Character extends React.Component {
                         callback={(data) => window.location = '/character-select?server=' + data.server}
                         onError={this.error}>
                         Unclaim character
-                    </LoadingLink></p>
+                    </LoadingButton></p>
                 )
             }
 

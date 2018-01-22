@@ -30,7 +30,7 @@ class Create extends React.Component {
                     </div>
                     <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
                     <div className="input-group-append">
-                        <LoadingLink
+                        <LoadingButton
                             className="form-control btn btn-success"
                             url={'/api/server/' + this.props.server_id + '/characters'}
                             method="POST"
@@ -38,11 +38,11 @@ class Create extends React.Component {
                             callback={(data) => window.location = '/character?character=' + data.id}
                             onError={this.error}>
                             Create
-                        </LoadingLink>
+                        </LoadingButton>
                     </div>
                 </div>
                 <div className="btn-group">
-                    <LoadingLink
+                    <LoadingButton
                         className="form-control btn btn-success"
                         url={'/api/make-character-template/5e/server/' + this.props.server_id}
                         method="POST"
@@ -50,7 +50,7 @@ class Create extends React.Component {
                         callback={(data) => window.location = '/character?character=' + data.id}
                         onError={this.error}>
                         Cerate 5e template
-                    </LoadingLink>
+                    </LoadingButton>
                 </div>
             </div>
         )

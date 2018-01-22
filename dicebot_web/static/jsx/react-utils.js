@@ -65,7 +65,7 @@ function Server(props) {
     return body
 }
 
-class LoadingLink extends React.Component {
+class LoadingButton extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)

@@ -194,7 +194,7 @@ class Characters (Resource):
 
     def patch(self, character_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('name', help='Name of the character')
+        parser.add_argument('name', stroe_missing=False, help='Name of the character')
         parser.add_argument('user', store_missing=False, help='"@me" to claim character, "null" to unclaim')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
@@ -205,7 +205,9 @@ class Characters (Resource):
             abort(403)
 
         # change name
-        if args['name']:
+        if 'name' in args:
+            if not name:
+                abort(400)
             if character.user != user['id']:
                 abort(403)
             character.name = args['name']

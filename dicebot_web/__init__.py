@@ -34,7 +34,6 @@ app.register_blueprint(api_bp, url_prefix='/api')
 # ----#-   Application
 
 
-@app.before_first_request
 def create_app():
     '''
     Sets up app for use
@@ -264,3 +263,4 @@ def logout():
 # ----#-   Main
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB', None)
+create_app()

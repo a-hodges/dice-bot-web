@@ -70,7 +70,7 @@ class Create extends React.Component {
                         <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
                     </div>
                 </div>
-                <div class="btn-group">
+                <div className="btn-group">
                     <button className="form-control btn btn-success" onClick={() => this.makeTemplate('5e')}>Create 5e template</button>
                 </div>
             </div>

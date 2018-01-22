@@ -195,7 +195,7 @@ class Characters (Resource):
     def patch(self, character_id):
         parser = reqparse.RequestParser()
         parser.add_argument('name', help='Name of the character')
-        parser.add_argument('user', help='"@me" to claim character, "null" to unclaim')
+        parser.add_argument('user', store_missing=False, help='"@me" to claim character, "null" to unclaim')
         args = parser.parse_args()
         user, discord = get_user(session.get('oauth2_token'))
         if user is None:
@@ -211,7 +211,7 @@ class Characters (Resource):
             character.name = args['name']
 
         # claim/unclaim
-        if args['user']:
+        if 'user' in args:
             if args['user'] == 'null':  # unclaim
                 # restrict to character claimed by the current user on the same server
                 if character.user != user['id'] or not user_in_guild(character.server, user['id']):

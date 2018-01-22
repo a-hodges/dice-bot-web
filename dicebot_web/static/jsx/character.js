@@ -345,7 +345,6 @@ class Character extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
-        this.unclaim = this.unclaim.bind(this)
         this.state = {}
     }
 
@@ -395,17 +394,6 @@ class Character extends React.Component {
         }
     }
 
-    unclaim(e) {
-        this.request = $.ajax({
-            url: '/api/characters/' + this.props.character_id,
-            type: 'PATCH',
-            dataType: 'json',
-            data: {user: 'null'},
-            error: (jqXHR) => this.error("Failed to unclaim character", jqXHR),
-            success: (newItem) => window.location = '/character-select?server=' + this.state.character.server,
-        })
-    }
-
     render() {
         let body
         if (this.state.character !== undefined) {
@@ -425,7 +413,17 @@ class Character extends React.Component {
 
             let unclaim
             if (!readOnly) {
-                unclaim = <p><button className="btn btn-danger" onClick={this.unclaim}>Unclaim character</button></p>
+                unclaim = (
+                    <p><LoadingLink
+                        className="btn btn-danger"
+                        url={'/api/characters/' + this.props.character_id}
+                        method="PATCH"
+                        data={{user: 'null'}}
+                        callback={(data) => window.location = '/character-select?server=' + data.server}
+                        onError={this.error}>
+                        Unclaim character
+                    </LoadingLink></p>
+                )
             }
 
             body = (

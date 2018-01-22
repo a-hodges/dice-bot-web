@@ -3,58 +3,21 @@ class Create extends React.Component {
         super(props)
         this.error = this.error.bind(this)
         this.change = this.change.bind(this)
-        this.claim = this.claim.bind(this)
-        this.makeTemplate = this.makeTemplate.bind(this)
         this.state = {name: ""}
     }
 
     error(message, jqXHR) {
-        this.props.onError(message, jqXHR)
+        if (jqXHR.status == 409) {
+            alert("There is already a character named " + this.state.name + " on this server")
+        }
+        else {
+            this.props.onError("Failed to create character", jqXHR)
+        }
     }
 
     change(e) {
         const t = e.target
         this.setState({[t.name]: t.value})
-    }
-
-    claim(e) {
-        const url = '/api/server/' + this.props.server_id + '/characters'
-        const name = this.state.name
-        this.addRequest = $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {name: name},
-            error: (jqXHR) => {
-                if (jqXHR.status == 409) {
-                    alert("There is already a character named " + name + " on this server")
-                }
-                else {
-                    this.error("Failed to create character", jqXHR)
-                }
-            },
-            success: (newItem) => window.location = '/character?character=' + newItem.id,
-        })
-    }
-
-    makeTemplate(edition) {
-        const url = '/api/make-character-template/' + edition + '/server/' + this.props.server_id
-        const name = this.state.name
-        this.addRequest = $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {name: name},
-            error: (jqXHR) => {
-                if (jqXHR.status == 409) {
-                    alert("There is already a character named " + name + " on this server")
-                }
-                else {
-                    this.error("Failed to create character", jqXHR)
-                }
-            },
-            success: (newItem) => window.location = '/character?character=' + newItem.id,
-        })
     }
 
     render() {
@@ -67,11 +30,27 @@ class Create extends React.Component {
                     </div>
                     <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
                     <div className="input-group-append">
-                        <button className="form-control btn btn-success" onClick={this.claim}>Create</button>
+                        <LoadingLink
+                            className="form-control btn btn-success"
+                            url={'/api/server/' + this.props.server_id + '/characters'}
+                            method="POST"
+                            data={{name: this.state.name}}
+                            callback={(data) => window.location = '/character?character=' + data.id}
+                            onError={this.error}>
+                            Create
+                        </LoadingLink>
                     </div>
                 </div>
                 <div className="btn-group">
-                    <button className="form-control btn btn-success" onClick={() => this.makeTemplate('5e')}>Create 5e template</button>
+                    <LoadingLink
+                        className="form-control btn btn-success"
+                        url={'/api/make-character-template/5e/server/' + this.props.server_id}
+                        method="POST"
+                        data={{name: this.state.name}}
+                        callback={(data) => window.location = '/character?character=' + data.id}
+                        onError={this.error}>
+                        Cerate 5e template
+                    </LoadingLink>
                 </div>
             </div>
         )

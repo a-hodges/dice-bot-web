@@ -29,3 +29,17 @@ textarea {
 .paragraphs {
     white-space: pre-wrap;
 }
+
+@keyframes blink {50% { color: transparent }}
+.loading-animation, .loading-animation::before, .loading-animation::after {
+    content: attr(dot);
+    animation: 1s blink infinite;
+}
+
+.loading-animation {
+    animation-delay: 250ms;
+}
+
+.loading-animation::after {
+    animation-delay: 500ms;
+}

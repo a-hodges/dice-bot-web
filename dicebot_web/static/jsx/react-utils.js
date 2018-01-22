@@ -65,6 +65,48 @@ function Server(props) {
     return body
 }
 
+class LoadingLink extends React.Component {
+    constructor(props) {
+        super(props)
+        this.error = this.error.bind(this)
+        this.onClick = this.onClick.bind(this)
+        this.state = {loading: false}
+    }
+
+    error(message, jqXHR) {
+        this.setState({loading: false})
+        this.props.onError(message, jqXHR)
+    }
+
+    onClick(e) {
+        this.setState({loading: true})
+        console.log(this.props.data)
+        this.request = $.ajax({
+            url: this.props.url,
+            type: this.props.method,
+            dataType: 'json',
+            data: this.props.data,
+            error: (jqXHR) => this.error("Failed request", jqXHR),
+            success: this.props.callback,
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.request !== undefined) {
+            this.request.abort()
+        }
+    }
+
+    render() {
+        if (!this.state.loading) {
+            return <button {...this.props} callback="" onClick={this.onClick}>{this.props.children}</button>
+        }
+        else {
+            return <button {...this.props} callback=""><span className="loading-animation" dot="&bull;">&bull;</span></button>
+        }
+    }
+}
+
 class ErrorHandler extends React.Component {
     constructor(props) {
         super(props)

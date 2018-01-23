@@ -341,10 +341,85 @@ function Inventory(props) {
     return <Group title="Inventory" url="inventory" editDisplay={display} readDisplay={readDisplay} {...props} />
 }
 
+class Name extends React.Component {
+    constructor(props) {
+        super(props)
+        this.error = this.error.bind(this)
+        this.editItem = this.editItem.bind(this)
+        this.cancel = this.cancel.bind(this)
+        this.updateItem = this.updateItem.bind(this)
+        this.state = {edit: false}
+    }
+
+    error(message, jqXHR) {
+        this.props.onError(message, jqXHR)
+    }
+
+    editItem(e) {
+        this.setState({edit: true})
+    }
+
+    cancel(e) {
+        this.setState({edit: false})
+        this.nameRef = undefined
+    }
+
+    updateItem(e) {
+        const url = '/api/characters/' + this.props.character.id
+        const name = this.nameRef.value
+        this.updateRequest = $.ajax({
+            url: url,
+            type: 'PATCH',
+            dataType: 'json',
+            data: {name: name},
+            error: (jqXHR) => {
+                if (jqXHR.status == 409) {
+                    alert("There is already a character named " + name + " on this server")
+                }
+                else {
+                    this.error("Failed to update name", jqXHR)
+                }
+            },
+            success: this.props.onUpdate,
+        })
+        this.cancel()
+    }
+
+    componentWillUnmount() {
+        if (this.request !== undefined) {
+            this.request.abort()
+        }
+    }
+
+    render() {
+        if (this.state.edit) {
+            return (
+                <div className="form-group d-flex justify-content-between align-items-center">
+                    <input className="form-control" type="text" name="name" defaultValue={this.props.character.name} ref={(t) => this.nameRef = t} />
+                    <div className="d-flex flex-column">
+                        <button className="btn btn-success badge badge-success badge-pill m-1" onClick={this.updateItem}>save</button>
+                        <button className="btn btn-warning badge badge-warning badge-pill m-1" onClick={this.cancel}>cancel</button>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            const edit = (this.props.readOnly) ? null : <button className="btn btn-info badge badge-info badge-pill m-1" onClick={this.editItem}>edit</button>
+            return (
+                <div className="mb-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h1 className="d-inline-block">{this.props.character.name}</h1>
+                    {edit}
+                </div>
+            )
+        }
+    }
+}
+
 class Character extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
+        this.updateCharacter = this.updateCharacter.bind(this)
         this.state = {}
     }
 
@@ -394,6 +469,10 @@ class Character extends React.Component {
         }
     }
 
+    updateCharacter(data) {
+        this.setState({character: data}, () => document.title = this.state.character.name)
+    }
+
     render() {
         let body
         if (this.state.character !== undefined) {
@@ -428,7 +507,7 @@ class Character extends React.Component {
 
             body = (
                 <div>
-                    <h1>{this.state.character.name}</h1>
+                    <Name character={this.state.character} onUpdate={this.updateCharacter} onError={this.error} readOnly={readOnly} />
                     {server}
                     {user}
                     {unclaim}

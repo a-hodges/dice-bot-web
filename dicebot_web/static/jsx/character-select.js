@@ -146,6 +146,24 @@ class Base extends React.Component {
     }
 
     componentDidMount() {
+        this.characterRequest = $.ajax({
+            url: 'api/server/' + this.props.server_id + '/characters/@me',
+            type: 'GET',
+            dataType: 'json',
+            error: (jqXHR) => {
+                if (jqXHR.status == 401) {
+                    this.error("Not logged in", jqXHR)
+                }
+                else if (jqXHR.status == 404) {
+                    // good, the user shouldn't have a character
+                }
+                else {
+                    this.error("Failed to load user", jqXHR)
+                }
+            },
+            success: (data) => this.error("You already have a character, you cannot claim another"),
+        })
+
         this.userRequest = $.ajax({
             url: '/api/user/@me',
             type: 'GET',
@@ -173,6 +191,9 @@ class Base extends React.Component {
     }
 
     componentWillUnmount() {
+        if (this.characterRequest !== undefined) {
+            this.characterRequest.abort()
+        }
         if (this.userRequest !== undefined) {
             this.userRequest.abort()
         }

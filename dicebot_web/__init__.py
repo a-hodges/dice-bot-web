@@ -83,6 +83,7 @@ def context():
     Makes extra variables available to the template engine
     '''
     permissions = (
+        0x00000040 |  # add reactions
         0x00000400 |  # view channel
         0x00000800 |  # send messages
         0x00002000 |  # manage messages
@@ -90,6 +91,7 @@ def context():
         0x00008000 |  # attach files
         0x00010000 |  # read message history
         0x00020000 |  # mention everyone
+        0x00040000 |  # use external emojis
         0x04000000 |  # change nicknames
         0x10000000    # manage roles
     )

@@ -23,9 +23,7 @@ class Character extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
+        abortRequest(this.request)
     }
 
     render() {
@@ -96,15 +94,9 @@ class List extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.listRequest !== undefined) {
-            this.listRequest.abort()
-        }
-        if (this.userRequest !== undefined) {
-            this.userRequest.abort()
-        }
-        if (this.serverRequest !== undefined) {
-            this.serverRequest.abort()
-        }
+        abortRequest(this.listRequest)
+        abortRequest(this.userRequest)
+        abortRequest(this.serverRequest)
     }
 
     render() {

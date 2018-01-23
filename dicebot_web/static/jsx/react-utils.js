@@ -1,3 +1,9 @@
+function abortRequest(request) {
+    if (request !== undefined) {
+        request.abort()
+    }
+}
+
 function Container(props) {
     const className = (props.className) ? "container " + props.className : "container"
     return <div {...props} className={className}>{props.children}</div>

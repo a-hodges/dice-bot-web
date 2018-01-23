@@ -24,18 +24,10 @@ class Group extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
-        if (this.addRequest !== undefined) {
-            this.addRequest.abort()
-        }
-        if (this.updateRequest !== undefined) {
-            this.updateRequest.abort()
-        }
-        if (this.deleteRequest !== undefined) {
-            this.deleteRequest.abort()
-        }
+        abortRequest(this.request)
+        abortRequest(this.addRequest)
+        abortRequest(this.updateRequest)
+        abortRequest(this.deleteRequest)
     }
 
     addItem() {
@@ -386,9 +378,7 @@ class Name extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
+        abortRequest(this.request)
     }
 
     render() {
@@ -458,15 +448,9 @@ class Character extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
-        if (this.userRequest !== undefined) {
-            this.userRequest.abort()
-        }
-        if (this.serverRequest !== undefined) {
-            this.serverRequest.abort()
-        }
+        abortRequest(this.request)
+        abortRequest(this.userRequest)
+        abortRequest(this.serverRequest)
     }
 
     updateCharacter(data) {

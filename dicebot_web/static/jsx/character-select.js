@@ -111,9 +111,7 @@ class Pick extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
+        abortRequest(this.request)
     }
 
     componentDidCatch(error, info) {
@@ -191,15 +189,9 @@ class Base extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.characterRequest !== undefined) {
-            this.characterRequest.abort()
-        }
-        if (this.userRequest !== undefined) {
-            this.userRequest.abort()
-        }
-        if (this.serverRequest !== undefined) {
-            this.serverRequest.abort()
-        }
+        abortRequest(this.characterRequest)
+        abortRequest(this.userRequest)
+        abortRequest(this.serverRequest)
     }
 
     render() {

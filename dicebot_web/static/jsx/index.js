@@ -72,17 +72,9 @@ class Home extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.request !== undefined) {
-            this.request.abort()
-        }
-        if (this.serverRequest !== undefined) {
-            this.serverRequest.abort()
-        }
-        this.requests.map((item) => {
-            if (item !== undefined) {
-                item.abort()
-            }
-        })
+        abortRequest(this.request)
+        abortRequest(this.serverRequest)
+        this.requests.map(abortRequest)
     }
 
     render() {

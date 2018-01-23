@@ -206,7 +206,7 @@ class Characters (Resource):
 
         # change name
         if 'name' in args:
-            if not name:
+            if not args['name']:
                 abort(400)
             if character.user != user['id']:
                 abort(403)

@@ -28,6 +28,12 @@ def table2json(table):
     return data
 
 
+def character2json(user, character):
+    character = entry2json(character)
+    character['own'] = user['id'] == character['user']
+    return character
+
+
 def prep_cast(cast):
     if isinstance(cast, enum.EnumMeta):
         def cast2(value):
@@ -51,19 +57,16 @@ def get_character(character_id, secure=True):
     if not character:
         abort(403)
 
-    character = character.dict()
-    character['own'] = character['user'] == user['id']
-
     if secure:
         # ensure that the user owns the character
-        if not character['own']:
+        if not character.user == user['id']:
             abort(403)
     else:
         # ensure that the user is in the same guild
-        if not user_in_guild(character['server'], user['id']):
+        if not user_in_guild(character.server, user['id']):
             abort(403)
 
-    return character
+    return character2json(user, character)
 
 
 @api.resource('/user/<int:user_id>')
@@ -167,7 +170,7 @@ class CharacterList (Resource):
         except IntegrityError:
             db.session.rollback()
             abort(409)
-        return entry2json(character)
+        return character2json(user, character)
 
 
 @api.resource('/server/<int:server_id>/characters/@me')
@@ -183,7 +186,7 @@ class MyCharacter (Resource):
             .filter_by(server=server_id, user=user['id']).one_or_none()
         if not character:
             abort(404)
-        return entry2json(character)
+        return character2json(user, character)
 
 
 @api.resource('/characters/<int:character_id>')
@@ -232,7 +235,7 @@ class Characters (Resource):
         except IntegrityError:
             db.session.rollback()
             abort(409)
-        return entry2json(character)
+        return character2json(user, character)
 
 
 class CharacterResource (Resource):
@@ -393,7 +396,7 @@ def make_character(server_id, edition, helper):
         db.session.rollback()
         abort(409)
     # return
-    return entry2json(character)
+    return character2json(user, character)
 
 
 @api.resource('/make-character-template/5e/server/<int:server_id>')

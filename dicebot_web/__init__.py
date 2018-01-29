@@ -19,6 +19,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from .util import AUTHORIZATION_BASE_URL, TOKEN_URL, get_user, make_session
 from .database import db, m
 from .restful import api_bp
+from .help import help_bp
 
 # Create App
 app = Flask(__name__)
@@ -29,6 +30,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = None
 # Attach Database and REST
 db.init_app(app)
 app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(help_bp, url_prefix='/help')
 
 
 # ----#-   Application

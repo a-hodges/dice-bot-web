@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Dice Bot commands</h1>
+    <p class="paragraphs">{{ bot.description }}</p>
+    <ul class="list-group">
+        {% for command in sorted(bot.commands) %}
+        {% if not command.hidden %}
+        {% if command.commands %}
+        <li class="list-group-item">
+            <div class="btn-group">
+                <a class="btn btn-secondary" href="{{ url_for('help.command', command=command_path(command)) }}">{{ command.name }}</a>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    {% for subcommand in sorted(command.commands) %}
+                    <a class="dropdown-item" href="{{ url_for('help.command', command=command_path(subcommand)) }}">{{ subcommand.qualified_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </li>
+        {% else %}
+        <li class="list-group-item">
+            <a class="btn btn-secondary" href="{{ url_for('help.command', command=command_path(command)) }}">{{ command.name }}</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

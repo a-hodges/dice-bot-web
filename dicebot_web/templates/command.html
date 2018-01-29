@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Dice Bot commands</h1>
+    <p class="paragraphs">{{ bot.description }}</p>
+    <h2>
+        {{ command.qualified_name }}
+    </h2>
+    {% if command.aliases %}
+    <h3>
+        Aliases: [{{ ', '.join(command.aliases) }}]
+    </h3>
+    {% endif %}
+    <p class="paragraphs">{{ command.help }}</p>
+    {% if command.commands %}
+    <ul class="list-group">
+        {% for command in sorted(command.commands) %}
+        <li class="list-group-item">
+            <a class="btn btn-secondary" href="{{ url_for('help.command', command=command_path(command)) }}">{{ command.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -7,7 +7,10 @@ class Create extends React.Component {
     }
 
     error(message, jqXHR) {
-        if (jqXHR.status == 409) {
+        if (jqXHR.status == 400) {
+            alert("You must give the character a name")
+        }
+        else if (jqXHR.status == 409) {
             alert("There is already a character named " + this.state.name + " on this server")
         }
         else {
@@ -49,7 +52,7 @@ class Create extends React.Component {
                         data={{name: this.state.name}}
                         callback={(data) => window.location = '/character?character=' + data.id}
                         onError={this.error}>
-                        Cerate 5e template
+                        Create 5e template
                     </LoadingButton>
                 </div>
             </div>

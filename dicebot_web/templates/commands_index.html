@@ -16,7 +16,9 @@
                 </button>
                 <div class="dropdown-menu">
                     {% for subcommand in sorted(command.commands) %}
+                    {% if not subcommand.hidden %}
                     <a class="dropdown-item" href="{{ url_for('help.command', command=command_path(subcommand)) }}">{{ subcommand.qualified_name }}</a>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>

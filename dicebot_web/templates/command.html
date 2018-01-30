@@ -16,9 +16,11 @@
     {% if command.commands %}
     <ul class="list-group">
         {% for command in sorted(command.commands) %}
+        {% if not command.hidden %}
         <li class="list-group-item">
             <a class="btn btn-secondary" href="{{ url_for('help.command', command=command_path(command)) }}">{{ command.name }}</a>
         </li>
+        {% endif %}
         {% endfor %}
     </ul>
     {% endif %}

@@ -181,22 +181,10 @@ def node_modules(filename):
 
 
 views = {
-    '/': [
-        'react-utils.js',
-        'index.js',
-    ],
-    '/character': [
-        'react-utils.js',
-        'character.js',
-    ],
-    '/character-list': [
-        'react-utils.js',
-        'character-list.js',
-    ],
-    '/character-select': [
-        'react-utils.js',
-        'character-select.js',
-    ],
+    '/': ([], ['react-utils.js', 'index.js']),
+    '/character': ([], ['react-utils.js', 'character.js']),
+    '/character-list': ([], ['react-utils.js', 'character-list.js']),
+    '/character-select': ([], ['react-utils.js', 'character-select.js']),
 }
 
 
@@ -213,11 +201,11 @@ def react_view():
     Renders a template with the given react scripts loaded
     '''
     user, discord = get_user(session.get('oauth2_token'))
-    scripts = views[request.path]
-    return render_template('react.html', user=user, scripts=scripts)
+    js, jsx = views[request.path]
+    return render_template('react.html', user=user, js=js, jsx=jsx)
 
 
-for rule, scripts in views.items():
+for rule in views:
     app.add_url_rule(rule, view_func=react_view)
 
 

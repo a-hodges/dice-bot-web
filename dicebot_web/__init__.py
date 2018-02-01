@@ -182,7 +182,10 @@ def node_modules(filename):
 
 views = {
     '/': ([], ['react-utils.js', 'index.js']),
-    '/character': ([], ['react-utils.js', 'character.js']),
+    '/character': (
+        ['remarkable/dist/remarkable.min.js'],
+        ['react-utils.js', 'character.js']
+    ),
     '/character-list': ([], ['react-utils.js', 'character-list.js']),
     '/character-select': ([], ['react-utils.js', 'character-select.js']),
 }

@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block js %}
-{% for script in js %}
-<script src="{{ script }}"></script>
-{% endfor %}
+    {% for script in js %}
+    {% if script.endswith('.min.js') %}
+    <script src="{{ url_for('node_modules', filename=script) }}"></script>
+    {% else %}
+    <script src="{{ url_for('static', filename=script) }}"></script>
+    {% endif %}
+    {% endfor %}
 {% if config['DEBUG'] %}
     <script src="{{ url_for('node_modules', filename='react/umd/react.development.js') }}"></script>
     <script src="{{ url_for('node_modules', filename='react-dom/umd/react-dom.development.js') }}"></script>

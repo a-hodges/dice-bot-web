@@ -63,7 +63,10 @@ class Group extends React.Component {
             dataType: 'json',
             data: data,
             error: (jqXHR) => {
-                if (jqXHR.status == 404) {
+                if (jqXHR.status == 400) {
+                    alert("Cannot update item \"" + data.name + "\" in " + this.props.title + " with the given values")
+                }
+                else if (jqXHR.status == 404) {
                     this.setState((prevState, props) => ({data: prevState.data.filter((i) => i.id != item.id)}))
                 }
                 else if (jqXHR.status == 409) {

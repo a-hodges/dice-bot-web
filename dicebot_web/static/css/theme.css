@@ -30,6 +30,11 @@ textarea {
     white-space: pre-wrap;
 }
 
+.paragraphs p {
+    margin: 0;
+    padding: 0;
+}
+
 @keyframes blink {50% { color: transparent }}
 .loading-animation, .loading-animation::before, .loading-animation::after {
     content: attr(dot);

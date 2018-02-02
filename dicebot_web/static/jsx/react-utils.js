@@ -32,6 +32,28 @@ function Paragraphs(props) {
     }
 }
 
+let remarkableOptions = {linkify: true}
+let remarkableSubset = {
+    core: ['block', 'inline', 'linkify'],
+    block: ['fences', 'paragraph'],
+    inline: ['backticks', 'del', 'emphasis', 'escape', 'text']
+}
+
+function Markdown(props) {
+    if (!props.content) {
+        return null
+    }
+    else {
+        const md = new Remarkable('default', remarkableOptions)
+        Object.entries(remarkableSubset).forEach((item) => md[item[0]].ruler.enable(item[1], true))
+        let className = 'paragraphs border rounded p-3'
+        className = (props.className) ? props.className + ' ' + className : className
+        return (
+            <div {...props} className={className} content={undefined} dangerouslySetInnerHTML={{__html: md.render(props.content).trim()}} />
+        )
+    }
+}
+
 function User(props) {
     const size = props.iconSize || 32
     const avatar = (props.user.avatar)

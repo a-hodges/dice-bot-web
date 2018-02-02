@@ -192,7 +192,7 @@ function Information(props) {
     const readDisplay = (item) => (
         <div className="w-100 form-group">
             <span className="font-weight-bold">{item.name}</span>
-            <Paragraphs>{item.description}</Paragraphs>
+            <Markdown content={item.description} />
         </div>
     )
     return <Group title="Information" url="information" editDisplay={display} readDisplay={readDisplay} {...props} />
@@ -304,7 +304,7 @@ function Spells(props) {
         <div className="w-100 form-group">
             <span className="font-weight-bold">{item.name}</span>
             <span> | level: {item.level}</span>
-            <Paragraphs>{item.description}</Paragraphs>
+            <Markdown content={item.description} />
         </div>
     )
     return <Group title="Spells" url="spells" editDisplay={display} readDisplay={readDisplay} {...props} />
@@ -330,7 +330,7 @@ function Inventory(props) {
         <div className="w-100 form-group">
             <span className="font-weight-bold">{item.name}</span>
             <span> | quantity: {item.number}</span>
-            <Paragraphs>{item.description}</Paragraphs>
+            <Markdown content={item.description} />
         </div>
     )
     return <Group title="Inventory" url="inventory" editDisplay={display} readDisplay={readDisplay} {...props} />

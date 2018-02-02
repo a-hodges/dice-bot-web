@@ -39,13 +39,18 @@ let remarkableSubset = {
     inline: ['backticks', 'del', 'emphasis', 'escape', 'text']
 }
 
+function discordRemarkable() {
+    const md = new Remarkable('default', remarkableOptions)
+    Object.entries(remarkableSubset).forEach((item) => md[item[0]].ruler.enable(item[1], true))
+    return md
+}
+
 function Markdown(props) {
     if (!props.content) {
         return null
     }
     else {
-        const md = new Remarkable('default', remarkableOptions)
-        Object.entries(remarkableSubset).forEach((item) => md[item[0]].ruler.enable(item[1], true))
+        const md = discordRemarkable()
         let className = 'paragraphs border rounded p-3'
         className = (props.className) ? props.className + ' ' + className : className
         return (

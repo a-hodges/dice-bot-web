@@ -42,6 +42,13 @@ let remarkableSubset = {
 function discordRemarkable() {
     const md = new Remarkable('default', remarkableOptions)
     Object.entries(remarkableSubset).forEach((item) => md[item[0]].ruler.enable(item[1], true))
+    var link_open = md.renderer.rules.link_open
+    // open links in new windows
+    md.renderer.rules.link_open = function() {
+        const link = link_open.apply(this, arguments)
+        const pos = link.length - 1
+        return link.substring(0, pos) + ' target="_blank"' + link.substring(pos)
+    }
     return md
 }
 

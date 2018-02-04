@@ -155,6 +155,7 @@ class ErrorHandler extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
+        this.reload = this.reload.bind(this)
         this.state = {error: []}
     }
 
@@ -183,6 +184,10 @@ class ErrorHandler extends React.Component {
         this.setState((prevState, props) => ({error: [message].concat(prevState.error)}))
     }
 
+    reload(e) {
+        this.setState({error: []})
+    }
+
     componentDidCatch(error, info) {
         this.error("Unknown error")
     }
@@ -192,7 +197,12 @@ class ErrorHandler extends React.Component {
             return React.Children.map(this.props.children, (item) => React.cloneElement(item, {onError: this.error}))
         }
         else {
-            return <Container>{this.state.error.map((item) => <Error key={item}>{item}</Error>)}</Container>
+            return (
+                <Container>
+                    {this.state.error.map((item) => <Error key={item}>{item}</Error>)}
+                    <button className="w-100 btn btn-info" onClick={this.reload}>Reload</button>
+                </Container>
+            )
         }
     }
 }

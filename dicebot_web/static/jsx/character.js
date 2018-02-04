@@ -2,6 +2,7 @@ class Group extends React.Component {
     constructor(props) {
         super(props)
         this.error = this.error.bind(this)
+        this.reload = this.reload.bind(this)
         this.addItem = this.addItem.bind(this)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
@@ -10,6 +11,11 @@ class Group extends React.Component {
 
     error(message, jqXHR) {
         this.props.onError(message, jqXHR)
+    }
+
+    reload(e) {
+        this.setState({data: undefined})
+        this.componentDidMount()
     }
 
     componentDidMount() {
@@ -110,7 +116,10 @@ class Group extends React.Component {
         }
         return (
             <div>
-                <h2>{this.props.title}</h2>
+                <div className="d-flex justify-content-between align-items-center">
+                    <h2 className="d-inline-block m-2">{this.props.title}</h2>
+                    <button className="float-right btn btn-info" onClick={this.reload}>Reload</button>
+                </div>
                 {body}
             </div>
         )

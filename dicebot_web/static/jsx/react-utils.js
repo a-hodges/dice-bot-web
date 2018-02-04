@@ -200,7 +200,7 @@ class ErrorHandler extends React.Component {
             return (
                 <Container>
                     {this.state.error.map((item) => <Error key={item}>{item}</Error>)}
-                    <button className="w-100 btn btn-info" onClick={this.reload}>Reload</button>
+                    <button className="btn btn-info btn-block" onClick={this.reload}>Reload</button>
                 </Container>
             )
         }

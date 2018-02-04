@@ -498,12 +498,12 @@ class Character extends React.Component {
                     {server}
                     {user}
                     {unclaim}
-                    <Information character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                    <Variables character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                    <Rolls character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                    <Resources character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                    <Spells character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
-                    <Inventory character_id={this.state.character.id} onError={this.error} readOnly={readOnly} />
+                    <ErrorHandler><Information character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Variables character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Rolls character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Resources character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Spells character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Inventory character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                 </div>
             )
         }

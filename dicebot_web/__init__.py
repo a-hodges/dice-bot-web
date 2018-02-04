@@ -2,6 +2,7 @@
 
 import os
 import datetime
+import hashlib
 
 from flask import (
     Flask,
@@ -31,6 +32,28 @@ app.config['SQLALCHEMY_DATABASE_URI'] = None
 db.init_app(app)
 app.register_blueprint(api_bp, url_prefix='/api')
 app.register_blueprint(help_bp, url_prefix='/help')
+
+
+def md5(filename):
+    hasher = hashlib.md5()
+    with open(filename, 'rb') as f:
+        for chunk in iter(lambda: f.read(4096), b''):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+static_filename_chache = {}
+
+
+def get_url(endpoint, *args, **kwargs):
+    if endpoint == 'static':
+        filename = kwargs.get('filename')
+        if not filename:
+            raise ValueError('No filename given to static endpoint')
+        if filename not in static_filename_chache:
+            static_filename_chache[filename] = md5(os.path.join(app.root_path, 'static', filename))
+        kwargs['md5'] = static_filename_chache[filename]
+    return url_for(endpoint, *args, **kwargs)
 
 
 # ----#-   Application
@@ -99,7 +122,7 @@ def context():
     )
     invite_url = '{}?client_id={}&scope=bot&permissions={}'.format(
         AUTHORIZATION_BASE_URL, app.config['discord_client_id'], permissions)
-    return {'invite_url': invite_url}
+    return {'invite_url': invite_url, 'url_for': get_url}
 
 
 # ----#-   Errors

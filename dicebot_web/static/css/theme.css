@@ -35,6 +35,29 @@ textarea {
     padding: 0;
 }
 
+code {
+    color: white;
+    background: #2f3136;
+    padding: 0.2rem;
+    border: 0;
+    border-radius: 3px;
+    white-space: pre-wrap;
+}
+
+pre {
+    color: #839496;
+    background: #2f3136;
+    border: 2px solid #282b30;
+    border-radius: 5px;
+    overflow: visible;
+    padding: 0.3rem;
+}
+
+pre > code {
+    color: inherit;
+    background: inherit;
+}
+
 @keyframes blink {50% { color: transparent }}
 .loading-animation, .loading-animation::before, .loading-animation::after {
     content: attr(dot);

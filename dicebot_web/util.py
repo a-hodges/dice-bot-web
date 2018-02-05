@@ -2,7 +2,7 @@ import os
 import time
 
 import requests
-from flask import current_app, session, url_for
+from flask import current_app, abort, session, url_for
 from requests_oauthlib import OAuth2Session
 
 # Configure Discord OAuth
@@ -67,6 +67,26 @@ def bot_get(url):
     return response
 
 
+def get_member(guild, user):
+    '''
+    Gets a member object from a guild
+    '''
+    resp = bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
+    if not resp:
+        abort(resp.status_code)
+    return resp.json()
+
+
+def get_guild(guild):
+    '''
+    Gets a guild object
+    '''
+    resp = bot_get(API_BASE_URL + '/guilds/{}'.format(guild))
+    if not resp:
+        abort(resp.status_code)
+    return resp.json()
+
+
 def user_in_guild(guild, user):
     '''
     Returns whether the given user is in the given guild
@@ -74,6 +94,23 @@ def user_in_guild(guild, user):
     '''
     member = bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
     return bool(member)
+
+
+def user_is_admin(guild, user):
+    '''
+    Returns whether the user is an admin in the given guild
+    Guild may be the guild object or the guild's ID
+    User may be the member object or their ID
+    '''
+    if isinstance(guild, str):
+        guild = get_guild(guild)
+    if isinstance(user, str):
+        user = get_user(guild['id'], user)
+    roles = {role['id']: role for role in guild.get('roles', [])}
+    for role in user.get('roles', []):
+        if roles.get(role, {}).get('permissions', 0) & 0x00000008:
+            return True
+    return False
 
 
 def bot_in_guild(guild):

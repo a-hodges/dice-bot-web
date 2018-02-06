@@ -407,7 +407,7 @@ class MakeCharacterTemplate5e (Resource):
                 character.variables.append(m.Variable(name=stat, value=value))
             for skill, stat in data['skills'].items():
                 character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat)))
-            character.rolls.append(m.Roll(name='attack', expression='1d20+!str'))
+            character.rolls.append(m.Roll(name='attack', expression='1d20+!str+prof'))
             character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
             character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
             character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))

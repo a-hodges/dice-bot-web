@@ -67,11 +67,19 @@ def bot_get(url):
     return response
 
 
+def user_in_guild(guild, user):
+    '''
+    Returns whether the given user is in the given guild
+    Both guild and user should be the respective IDs
+    '''
+    return bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
+
+
 def get_member(guild, user):
     '''
     Gets a member object from a guild
     '''
-    resp = bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
+    resp = user_in_guild(guild, user)
     if not resp:
         abort(resp.status_code)
     return resp.json()
@@ -85,15 +93,6 @@ def get_guild(guild):
     if not resp:
         abort(resp.status_code)
     return resp.json()
-
-
-def user_in_guild(guild, user):
-    '''
-    Returns whether the given user is in the given guild
-    Both guild and user should be the respective IDs
-    '''
-    member = bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
-    return bool(member)
 
 
 def user_is_admin(guild, user):

@@ -42,6 +42,21 @@ def prep_cast(cast):
     return cast
 
 
+def get_user(user_id, server_id=None):
+    user_id = str(user_id)
+    if server_id is None:
+        resp = util.bot_get(util.API_BASE_URL + '/users/' + user_id)
+        if not resp:
+            abort(resp.status_code)
+        user = resp.json()
+    else:
+        member = util.get_member(server_id, user_id)
+        member['admin'] = util.user_is_admin(server_id, member)
+        user = member.pop('user')
+        user.update(member)
+    return user
+
+
 def get_character(character_id, secure=True):
     '''
     Uses character_id to select a character
@@ -57,14 +72,15 @@ def get_character(character_id, secure=True):
     if not character:
         abort(403)
 
+    member = get_user(user['id'], server_id=character.server)  # ensures that user is in the same guild
+
     if secure:
         # ensure that the user owns the character
         if not character.user == user['id']:
             abort(403)
-    else:
-        # ensure that the user is in the same guild
-        if not util.user_in_guild(character.server, user['id']):
-            abort(403)
+
+    if character.user == 'DM' and not member['admin']:
+        abort(403)
 
     return character2json(user, character)
 
@@ -72,26 +88,10 @@ def get_character(character_id, secure=True):
 @api.resource('/user/<int:user_id>')
 class User (Resource):
     def get(self, user_id):
-        # add security?
-        user_id = str(user_id)
         parser = reqparse.RequestParser()
         parser.add_argument('server', help='ID of a server the user is in, if relevant')
         args = parser.parse_args()
-
-        user = None
-        if args.server is None:
-            resp = util.bot_get(util.API_BASE_URL + '/users/' + user_id)
-            user = resp.json()
-        else:
-            member = util.get_member(args.server, user_id)
-            resp = True
-            member['admin'] = util.user_is_admin(args.server, member)
-            user = member.pop('user')
-            user.update(member)
-
-        if not resp:
-            abort(resp.status_code)
-        return user
+        return get_user(user_id, server_id=args.server)
 
 
 @api.resource('/user/@me')
@@ -144,12 +144,13 @@ class CharacterList (Resource):
         user, discord = util.get_user(session.get('oauth2_token'))
         if user is None:
             abort(401)
-        if not util.user_in_guild(server_id, user['id']):
-            abort(403)
+        member = get_user(user['id'], server_id=server_id)
         characters = db.session.query(m.Character)\
             .filter_by(server=server_id)\
-            .order_by(m.Character.name).all()
-        return table2json(characters)
+            .order_by(m.Character.name)
+        if not member['admin']:
+            characters = characters.filter(~m.Character.dm_character)
+        return table2json(characters.all())
 
     def post(self, server_id):
         server_id = str(server_id)

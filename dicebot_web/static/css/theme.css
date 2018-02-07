@@ -28,6 +28,7 @@ textarea {
 
 .paragraphs {
     white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .paragraphs p {

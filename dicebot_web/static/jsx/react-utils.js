@@ -166,7 +166,7 @@ class ErrorHandler extends React.Component {
                 message += " Bad request"
             }
             else if (status == 401) {
-                message += " You must be logged in to access this resource"
+                message += " You must be logged in to access this resource (you may need to log out and log back in)"
             }
             else if (status == 403) {
                 message += " You do not have access to edit this character"

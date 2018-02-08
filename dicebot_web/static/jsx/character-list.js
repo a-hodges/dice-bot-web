@@ -10,7 +10,7 @@ class Character extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.character.user !== null) {
+        if (this.props.character.user !== null && this.props.character.user !== "DM") {
             this.request = $.ajax({
                 url: '/api/user/' + this.props.character.user,
                 type: 'GET',
@@ -30,6 +30,9 @@ class Character extends React.Component {
         let character
         if (this.props.character.user === null) {
             character = <span>{this.props.character.name}</span>
+        }
+        else if (this.props.character.user === "DM") {
+            character = <span>{this.props.character.name}: DM</span>
         }
         else if (this.state.user === undefined) {
             return <li className="list-group-item list-group-item-warning">Loading user...</li>

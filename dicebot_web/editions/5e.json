@@ -18,6 +18,7 @@
         "deception": "cha",
         "dexsave": "dex",
         "history": "int",
+        "initiative": "dex",
         "insight": "wis",
         "intimidation": "cha",
         "intsave": "int",

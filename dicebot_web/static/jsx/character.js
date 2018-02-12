@@ -508,10 +508,10 @@ class Character extends React.Component {
                     {user}
                     {unclaim}
                     <ErrorHandler><Information character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
+                    <ErrorHandler><Spells character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Variables character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Rolls character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Resources character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
-                    <ErrorHandler><Spells character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Inventory character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                 </div>
             )

@@ -103,12 +103,12 @@ def user_is_admin(guild, user):
     '''
     if isinstance(guild, str):
         guild = get_guild(guild)
-    owner_id = guild.get('owner_id')
+    owner_id = guild.get('owner_id', 'no owner')
     if isinstance(user, str):
         if owner_id == user:
             return True
         user = get_user(guild['id'], user)
-    elif owner_id == user.get('user', user).get('id'):
+    elif owner_id == user.get('user', user).get('id', 'no id'):
         return True
     roles = {role['id']: role for role in guild.get('roles', [])}
     for role in user.get('roles', []):

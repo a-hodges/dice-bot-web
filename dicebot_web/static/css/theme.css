@@ -78,9 +78,13 @@ pre > code {
 }
 
 .spoiler.open {
-    height: auto;
+    max-height: 100000px;
+    transition: max-height 1s;
+    transition-timing-function: ease-in;
 }
 
 .spoiler.closed {
-    height: 0;
+    max-height: 0;
+    transition: max-height 0.5s;
+    transition-timing-function: ease-out;
 }

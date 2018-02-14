@@ -72,3 +72,15 @@ pre > code {
 .loading-animation::after {
     animation-delay: 500ms;
 }
+
+.spoiler {
+    overflow-y: hidden;
+}
+
+.spoiler.open {
+    height: auto;
+}
+
+.spoiler.closed {
+    height: 0;
+}

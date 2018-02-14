@@ -3,10 +3,11 @@ class Group extends React.Component {
         super(props)
         this.error = this.error.bind(this)
         this.reload = this.reload.bind(this)
+        this.collapse = this.collapse.bind(this)
         this.addItem = this.addItem.bind(this)
         this.updateItem = this.updateItem.bind(this)
         this.deleteItem = this.deleteItem.bind(this)
-        this.state = {data: undefined}
+        this.state = {data: undefined, open: false}
     }
 
     error(message, jqXHR) {
@@ -16,6 +17,10 @@ class Group extends React.Component {
     reload(e) {
         this.setState({data: undefined})
         this.componentDidMount()
+    }
+
+    collapse(e) {
+        this.setState((prevState, props) => ({open: !prevState.open}))
     }
 
     componentDidMount() {
@@ -117,10 +122,11 @@ class Group extends React.Component {
         return (
             <div>
                 <div className="d-flex justify-content-between align-items-center">
+                    <button className="btn btn-outline-secondary" onClick={this.collapse}>{(this.state.open) ? '-' : '+'}</button>
                     <h2 className="d-inline-block m-2">{this.props.title}</h2>
                     <button className="btn btn-outline-info" onClick={this.reload}>Reload</button>
                 </div>
-                {body}
+                <div className={"spoiler " + ((this.state.open) ? "open" : "closed")}>{body}</div>
             </div>
         )
     }

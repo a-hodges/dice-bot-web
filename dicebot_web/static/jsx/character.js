@@ -118,7 +118,7 @@ class Group extends React.Component {
             <div>
                 <div className="d-flex justify-content-between align-items-center">
                     <h2 className="d-inline-block m-2">{this.props.title}</h2>
-                    <button className="float-right btn btn-outline-info" onClick={this.reload}>Reload</button>
+                    <button className="btn btn-outline-info" onClick={this.reload}>Reload</button>
                 </div>
                 {body}
             </div>

@@ -220,7 +220,7 @@ class Characters (Resource):
         if 'user' in args:
             if args['user'] == 'null':  # unclaim
                 # restrict to character claimed by the current user on the same server
-                if character.user != user['id'] or not util.user_in_guild(character.server, user['id']):
+                if character.user not in [user['id'], 'DM'] or not util.user_in_guild(character.server, user['id']):
                     abort(403)
                 character.user = None
             elif args['user'] == '@me':  # claim
@@ -228,6 +228,12 @@ class Characters (Resource):
                 if character.user is not None or not util.user_in_guild(character.server, user['id']):
                     abort(403)
                 character.user = user['id']
+            elif args['user'] == 'DM':  # change to DM character
+                if character.user not in [None, user['id']]:
+                    abort(403)
+                if not get_user(user['id'], server_id=character.server)['admin']:
+                    abort(403)
+                character.user = 'DM'
             else:
                 abort(400)
 

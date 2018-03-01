@@ -445,6 +445,21 @@ class Character extends React.Component {
         })
         const loadMore = () => {
             document.title = this.state.character.name
+            this.selfRequest = $.ajax({
+                url: '/api/user/@me?server=' + this.state.character.server,
+                type: 'GET',
+                dataType: 'json',
+                data: {server: this.props.server_id},
+                error: (jqXHR) => {
+                    if (jqXHR.status == 401) {
+                        this.error("Not logged in", jqXHR)
+                    }
+                    else {
+                        this.error("Failed to load user", jqXHR)
+                    }
+                },
+                success: (data) => this.setState({self: data}),
+            })
             this.serverRequest = $.ajax({
                 url: '/api/server/' + this.state.character.server,
                 type: 'GET',
@@ -452,7 +467,7 @@ class Character extends React.Component {
                 error: (jqXHR) => this.error("Failed to load server", jqXHR),
                 success: (data) => this.setState({server: data}),
             })
-            if (this.state.character.user !== null) {
+            if (this.state.character.user !== null && this.state.character.user !== 'DM') {
                 this.userRequest = $.ajax({
                     url: '/api/user/' + this.state.character.user,
                     type: 'GET',
@@ -469,6 +484,7 @@ class Character extends React.Component {
         abortRequest(this.request)
         abortRequest(this.userRequest)
         abortRequest(this.serverRequest)
+        abortRequest(this.selfRequest)
     }
 
     updateCharacter(data) {
@@ -483,11 +499,49 @@ class Character extends React.Component {
             let user
             if (this.state.character.user === null) {
             }
+            else if (this.state.character.user == 'DM') {
+                user = <p>DM Character</p>
+            }
             else if (this.state.user === undefined) {
                 user = <Warning>Loading user...</Warning>
             }
             else {
                 user = <User user={this.state.user} href={(readOnly) ? undefined : "/"} />
+            }
+
+            let convert
+            if (this.state.self === undefined) {
+                convert = <Warning>Loading authorization...</Warning>
+            }
+            else if (this.state.self.admin) {
+                if (this.state.character.user === 'DM') {
+                    convert = (
+                        <p><LoadingButton
+                            className="btn btn-danger"
+                            url={'/api/characters/' + this.props.character_id}
+                            method="PATCH"
+                            data={{user: 'null'}}
+                            callback={(data) => window.location = '/character?character=' + this.props.character_id}
+                            onError={this.error}>
+                            Convert to player character
+                        </LoadingButton></p>
+                    )
+                }
+                else if (this.state.character.user === null || this.state.character.user == this.state.self.id) {
+                    if (this.state.self.admin) {
+                        convert = (
+                            <p><LoadingButton
+                                className="btn btn-danger"
+                                url={'/api/characters/' + this.props.character_id}
+                                method="PATCH"
+                                data={{user: 'DM'}}
+                                callback={(data) => window.location = '/character?character=' + this.props.character_id}
+                                onError={this.error}>
+                                Convert to DM character
+                            </LoadingButton></p>
+                        )
+                    }
+                }
             }
 
             const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/character-list?server=" + this.state.server.id} />
@@ -513,6 +567,7 @@ class Character extends React.Component {
                     {server}
                     {user}
                     {unclaim}
+                    {convert}
                     <ErrorHandler><Information character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Spells character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>
                     <ErrorHandler><Variables character_id={this.state.character.id} readOnly={readOnly} /></ErrorHandler>

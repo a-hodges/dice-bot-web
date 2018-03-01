@@ -208,11 +208,16 @@ class Characters (Resource):
         if not character:
             abort(403)
 
+        member = get_user(user['id'], server_id=character.server)
+
         # change name
         if 'name' in args:
             if not args['name']:
                 abort(400)
-            if character.user != user['id']:
+            if character.user == 'DM':
+                if not member['admin']:
+                    abort(403)
+            elif character.user != user['id']:
                 abort(403)
             character.name = args['name']
 
@@ -220,18 +225,18 @@ class Characters (Resource):
         if 'user' in args:
             if args['user'] == 'null':  # unclaim
                 # restrict to character claimed by the current user on the same server
-                if character.user not in [user['id'], 'DM'] or not util.user_in_guild(character.server, user['id']):
+                if character.user not in [user['id'], 'DM'] or not member:
                     abort(403)
                 character.user = None
             elif args['user'] == '@me':  # claim
                 # restrict to unclaimed characters on the same server
-                if character.user is not None or not util.user_in_guild(character.server, user['id']):
+                if character.user is not None or not member:
                     abort(403)
                 character.user = user['id']
             elif args['user'] == 'DM':  # change to DM character
                 if character.user not in [None, user['id']]:
                     abort(403)
-                if not get_user(user['id'], server_id=character.server)['admin']:
+                if not member['admin']:
                     abort(403)
                 character.user = 'DM'
             else:

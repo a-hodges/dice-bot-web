@@ -75,8 +75,8 @@ def get_character(character_id, secure=True):
     member = get_user(user['id'], server_id=character.server)  # ensures that user is in the same guild
 
     if secure:
-        # ensure that the user owns the character
-        if not character.user == user['id']:
+        # ensure that the user owns the character or is a DM and DM character
+        if not character.user == user['id'] and not (character.user == 'DM' and member['admin']):
             abort(403)
 
     if character.user == 'DM' and not member['admin']:

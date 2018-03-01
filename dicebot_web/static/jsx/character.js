@@ -494,7 +494,10 @@ class Character extends React.Component {
     render() {
         let body
         if (this.state.character !== undefined) {
-            const readOnly = !this.state.character.own
+            let readOnly = !this.state.character.own
+            if (this.state.self !== undefined && this.state.self.admin && this.state.character.user === 'DM') {
+                readOnly = false
+            }
 
             let user
             if (this.state.character.user === null) {
@@ -547,7 +550,7 @@ class Character extends React.Component {
             const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/character-list?server=" + this.state.server.id} />
 
             let unclaim
-            if (!readOnly) {
+            if (this.state.character.own) {
                 unclaim = (
                     <p><LoadingButton
                         className="btn btn-danger"

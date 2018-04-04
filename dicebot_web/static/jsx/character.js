@@ -563,6 +563,17 @@ class Character extends React.Component {
                     </LoadingButton></p>
                 )
             }
+            else if (this.state.character.user === null) {
+                unclaim = <p><LoadingButton
+                    className="btn btn-danger"
+                    url={'/api/characters/' + this.props.character_id}
+                    method="PATCH"
+                    data={{user: '@me'}}
+                    callback={(data) => window.location = '/character?character=' + this.props.character_id}
+                    onError={this.error}>
+                    Claim character
+                </LoadingButton></p>
+            }
 
             body = (
                 <div>

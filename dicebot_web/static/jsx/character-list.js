@@ -32,7 +32,7 @@ class Character extends React.Component {
             character = <span>{this.props.character.name}</span>
         }
         else if (this.props.character.user === "DM") {
-            character = <span>{this.props.character.name}: DM character</span>
+            character = <span>{this.props.character.name}: <User user='DM' inline={true} hidePrefix={true} /></span>
         }
         else if (this.state.user === undefined) {
             return <li className="list-group-item list-group-item-warning">Loading user...</li>

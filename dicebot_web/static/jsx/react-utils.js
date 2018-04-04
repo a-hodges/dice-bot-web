@@ -68,13 +68,24 @@ function Markdown(props) {
 
 function User(props) {
     const size = props.iconSize || 32
-    const avatar = (props.user.avatar)
-        ? 'https://cdn.discordapp.com/avatars/' + props.user.id + '/' + props.user.avatar + '.png?size=' + size
-        : 'https://cdn.discordapp.com/embed/avatars/' + props.user.discriminator % 5 + '.png?size=' + size
-    const name = (props.user.nick) ? props.user.nick + ' (' + props.user.username + ')' : props.user.username
+    let avatar
+    let name
+    if (props.user !== 'DM') {
+        if (props.user.avatar) {
+            avatar = 'https://cdn.discordapp.com/avatars/' + props.user.id + '/' + props.user.avatar + '.png?size=' + size
+        }
+        else {
+            avatar = 'https://cdn.discordapp.com/embed/avatars/' + props.user.discriminator % 5 + '.png?size=' + size
+        }
+        name = (props.user.nick) ? props.user.nick + ' (' + props.user.username + ')' : props.user.username
+    }
+    else {
+        avatar = '/static/images/favicon.ico'
+        name = 'DM'
+    }
     let body = (
         <span>
-            {(props.hidePrefix) ? null : "User: "}<img className={"img-thumbnail icon-" + size} src={avatar} alt={props.user.username + " icon"} /> {name}
+            {(props.hidePrefix) ? null : "User: "}<img className={"img-thumbnail icon-" + size} src={avatar} alt={name + " icon"} /> {name}
         </span>
     )
     if (props.href) {

@@ -503,7 +503,7 @@ class Character extends React.Component {
             if (this.state.character.user === null) {
             }
             else if (this.state.character.user == 'DM') {
-                user = <p>DM Character</p>
+                user = <User user='DM' />
             }
             else if (this.state.user === undefined) {
                 user = <Warning>Loading user...</Warning>

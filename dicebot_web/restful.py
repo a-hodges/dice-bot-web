@@ -236,6 +236,7 @@ class Characters (Resource):
                     .filter_by(user=str(user['id']), server=character.server).one_or_none()
                 if current is not None:
                     current.user = None
+                    db.session.commit()
                 character.user = user['id']
             elif args['user'] == 'DM':  # change to DM character
                 if character.user not in [None, user['id']]:

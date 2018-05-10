@@ -32,17 +32,17 @@ class Create extends React.Component {
                         <span className="input-group-text">name:</span>
                     </div>
                     <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.change} />
-                    <div className="input-group-append">
-                        <LoadingButton
-                            className="form-control btn btn-success"
-                            url={'/api/server/' + this.props.server_id + '/characters'}
-                            method="POST"
-                            data={{name: this.state.name}}
-                            callback={(data) => window.location = '/character?character=' + data.id}
-                            onError={this.error}>
-                            Create
-                        </LoadingButton>
-                    </div>
+                </div>
+                <div className="btn-group">
+                    <LoadingButton
+                        className="form-control btn btn-success"
+                        url={'/api/server/' + this.props.server_id + '/characters'}
+                        method="POST"
+                        data={{name: this.state.name}}
+                        callback={(data) => window.location = '/character?character=' + data.id}
+                        onError={this.error}>
+                        Create (no template)
+                    </LoadingButton>
                 </div>
                 <div className="btn-group">
                     <LoadingButton
@@ -52,7 +52,7 @@ class Create extends React.Component {
                         data={{name: this.state.name}}
                         callback={(data) => window.location = '/character?character=' + data.id}
                         onError={this.error}>
-                        Create 5e template
+                        Create (5e template)
                     </LoadingButton>
                 </div>
             </div>

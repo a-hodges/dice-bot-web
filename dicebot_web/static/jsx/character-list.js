@@ -41,11 +41,24 @@ class Character extends React.Component {
             character = <span>{this.props.character.name}: <User user={this.state.user} inline={true} hidePrefix={true} /></span>
         }
 
+        const claim = (
+            <LoadingButton
+                className="btn badge badge-danger badge-pill"
+                url={'/api/characters/' + this.props.character.id}
+                method="PATCH"
+                data={{user: '@me'}}
+                callback={(data) => window.location = '/character?character=' + data.id}
+                onError={this.error}>
+                claim
+            </LoadingButton>
+        )
+
         return (
-            <li className="list-group-item">
+            <li className="list-group-item d-flex justify-content-between align-items-center">
                 <a href={'/character?character=' + this.props.character.id}>
                     {character}
                 </a>
+                {(this.props.character.user === null) ? claim : null}
             </li>
         )
     }

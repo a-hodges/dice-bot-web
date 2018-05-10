@@ -557,7 +557,7 @@ class Character extends React.Component {
                         url={'/api/characters/' + this.props.character_id}
                         method="PATCH"
                         data={{user: 'null'}}
-                        callback={(data) => window.location = '/character-select?server=' + data.server}
+                        callback={(data) => window.location = '/character-list?server=' + data.server}
                         onError={this.error}>
                         Unclaim character
                     </LoadingButton></p>

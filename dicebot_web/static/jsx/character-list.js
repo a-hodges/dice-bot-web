@@ -63,6 +63,24 @@ class List extends React.Component {
     }
 
     componentDidMount() {
+        this.characterRequest = $.ajax({
+            url: 'api/server/' + this.props.server_id + '/characters/@me',
+            type: 'GET',
+            dataType: 'json',
+            error: (jqXHR) => {
+                if (jqXHR.status == 401) {
+                    this.error("Not logged in", jqXHR)
+                }
+                else if (jqXHR.status == 404) {
+                    this.setState({character: null})
+                }
+                else {
+                    this.error("Failed to load user", jqXHR)
+                }
+            },
+            success: (data) => this.setState({character: data}),
+        })
+
         this.userRequest = $.ajax({
             url: '/api/user/@me',
             type: 'GET',
@@ -97,6 +115,7 @@ class List extends React.Component {
     }
 
     componentWillUnmount() {
+        abortRequest(this.characterRequest)
         abortRequest(this.listRequest)
         abortRequest(this.userRequest)
         abortRequest(this.serverRequest)
@@ -113,10 +132,19 @@ class List extends React.Component {
             </ul>
         )
 
+        let create
+        if (this.state.character === undefined) {
+            <Warning>Loading user...</Warning>
+        }
+        else if (this.state.character === null) {
+            create = <h2><a href={"/character-select?server=" + this.props.server_id}>Create character</a></h2>
+        }
+
         return (
             <Container>
                 <h1>{server}</h1>
                 {user}
+                {create}
                 <h2>View character:</h2>
                 {list}
             </Container>

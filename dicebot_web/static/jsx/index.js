@@ -4,15 +4,18 @@ function CharacterServer(props) {
         return <li className="list-group-item list-group-item-warning">Loading character...</li>
     }
     else if (props.character === null) {
-        body = <Server server={props.server} inline={true} hidePrefix={true} href={"/character-select?server=" + props.server.id} />
+        body = <Server server={props.server} inline={true} hidePrefix={true} href={"/character-list?server=" + props.server.id} />
     }
     else {
         body = <a href={"/character?character=" + props.character.id}><Server server={props.server} inline={true} hidePrefix={true} /> | {props.character.name}</a>
     }
+
+    const list = <a className="badge badge-info badge-pill" href={"/character-list?server=" + props.server.id}>view other characters</a>
+
     return (
         <li className="list-group-item d-flex justify-content-between align-items-center">
             {body}
-            <a className="badge badge-info badge-pill" href={"/character-list?server=" + props.server.id}>view characters</a>
+            {(props.character !== null) ? list : null}
         </li>
     )
 }

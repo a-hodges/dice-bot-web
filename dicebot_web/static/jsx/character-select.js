@@ -200,16 +200,13 @@ class Base extends React.Component {
     render() {
         const user = (this.state.user === undefined) ? <Warning>Loading user...</Warning> : <User user={this.state.user} href="/" />
         const server = (this.state.server === undefined) ? <Warning>Loading server...</Warning> : <Server server={this.state.server} href={"/character-list?server=" + this.state.server.id} />
-        const pick = (this.state.user === undefined) ? <Warning>Loading characters...</Warning> : <Pick server_id={this.props.server_id} onError={this.error} />
 
         return (
             <Container>
-                <h1>Character select</h1>
+                <h1>Character creation</h1>
                 {server}
                 {user}
                 <Create server_id={this.props.server_id} onError={this.error} />
-                <br />
-                {pick}
             </Container>
         )
     }

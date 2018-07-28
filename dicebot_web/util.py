@@ -75,16 +75,6 @@ def user_in_guild(guild, user):
     return bot_get(API_BASE_URL + '/guilds/{}/members/{}'.format(guild, user))
 
 
-def get_member(guild, user):
-    '''
-    Gets a member object from a guild
-    '''
-    resp = user_in_guild(guild, user)
-    if not resp:
-        abort(resp.status_code)
-    return resp.json()
-
-
 def get_guild(guild):
     '''
     Gets a guild object

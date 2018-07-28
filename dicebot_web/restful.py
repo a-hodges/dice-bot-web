@@ -50,7 +50,12 @@ def get_user(user_id, server_id=None):
             abort(resp.status_code)
         user = resp.json()
     else:
-        member = util.get_member(server_id, user_id)
+        resp = util.user_in_guild(server_id, user_id)
+        if not resp and resp.status_code == 404:
+            return get_user(user_id)
+        elif not resp:
+            abort(resp.status_code)
+        member = resp.json()
         member['admin'] = util.user_is_admin(server_id, member)
         user = member.pop('user')
         user.update(member)

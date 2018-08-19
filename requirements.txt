@@ -1,19 +1,19 @@
 # install with: pip install -r requirements.txt
 
 # general
-requests ~= 2.18
-requests_oauthlib ~= 0.8
+requests ~= 2.19
+requests_oauthlib ~= 1.0
 
 # WSGI
-flask ~= 0.12
+flask ~= 1.0
 flask_restful ~= 0.3
-pyOpenSSL ~= 17.5
+pyOpenSSL ~= 18.0
 flask_sslify ~= 0.1
 
 # database
 sqlalchemy ~= 1.2
 flask_sqlalchemy ~= 2.3
-psycopg2 ~= 2.7
+psycopg2-binary ~= 2.7
 
 # data model
 git+git://github.com/Rapptz/discord.py.git@rewrite#egg=discord-py

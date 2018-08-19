@@ -262,8 +262,13 @@ def callback():
         TOKEN_URL,
         client_secret=app.config['discord_client_secret'],
         authorization_response=request.url)
-    session['oauth2_token'] = token
-    return redirect(url_for('index'))
+    user, discord = get_user(token=token)
+    blacklisted = db.session.query(m.Blacklist).get(int(user['id']))
+    if not blacklisted:
+        session['oauth2_token'] = token
+        return redirect(url_for('index'))
+    else:
+        abort(403)
 
 
 @app.route('/logout/')

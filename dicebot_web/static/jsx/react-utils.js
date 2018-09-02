@@ -52,14 +52,41 @@ function discordRemarkable() {
     return md
 }
 
+class RevealText extends React.Component {
+    constructor(props) {
+        super(props)
+        this.toggle = this.toggle.bind(this)
+        this.state = {open: false}
+    }
+
+    toggle() {
+        this.setState((prevState, props) => ({open: !prevState.open}))
+    }
+
+    render() {
+        let className = 'paragraphs border rounded p-3'
+        if (this.state.open) {
+            className += ' tallbox'
+        }
+        else {
+            className += ' shortbox'
+        }
+        className = (this.props.className) ? this.props.className + ' ' + className : className
+        return (
+            <div {...this.props} className={className} onClick={this.toggle}>
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
 function Markdown(props) {
     if (!props.content) {
         return null
     }
     else {
         const md = discordRemarkable()
-        let className = 'paragraphs border rounded p-3'
-        className = (props.className) ? props.className + ' ' + className : className
+        let className = (props.className) ? props.className : ''
         return (
             <div {...props} className={className} content={undefined} dangerouslySetInnerHTML={{__html: md.render(props.content).trim()}} />
         )

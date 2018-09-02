@@ -27,7 +27,16 @@ img.icon-64.img-thumbnail {
 }
 
 textarea {
-    height: 8rem;
+    height: 8em;
+}
+
+.shortbox {
+    max-height: 8em;
+    overflow-y: hidden;
+}
+
+.tallbox {
+    max-height: none;
 }
 
 .paragraphs {

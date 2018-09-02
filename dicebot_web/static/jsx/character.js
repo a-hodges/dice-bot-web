@@ -164,7 +164,9 @@ class GroupItem extends React.Component {
     }
 
     deleteItem(e) {
-        this.props.deleteItem(this.props.item.id)
+        if(confirm("Delete: " + this.props.item.name + "?")) {
+            this.props.deleteItem(this.props.item.id)
+        }
     }
 
     render() {

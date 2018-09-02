@@ -81,16 +81,10 @@ class RevealText extends React.Component {
 }
 
 function Markdown(props) {
-    if (!props.content) {
-        return null
-    }
-    else {
-        const md = discordRemarkable()
-        let className = (props.className) ? props.className : ''
-        return (
-            <div {...props} className={className} content={undefined} dangerouslySetInnerHTML={{__html: md.render(props.content).trim()}} />
-        )
-    }
+    const md = discordRemarkable()
+    return (
+        <div {...props} content={undefined} dangerouslySetInnerHTML={{__html: md.render(props.content).trim()}} />
+    )
 }
 
 function User(props) {

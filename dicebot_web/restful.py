@@ -36,9 +36,7 @@ def character2json(user, character):
 
 def prep_cast(cast):
     if isinstance(cast, enum.EnumMeta):
-        def cast2(value):
-            return cast[value]
-        return cast2
+        return lambda value: cast[value]
     return cast
 
 

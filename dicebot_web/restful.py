@@ -37,6 +37,8 @@ def character2json(user, character):
 def prep_cast(cast):
     if isinstance(cast, enum.EnumMeta):
         return lambda value: cast[value]
+    if cast is bool:
+        return lambda value: {'0': False, '1': True, 'false': False, 'true': True}[value]
     return cast
 
 
@@ -369,7 +371,7 @@ add_character_resource(api, 'roll', 'rolls', m.Roll, 'name', roll_fields)
 resource_fields = {'name': str, 'current': int, 'max': int, 'recover': m.Rest}
 add_character_resource(api, 'resource', 'resources', m.Resource, 'name', resource_fields)
 
-spell_fields = {'name': str, 'level': int, 'description': str}
+spell_fields = {'name': str, 'level': int, 'description': str, 'prepared': bool}
 add_character_resource(api, 'spell', 'spells', m.Spell, ('level', 'name'), spell_fields)
 
 item_fields = {'name': str, 'number': int, 'description': str}

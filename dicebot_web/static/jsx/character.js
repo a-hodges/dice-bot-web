@@ -310,6 +310,13 @@ function Spells(props) {
                 </div>
                 <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
                 <div className="input-group-prepend">
+                    <span className="input-group-text">prepared:</span>
+                </div>
+                <select className="form-control" name="prepared" defaultValue={item.prepared} ref={setRef}>
+                    <option value={true}>✓</option>
+                    <option value={false}>✕</option>
+                </select>
+                <div className="input-group-prepend">
                     <span className="input-group-text">level:</span>
                 </div>
                 <input className="form-control" type="number" name="level" defaultValue={item.level} ref={setRef} />
@@ -320,7 +327,7 @@ function Spells(props) {
     const readDisplay = (item) => (
         <div className="w-100 form-group">
             <span className="font-weight-bold">{item.name}</span>
-            <span> | level: {item.level}</span>
+            <span> | prepared: {(item.prepared) ? '✓' : '✕'} | level: {item.level}</span>
             {(item.description) ? <RevealText><Markdown content={item.description} /></RevealText> : ''}
         </div>
     )

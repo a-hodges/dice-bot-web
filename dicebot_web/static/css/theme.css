@@ -27,11 +27,11 @@ img.icon-64.img-thumbnail {
 }
 
 textarea {
-    height: 12rem;
+    height: 8em;
 }
 
 .shortbox {
-    max-height: 12rem;
+    max-height: 8em;
     overflow-y: hidden;
 }
 

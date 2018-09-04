@@ -1,5 +1,6 @@
 body {
     margin-bottom: 10rem;
+    font-family: Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 img.icon-32 {
@@ -28,6 +29,7 @@ img.icon-64.img-thumbnail {
 
 textarea {
     height: 8em;
+    font-family:  Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .shortbox {
@@ -49,9 +51,13 @@ textarea {
     padding: 0;
 }
 
+code, pre {
+    background: #f8f9f9;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
 code {
-    color: white;
-    background: #2f3136;
+    color: #747f8d;
     padding: 0.2rem;
     border: 0;
     border-radius: 3px;
@@ -59,9 +65,8 @@ code {
 }
 
 pre {
-    color: #839496;
-    background: #2f3136;
-    border: 2px solid #282b30;
+    color: #657b83;
+    border: 2px solid rgba(227,229,232,.6);
     border-radius: 5px;
     overflow: visible;
     padding: 0.3rem;

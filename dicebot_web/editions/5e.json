@@ -13,15 +13,11 @@
         "animal handling": "wis",
         "arcana": "int",
         "athletics": "str",
-        "chasave": "cha",
-        "consave": "con",
         "deception": "cha",
-        "dexsave": "dex",
         "history": "int",
         "initiative": "dex",
         "insight": "wis",
         "intimidation": "cha",
-        "intsave": "int",
         "investigation": "int",
         "medicine": "wis",
         "nature": "int",
@@ -31,8 +27,6 @@
         "religion": "int",
         "sleight of hand": "dex",
         "stealth": "dex",
-        "strsave": "str",
-        "survival": "wis",
-        "wissave": "wis"
+        "survival": "wis"
     }
 }

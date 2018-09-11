@@ -426,16 +426,17 @@ def make_character(server_id, edition, helper):
 
 @api.resource('/make-character-template/5e/server/<int:server_id>')
 class MakeCharacterTemplate5e (Resource):
-    def post(self, server_id):
-        def helper(character, data):
-            for stat, value in data['stats'].items():
-                character.variables.append(m.Variable(name=stat, value=value))
-            for skill, stat in data['skills'].items():
-                character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat)))
-            character.rolls.append(m.Roll(name='attack', expression='1d20+!str+prof'))
-            character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str'))
-            character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
-            character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
-            return character
+    def helper(self, character, data):
+        for stat, value in data['stats'].items():
+            character.variables.append(m.Variable(name=stat, value=value))
+            character.rolls.append(m.Roll(name=stat+'save', expression='1d20+!{}'.format(stat), group='saving throw'))
+        for skill, stat in data['skills'].items():
+            character.rolls.append(m.Roll(name=skill, expression='1d20+!{}'.format(stat), group='skill'))
+        character.rolls.append(m.Roll(name='attack', expression='1d20+!str+prof', group='attack'))
+        character.rolls.append(m.Roll(name='quarterstaff', expression='1d8+!str', group='attack'))
+        character.resources.append(m.Resource(name='hp', max=8, current=8, recover=m.Rest.long))
+        character.resources.append(m.Resource(name='temp hp', max=0, current=0, recover=m.Rest.long))
+        return character
 
-        return make_character(str(server_id), '5e', helper)
+    def post(self, server_id):
+        return make_character(str(server_id), '5e', self.helper)

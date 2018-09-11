@@ -199,6 +199,10 @@ function Information(props) {
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
+                    <span className="input-group-text">group:</span>
+                </div>
+                <input className="form-control" type="text" name="group" defaultValue={item.group} ref={setRef} />
+                <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
                 <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
@@ -208,7 +212,7 @@ function Information(props) {
     )
     const readDisplay = (item) => (
         <div className="w-100 form-group">
-            <span className="font-weight-bold">{item.name}</span>
+            {(item.group) ? item.group + ': ' : ''}<span className="font-weight-bold">{item.name}</span>
             {(item.description) ? <RevealText><Markdown content={item.description} /></RevealText> : ''}
         </div>
     )
@@ -246,6 +250,10 @@ function Rolls(props) {
         <div className="w-100">
             <div className="input-group">
                 <div className="input-group-prepend">
+                    <span className="input-group-text">group:</span>
+                </div>
+                <input className="form-control" type="text" name="group" defaultValue={item.group} ref={setRef} />
+                <div className="input-group-prepend">
                     <span className="input-group-text">name:</span>
                 </div>
                 <input className="form-control" type="text" name="name" defaultValue={item.name} ref={setRef} />
@@ -260,7 +268,7 @@ function Rolls(props) {
     )
     const readDisplay = (item) => (
         <span>
-            <span className="font-weight-bold">{item.name}: </span>
+            {(item.group) ? item.group + ': ' : ''}<span className="font-weight-bold">{item.name}: </span>
             {item.expression}
         </span>
     )

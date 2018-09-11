@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 from flask import Blueprint, current_app, session
 from flask_restful import Api, Resource, reqparse, abort
+from sqlalchemy import asc, nullsfirst
 from sqlalchemy.exc import IntegrityError
 
 from . import util
@@ -287,6 +288,8 @@ class CharacterResource (Resource):
 
         for field in self.fields.keys():
             if field != 'id' and field in args:
+                if self.fields[field] == str and self.type.__table__.columns[field].nullable and args[field] == '':
+                    args[field] = None
                 setattr(item, field, args[field])
 
         try:
@@ -359,14 +362,14 @@ def add_character_resource(api, short_name, name, type, order, fields):
         endpoint=name)
 
 
-information_fields = {'name': str, 'description': str}
-add_character_resource(api, 'info', 'information', m.Information, 'name', information_fields)
+information_fields = {'name': str, 'description': str, 'group': str}
+add_character_resource(api, 'info', 'information', m.Information, (nullsfirst(asc('group')), 'name'), information_fields)
 
 variable_fields = {'name': str, 'value': int}
 add_character_resource(api, 'variable', 'variables', m.Variable, 'name', variable_fields)
 
-roll_fields = {'name': str, 'expression': str}
-add_character_resource(api, 'roll', 'rolls', m.Roll, 'name', roll_fields)
+roll_fields = {'name': str, 'expression': str, 'group': str}
+add_character_resource(api, 'roll', 'rolls', m.Roll, (nullsfirst(asc('group')), 'name'), roll_fields)
 
 resource_fields = {'name': str, 'current': int, 'max': int, 'recover': m.Rest}
 add_character_resource(api, 'resource', 'resources', m.Resource, 'name', resource_fields)
